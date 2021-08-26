@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Whatever gcc is throwing in my folders
+*.eep
+*.lss
+*.lst
+*.map
+*.sym
