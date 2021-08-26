@@ -57,3 +57,4 @@ dkms.conf
 *.lst
 *.map
 *.sym
+include/*
