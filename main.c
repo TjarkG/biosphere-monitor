@@ -25,6 +25,17 @@
 #define TestOut(bool)      if(bool) PORTD.OUT |= (1<<0); else PORTD.OUT &= ~(1<<0);
 #define TestIn    (PORTD.IN & (1<<1))
 
+struct reading
+{
+    time_t timeRead;                //UNIX Timestamp of reading beginning
+    unsigned int light;             //outside illuminance       in lux
+    unsigned char temperaturOut;    //outside Temperatur        in °C*2
+    unsigned char temperaturIN;     //inside Temperatur         in °C*2
+    unsigned int pressure;          //inside Pressur            in hPa
+    unsigned char humidityAir;      //inside relativ humidity   in %
+    signed char humiditySoil;       //inside soil humidity      in %, -1 without a Sensor
+};  
+
 time_t timeCounter = 0;
 
 void toTimestamp(char* out, uint64_t time)
@@ -45,7 +56,6 @@ int main(void)
 
     while (1)
     {
-        _delay_ms(500);
         TestOut(1);
         _delay_ms(100);
         TestOut(0);
