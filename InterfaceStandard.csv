@@ -1,0 +1,11 @@
+Interface Protocoll for the Biosphere Monitor,,,
+Name,Instruction,Parameter,returns
+All Readings,AR,non,List of all stored readings
+Current Reading,CR,non,Current Sensor reading
+Sample intervall get,IG,non,Intervall in s
+Sample intervall set,IS,Time in s,non
+Self diagnose,DR,non,Errorcode or 0
+Soil Sensor get,SG,non,bool has Sensor
+Soil Sensor set,SS,bool: has Sensor,non
+Time get,TG,non,UNIX Time Code
+Time set,TS,UNIX Time Code,non

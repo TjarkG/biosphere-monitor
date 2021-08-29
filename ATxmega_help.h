@@ -37,11 +37,19 @@
     OSC.CTRL = OSC_XOSCEN_bm;                                                   \
     while(!(OSC.STATUS & OSC_XOSCRDY_bm));                                      \
     CLK.RTCCTRL = CLK_RTCSRC_TOSC_gc | CLK_RTCEN_bm;                            \
-    RTC.PER = 1023;                                                             \
-    RTC.CTRL = RTC_PRESCALER_DIV1_gc;                                           \
+    RTC.CTRL = RTC_PRESCALER_DIV256_gc;                                         \
     while(OSC.STATUS & RTC_SYNCBUSY_bm);                                        \
     RTC.INTCTRL = RTC_OVFINTLVL_LO_gc;                                          \
     PMIC.CTRL = PMIC_LOLVLEN_bm
+
+#define ADC0_INIT                                                               \
+    ADCA.CTRLB = ADC_RESOLUTION_8BIT_gc;                                        \                                      
+    ADCA.REFCTRL = ADC_REFSEL_INT1V_gc;                                         \
+    ADCA.PRESCALER = ADC_PRESCALER_DIV32_gc;                                    \
+    ADCA.CTRLA = ADC_ENABLE_bm;                                                 \
+    PORTA.DIR &= ~(1 << 0x01);                                                  \
+    ADCA.CH0.CTRL = ADC_CH_INPUTMODE0_bm;                                       \
+    ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN0_gc
 
 void uartWriteString(const char *in)
 {
