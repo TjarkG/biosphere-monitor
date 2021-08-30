@@ -30,7 +30,7 @@
 struct reading
 {
     time_t timeRead;                //UNIX Timestamp of reading beginning
-    unsigned int light;             //outside illuminance       in lux
+    unsigned char light;            //outside illuminance       in lux
     unsigned char temperaturOut;    //outside Temperatur        in °C*2
     unsigned char temperaturIN;     //inside Temperatur         in °C*2
     unsigned int pressure;          //inside Pressur            in hPa
