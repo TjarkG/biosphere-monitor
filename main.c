@@ -36,6 +36,7 @@ struct reading
     unsigned int pressure;          //inside Pressur            in hPa
     unsigned char humidityAir;      //inside relativ humidity   in %
     signed char humiditySoil;       //inside soil humidity      in %, -1 without a Sensor
+    int iaq;                        //Air Quality Index         in IAQ, -1 without Sensor
 };  
 
 time_t timeCounter = 0;
