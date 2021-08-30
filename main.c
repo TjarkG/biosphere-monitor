@@ -9,9 +9,9 @@
 #ifndef __AVR_ATxmega16A4U__
 #define __AVR_ATxmega16A4U__
 #endif
-#define F_CPU 32000000UL
+#define F_CPU 16000000UL
 #define BSCALE  -3
-#define BSEL    1670
+#define BSEL    835
 #define ADCN    32       //Number of ADC readings taken per Messurment
 
 #include <avr/io.h>
@@ -65,7 +65,7 @@ unsigned char getOutsideTemp(void)
         while(!(ADCA.CH0.INTFLAGS & ADC_CH_CHIF_bm));
         ADCA.CH0.INTFLAGS = ADC_CH_CHIF_bm;
         tempArr[i] = ADCA.CH0.RES;
-        _delay_ms(10);
+        _delay_ms(2);
 	}
     //return getMedian(tempArr, ADCN);
     return (getMedian(tempArr, ADCN)*25)/32;
@@ -73,7 +73,7 @@ unsigned char getOutsideTemp(void)
 
 int main(void)
 {
-    SET_CLK_32MHZ
+    SET_CLK_EXTERN;
     PORTD.DIR = 0xFF;
     RTC.PER = 3;
     RTC_INIT;

@@ -18,7 +18,14 @@
     while (!(OSC.STATUS & 0x02)) \
         ;                        \
     CCP = 0xD8;                  \
-    CLK.CTRL = 0x01;
+    CLK.CTRL = 0x01
+
+#define SET_CLK_EXTERN                                                          \
+    OSC_XOSCCTRL = OSC_XOSCSEL_XTAL_16KCLK_gc | OSC_FRQRANGE_12TO16_gc;\
+    OSC.CTRL |= OSC_XOSCEN_bm;\
+    while(!(OSC.STATUS & OSC_XOSCRDY_bm));\
+    CCP = CCP_IOREG_gc;\
+    CLK.CTRL = CLK_SCLKSEL_XOSC_gc
 
 #define UART0INIT                                                               \
     USARTC0.BAUDCTRLA = (BSEL & 0xFF);                                          \

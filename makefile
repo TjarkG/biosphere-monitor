@@ -42,7 +42,7 @@ MCU = atxmega16a4u
 
 # Main Oscillator Frequency
 # This is only used to define F_OSC in all assembler and c-sources.
-F_OSC = 32000000
+F_OSC = 16000000
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex
