@@ -20,6 +20,9 @@
 #include <time.h>
 #include <stdbool.h>
 #include <avr/eeprom.h> 
+#include <avr/pgmspace.h>
+#include <stddef.h>
+#include <avr/sleep.h>
 #include "ATxmega_help.h"
 #include "itoa.h"
 #include "reading.h"
@@ -30,6 +33,7 @@
 #define TestIn    (PORTD.IN & (1<<1)) 
 
 time_t timeCounter = 0;
+volatile bool takeMessurment = false;
 unsigned int EEMEM intervall = 600;         //sampling intervall in Seconds
 bool         EEMEM soilSensor = false;      //is a Soil Sensor connected
 
@@ -38,7 +42,7 @@ bool         EEMEM soilSensor = false;      //is a Soil Sensor connected
 #define setSoilSensor(new)  eeprom_update_byte(&soilSensor, new)
 #define hasSoilSensor       eeprom_read_byte(&soilSensor)
 
-void linSort(unsigned short* data, unsigned char length)
+void linSort(unsigned int* data, unsigned char length)
 {
 	for (unsigned char i = 0; i < length; i++)
 		for (unsigned char j = 0; j < length-i-1; j++)
@@ -58,6 +62,8 @@ unsigned int getMedian(unsigned int *readings, const unsigned char n)
 
 unsigned char getOutsideTemp(void)
 {
+    ADCA.CTRLA = ADC_ENABLE_bm;
+    _delay_ms(2);
     unsigned int tempArr[ADCN];
     for(int i = 0; i<ADCN; i++)
 	{
@@ -67,29 +73,41 @@ unsigned char getOutsideTemp(void)
         tempArr[i] = ADCA.CH0.RES;
         _delay_ms(2);
 	}
-    //return getMedian(tempArr, ADCN);
+    ADCA.CTRLA &= ~ADC_ENABLE_bm;
     return (getMedian(tempArr, ADCN)*25)/32;
 }
 
 int main(void)
 {
     SET_CLK_EXTERN;
+    //SET_CLK_32MHZ;
     PORTD.DIR = 0xFF;
     RTC.PER = 3;
     RTC_INIT;
-    setIntervall(2);
+    setIntervall(4);
     ADC0_INIT;
     UART0INIT; 
     sei();
-
+    set_sleep_mode(SLEEP_MODE_PWR_SAVE);
     uartWriteString("Startup Completed\r\n");
+    _delay_ms(10);
+    sleep_enable();
 
     while (1)
     {
-        TestOut(1);
-        _delay_ms(100);
-        TestOut(0);
-        _delay_ms(100);
+        if(takeMessurment)
+        {
+            takeMessurment = false;
+            char str[32];
+            struct tm lt;
+            (void) gmtime_r(&timeCounter, &lt);
+            strftime(str, sizeof(str), "%d.%m.%Y %H:%M:%S ", &lt);
+            uartWriteString(str);
+            _itoa(getOutsideTemp(), str);
+            uartWriteString(str);
+            uartWriteString("\r\n");
+        }
+        sleep_cpu();
     }
 }
 
@@ -103,16 +121,10 @@ ISR(USARTC0_RXC_vect)       //UART ISR
 
 ISR(RTC_OVF_vect)          //RTC ISR
 {
+    sleep_disable();
     timeCounter++;
     if(!(timeCounter % getIntervall))
-    {
-        char str[32];
-        struct tm lt;
-        (void) gmtime_r(&timeCounter, &lt);
-        strftime(str, sizeof(str), "%d.%m.%Y %H:%M:%S ", &lt);
-        uartWriteString(str);
-        _itoa(getOutsideTemp(), str);
-        uartWriteString(str);
-        uartWriteString("\r\n");
-    }
+        takeMessurment = true;
+    else
+        sleep_cpu();
 }

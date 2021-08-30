@@ -19,7 +19,7 @@
         ;                        \
     CCP = 0xD8;                  \
     CLK.CTRL = 0x01
-
+    
 #define SET_CLK_EXTERN                                                          \
     OSC_XOSCCTRL = OSC_XOSCSEL_XTAL_16KCLK_gc | OSC_FRQRANGE_12TO16_gc;\
     OSC.CTRL |= OSC_XOSCEN_bm;\
