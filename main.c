@@ -12,6 +12,7 @@
 #define F_CPU 32000000UL
 #define BSCALE  -3
 #define BSEL    1670
+#define ADCN    32       //Number of ADC readings taken per Messurment
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -37,12 +38,37 @@ bool         EEMEM soilSensor = false;      //is a Soil Sensor connected
 #define setSoilSensor(new)  eeprom_update_byte(&soilSensor, new)
 #define hasSoilSensor       eeprom_read_byte(&soilSensor)
 
+void linSort(unsigned short* data, unsigned char length)
+{
+	for (unsigned char i = 0; i < length; i++)
+		for (unsigned char j = 0; j < length-i-1; j++)
+			if (data[j] > data[j + 1])
+			{
+				short temp = data[j];
+				data[j] = data[j + 1];
+				data[j + 1] = temp;
+			}
+}
+
+unsigned int getMedian(unsigned int *readings, const unsigned char n)
+{
+	linSort(readings, n);
+	return n % 2 ? readings[n / 2] : (readings[n / 2 - 1] + readings[n / 2]) / 2;
+}
+
 unsigned char getOutsideTemp(void)
 {
-    ADCA.CH0.CTRL |= ADC_CH_START_bm;
-    while(!(ADCA.CH0.INTFLAGS & ADC_CH_CHIF_bm));
-    ADCA.CH0.INTFLAGS = ADC_CH_CHIF_bm;
-    return ADCA.CH0.RES;
+    unsigned int tempArr[ADCN];
+    for(int i = 0; i<ADCN; i++)
+	{
+		ADCA.CH0.CTRL |= ADC_CH_START_bm;
+        while(!(ADCA.CH0.INTFLAGS & ADC_CH_CHIF_bm));
+        ADCA.CH0.INTFLAGS = ADC_CH_CHIF_bm;
+        tempArr[i] = ADCA.CH0.RES;
+        _delay_ms(10);
+	}
+    //return getMedian(tempArr, ADCN);
+    return (getMedian(tempArr, ADCN)*25)/32;
 }
 
 int main(void)
@@ -85,7 +111,7 @@ ISR(RTC_OVF_vect)          //RTC ISR
         (void) gmtime_r(&timeCounter, &lt);
         strftime(str, sizeof(str), "%d.%m.%Y %H:%M:%S ", &lt);
         uartWriteString(str);
-        _itoa(((unsigned long) getOutsideTemp()*1000)/255, str);
+        _itoa(getOutsideTemp(), str);
         uartWriteString(str);
         uartWriteString("\r\n");
     }
