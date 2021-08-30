@@ -67,7 +67,7 @@ int main(void)
     }
 }
 
-ISR(USARTC0_RXC_vect)
+ISR(USARTC0_RXC_vect)       //UART ISR
 {
     uint8_t Data = USARTC0.DATA;
     USARTC0.DATA = Data;
