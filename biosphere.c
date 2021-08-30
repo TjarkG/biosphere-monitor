@@ -12,20 +12,9 @@
 #include <stdbool.h>
 #include <time.h>
 #include <string.h>
+#include "reading.h"
 
-#define HELP "Help.md"        //Name of Helpfile
-
-struct reading
-{
-    time_t timeRead;                //UNIX Timestamp of reading beginning
-    unsigned int light;             //outside illuminance       in lux
-    unsigned char temperaturOut;    //outside Temperatur        in °C*2
-    unsigned char temperaturIn;     //inside Temperatur         in °C*2
-    unsigned int pressure;          //inside Pressur            in hPa
-    unsigned char humidityAir;      //inside relativ humidity   in %
-    signed char humiditySoil;       //inside soil humidity      in %, -1 without a Sensor
-    int iaq;                        //Air Quality Index         in IAQ, -1 without Sensor
-};
+#define HELP "Help.md"        //Name of helpfile
 
 void syncTime(bool force);
 struct reading currentReading(void);
@@ -58,7 +47,7 @@ int main(int argc, char *argv[])
             printHelp();
         if(strncmp(argv[i], "-r", 2) == 0)
         {
-            struct reading in = {0, 400, 60, 55, 50, 60, 75, 100};
+            struct reading in = {0, 40, 60, 55, 50, 60, 75, 100};
             printReading(stdout, in);
         }
         if(strncmp(argv[i], "-s", 2) == 0)
@@ -99,10 +88,11 @@ void printReading(FILE *ofp, struct reading in)
     struct tm lt;
     (void) gmtime_r(&in.timeRead, &lt);
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
-    fprintf(ofp, "Current Reading: Time: %s Outside: %dlux %2.1f°C Inside: %2.1f°C %dhPa, Air: %d%%RH", \
-    tmStr, in.light, (in.temperaturOut/2.0), (in.temperaturIn/2.0), in.pressure, in.humidityAir);
+    fprintf(ofp, "Current Reading: Time: %s Outside: %dlux %2.1f°C Inside: %2.1f°C %dhPa, Air: %d%%RH", tmStr, in.light, (in.temperaturOut/2.0), (in.temperaturIn/2.0), in.pressure, in.humidityAir);
+
     if(in.humiditySoil != -1)
         fprintf(ofp, " Soil: %d%%RH", in.humiditySoil);
+
     if(in.iaq != -1)
         fprintf(ofp, " %dIAQ", in.iaq);
     fprintf(ofp, "\n");

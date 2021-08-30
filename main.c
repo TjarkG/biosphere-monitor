@@ -21,23 +21,12 @@
 #include <avr/eeprom.h> 
 #include "ATxmega_help.h"
 #include "itoa.h"
+#include "reading.h"
 
 #define setBit(byte, bit, condition)	byte ^= (-(condition) ^ byte) & (1<<bit)
 
 #define TestOut(bool)      if(bool) PORTD.OUT |= (1<<0); else PORTD.OUT &= ~(1<<0);
-#define TestIn    (PORTD.IN & (1<<1))
-
-struct reading
-{
-    time_t timeRead;                //UNIX Timestamp of reading beginning
-    unsigned char light;            //outside illuminance       in lux
-    unsigned char temperaturOut;    //outside Temperatur        in °C*2
-    unsigned char temperaturIn;     //inside Temperatur         in °C*2
-    unsigned int pressure;          //inside Pressur            in hPa
-    unsigned char humidityAir;      //inside relativ humidity   in %
-    signed char humiditySoil;       //inside soil humidity      in %, -1 without a Sensor
-    int iaq;                        //Air Quality Index         in IAQ, -1 without Sensor
-};  
+#define TestIn    (PORTD.IN & (1<<1)) 
 
 time_t timeCounter = 0;
 unsigned int EEMEM intervall = 600;         //sampling intervall in Seconds
