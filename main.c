@@ -80,15 +80,15 @@ unsigned char getOutsideTemp(void)
 int main(void)
 {
     SET_CLK_EXTERN;
-    //SET_CLK_32MHZ;
-    PORTD.DIR = 0xFF;
+    PORTD.DIRSET = 0xFF;
+    PORTC.DIRSET = 0x08;
     RTC.PER = 3;
     RTC_INIT;
     setIntervall(4);
     ADC0_INIT;
-    UART0INIT; 
+    UART0INIT;
     sei();
-    set_sleep_mode(SLEEP_MODE_PWR_SAVE);
+    set_sleep_mode(SLEEP_MODE_EXT_STANDBY);
     uartWriteString("Startup Completed\r\n");
     _delay_ms(10);
     sleep_enable();
@@ -106,7 +106,9 @@ int main(void)
             _itoa(getOutsideTemp(), str);
             uartWriteString(str);
             uartWriteString("\r\n");
+            _delay_ms(10);
         }
+        sleep_enable();
         sleep_cpu();
     }
 }

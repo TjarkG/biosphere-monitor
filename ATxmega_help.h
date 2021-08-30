@@ -19,7 +19,7 @@
         ;                        \
     CCP = 0xD8;                  \
     CLK.CTRL = 0x01
-    
+
 #define SET_CLK_EXTERN                                                          \
     OSC_XOSCCTRL = OSC_XOSCSEL_XTAL_16KCLK_gc | OSC_FRQRANGE_12TO16_gc;\
     OSC.CTRL |= OSC_XOSCEN_bm;\
@@ -36,7 +36,6 @@
     USARTC0.CTRLB = USART_TXEN_bm | USART_RXEN_bm;                              \
     USARTC0.CTRLC = USART_CHSIZE_8BIT_gc;                                       \
     USARTC0.CTRLC &= ~(USART_PMODE0_bm | USART_PMODE1_bm | USART_SBMODE_bm);    \
-    PORTC.DIR = 0x08;                                                           \
     PMIC.CTRL = PMIC_LOLVLEN_bm
 
 #define RTC_INIT                                                                \
@@ -54,7 +53,6 @@
     ADCA.REFCTRL = ADC_REFSEL_INT1V_gc;                                         \
     ADCA.PRESCALER = ADC_PRESCALER_DIV32_gc;                                    \
     ADCA.CTRLA = ADC_ENABLE_bm;                                                 \
-    PORTA.DIR &= ~(1 << 0x01);                                                  \
     ADCA.CH0.CTRL = ADC_CH_INPUTMODE0_bm;                                       \
     ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN0_gc
 
