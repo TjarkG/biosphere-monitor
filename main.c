@@ -75,7 +75,7 @@ ISR(USARTC0_RXC_vect)       //UART ISR
         USARTC0.DATA = '\n';
 }
 
-ISR(RTC_OVF_vect)
+ISR(RTC_OVF_vect)          //RTC ISR
 {
     timeCounter++;
     if(!(timeCounter % getIntervall))
