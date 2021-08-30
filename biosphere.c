@@ -47,6 +47,18 @@ int main(int argc, char *argv[])
         fprintf(stderr, "%s: first argument must be target COM Port\n", prog);
         return -1;
     }
+    char *com = argv[1];
+    argc--;
+    //TODO: Open COM port
+    char i = 2;
+    while (--argc > 0)
+    {
+        if(strcmp(argv[i], "-h") == 0)
+        {
+            printHelp();
+        }
+        i++;
+    }
 }
 
 void printHelp(void)
