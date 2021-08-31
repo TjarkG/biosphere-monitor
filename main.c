@@ -95,9 +95,14 @@ int main(void)
 
     while (1)
     {
-        if(takeMessurment)
+        if(!(PORTD.IN & (1<<1)))
+        {
+            PORTC.DIRCLR = 0x08;
+        }
+        else if(takeMessurment)
         {
             takeMessurment = false;
+            PORTC.DIRSET = 0x08;
             char str[32];
             struct tm lt;
             (void) gmtime_r(&timeCounter, &lt);
@@ -125,7 +130,7 @@ ISR(RTC_OVF_vect)          //RTC ISR
 {
     sleep_disable();
     timeCounter++;
-    if(!(timeCounter % getIntervall) && (PORTD.IN & (1<<0x01)))
+    if(!(timeCounter % getIntervall))
         takeMessurment = true;
     else
         sleep_cpu();
