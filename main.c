@@ -80,7 +80,7 @@ unsigned char getOutsideTemp(void)
 int main(void)
 {
     SET_CLK_EXTERN;
-    PORTD.DIRSET = 0xFF;
+    PORTD.DIRSET = 0x01;
     PORTC.DIRSET = 0x08;
     RTC.PER = 3;
     RTC_INIT;
@@ -125,7 +125,7 @@ ISR(RTC_OVF_vect)          //RTC ISR
 {
     sleep_disable();
     timeCounter++;
-    if(!(timeCounter % getIntervall))
+    if(!(timeCounter % getIntervall) && (PORTD.IN & (1<<0x01)))
         takeMessurment = true;
     else
         sleep_cpu();
