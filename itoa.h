@@ -26,7 +26,7 @@
 } 
  
  /* itoa:  convert n to characters in s */
- void _itoa(int n, char s[])
+ void _itoa(long n, char s[])
  {
      int i, sign;
 
