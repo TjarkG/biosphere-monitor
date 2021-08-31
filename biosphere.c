@@ -14,9 +14,11 @@
 #include <string.h>
 #include "reading.h"
 
-#define HELP "Help.md"        //Name of helpfile
+#define HELP "Help.md"          //Name of helpfile
+#define OUTFL "biosphere.csv"   //Name of Output File
 
 void syncTime(bool force);
+struct reading getReading(void);
 struct reading currentReading(void);
 void printReading(FILE *ofp, struct reading in);
 void printHelp(void);
@@ -51,7 +53,9 @@ int main(int argc, char *argv[])
             printReading(stdout, in);
         }
         if(strncmp(argv[i], "-s", 2) == 0)
-        {}
+        {
+            storeReadings();
+        }
         if(strncmp(argv[i], "-t", 2) == 0)
         {}
         if(strncmp(argv[i], "-i", 2) == 0)
@@ -82,13 +86,44 @@ void printHelp(void)
     fclose(help);
 }
 
+struct reading getReading(void)
+{
+    //TODO get next reading from Comport
+    struct reading in = {0, 40, 60, 55, 50, 60, 75, 100};
+    return in;
+}
+
+void storeReadings(void)
+{
+    FILE *out;
+    if ((out = fopen(OUTFL, "w")) == NULL) 
+    {
+        fprintf(stderr, "can't open %s\n", OUTFL);
+        exit(1);
+    }
+    fprintf(out,"Time,Light,T out,T in,Pressure,RH Air,RH Soil,IAQ\n");
+    for (int i = 0; i < 10; i++)
+    {
+        struct reading in = getReading();
+        char tmStr[20];
+        struct tm lt;
+        (void) gmtime_r(&in.timeRead, &lt);
+        strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
+
+        fprintf(out, "%s,%d,%d,%d,%d,%d,%d,%d\n",\
+        tmStr, in.light, in.temperaturOut, in.temperaturIn, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
+    }
+    fclose(out);
+}
+
 void printReading(FILE *ofp, struct reading in)
 {
     char tmStr[20];
     struct tm lt;
     (void) gmtime_r(&in.timeRead, &lt);
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
-    fprintf(ofp, "Current Reading: Time: %s Outside: %dlux %2.1f°C Inside: %2.1f°C %dhPa, Air: %d%%RH", tmStr, in.light, (in.temperaturOut/2.0), (in.temperaturIn/2.0), in.pressure, in.humidityAir);
+    fprintf(ofp, "Current Reading: Time: %s Outside: %dlux %2.1f°C Inside: %2.1f°C %dhPa, Air: %d%%RH",\
+    tmStr, in.light, (in.temperaturOut/2.0), (in.temperaturIn/2.0), in.pressure, in.humidityAir);
 
     if(in.humiditySoil != -1)
         fprintf(ofp, " Soil: %d%%RH", in.humiditySoil);
