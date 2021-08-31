@@ -25,6 +25,7 @@
 #include <avr/sleep.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "ATxmega_help.h"
 #include "itoa.h"
 #include "reading.h"
@@ -34,7 +35,7 @@
 #define TestOut(bool)      if(bool) PORTD.OUT |= (1<<0); else PORTD.OUT &= ~(1<<0);
 #define TestIn    (PORTD.IN & (1<<1)) 
 
-time_t timeCounter = 0;
+uint32_t timeCounter = 0;
 volatile bool takeMessurment = false;
 volatile bool instruct = false;
 char uartBuf[16];
@@ -48,7 +49,7 @@ unsigned char EEMEM soilSensor = 0;      //is a Soil Sensor connected (bool)
 
 struct reading getReading(void);
 void printReading(struct reading in);
-int selfDiagnosse();
+int selfDiagnosse(void);
 
 void linSort(unsigned int* data, unsigned char length)
 {
@@ -104,15 +105,16 @@ int main(void)
     {
         if(!(PORTD.IN & (1<<1)))
         {
-            PORTC.DIRCLR = 0x08;
-            sleep_enable();
-            sleep_cpu();
+            //PORTC.DIRCLR = 0x08;
+            //sleep_enable();
+            //sleep_cpu();
         }
         else if(takeMessurment)
         {
             takeMessurment = false;
             PORTC.DIRSET = 0x08;
             struct reading in = getReading();
+            //printReading(in);
             in.iaq++;
             //TODO: Store Reading on SD Card
             _delay_ms(10);
@@ -154,7 +156,7 @@ int main(void)
                 setSoilSensor(atoi(uartBuf+2));
             else if(strncmp(uartBuf,"TG",2) == 0)
             {
-                char tmp[12];
+                char tmp[16];
                 _itoa(timeCounter,tmp);
                 uartWriteString(tmp);
                 uartWriteString("\r\n");
@@ -210,7 +212,7 @@ void printReading(struct reading in)
     uartWriteString("\r\n");
 }
 
-int selfDiagnosse()
+int selfDiagnosse(void)
 {
     if(getOutsideTemp() == 0 || getOutsideTemp() > 100)
     {

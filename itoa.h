@@ -26,9 +26,9 @@
 } 
  
  /* itoa:  convert n to characters in s */
- void _itoa(long n, char s[])
+ void _itoa(unsigned long n, char s[])
  {
-     int i, sign;
+     unsigned long i, sign;
 
      if ((sign = n) < 0)  /* record sign */
          n = -n;          /* make n positive */

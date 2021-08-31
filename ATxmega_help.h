@@ -59,9 +59,9 @@
 void uartWriteString(const char *in)
 {
     while(*in)
-        {
-            while(!(USARTC0.STATUS & USART_DREIF_bm));
-            USARTC0.DATA = *in++;
-        }
+    {
+        while(!(USARTC0.STATUS & USART_DREIF_bm));
+        USARTC0.DATA = *in++;
+    }
 }
 #endif /* ATxmega_help_H_ */
