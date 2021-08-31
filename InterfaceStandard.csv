@@ -9,3 +9,4 @@ Soil Sensor get,SG,non,bool has Sensor
 Soil Sensor set,SS,bool: has Sensor,non
 Time get,TG,non,UNIX Time Code
 Time set,TS,UNIX Time Code,non
+Booted,BT,non,non
