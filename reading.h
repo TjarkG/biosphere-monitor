@@ -18,8 +18,8 @@ struct reading
     unsigned char temperaturIn;     //inside Temperatur         in °C*2
     unsigned int pressure;          //inside Pressur            in hPa
     unsigned char humidityAir;      //inside relativ humidity   in %
-    signed char humiditySoil;       //inside soil humidity      in %, -1 without a Sensor
-    int iaq;                        //Air Quality Index         in IAQ, -1 without Sensor
+    signed char humiditySoil;       //inside soil humidity      in %, 0 without a Sensor
+    int iaq;                        //Air Quality Index         in IAQ, 0 without Sensor
 }; 
 
 long readingIt(struct reading *v, char i) //makes it possible to itterate throuh a reading
