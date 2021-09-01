@@ -58,3 +58,6 @@ dkms.conf
 *.map
 *.sym
 include/*
+
+#libreOffice Stuff
+*.csv#

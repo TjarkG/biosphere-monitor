@@ -15,7 +15,7 @@
 #include "reading.h"
 #include "tty.h"
 
-#define HELP "Help.md"          //Name of helpfile
+#define HELP "README.md"          //Name of helpfile
 #define OUTFL "biosphere.csv"   //Name of Output File
 
 void syncTime(bool force);
@@ -156,7 +156,7 @@ struct reading getReading(char *buf)
     in.light = atoi(ptr);
     ptr = strtok(NULL, ",\n");
     in.temperaturOut = atoi(ptr);
-    ptr = strtok(NULL, ",\n");unsigned char buf[32];
+    ptr = strtok(NULL, ",\n");unsigned char null[32];
     in.temperaturIn = atoi(ptr);
     ptr = strtok(NULL, ",\n");
     in.pressure = atoi(ptr);
@@ -184,7 +184,7 @@ void storeReadings(void)
     while(1)
     {
         getUartLine(buf);
-        if(strncmp(buf, "EOF",3))
+        if(strncmp(buf, "EOF",3) == 0)
             break;
         struct reading in = getReading(buf);
         char tmStr[20];
