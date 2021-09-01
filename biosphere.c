@@ -17,6 +17,7 @@
 
 #define HELP "README.md"          //Name of helpfile
 #define OUTFL "biosphere.csv"   //Name of Output File
+#define ESC 27
 
 void syncTime(bool force);
 struct reading getReading(char *buf);
@@ -139,9 +140,22 @@ void printHelp(void)
         fprintf(stderr, "can't open %s\n", HELP);
         exit(1);
     }
+    bool header = false;
     while ((in = getc(help)) != EOF)
     {
-        printf("%c", in);
+        if(in == '#')
+        {
+            printf("%c[1m",ESC);
+            getc(help);
+            header = true;
+        }
+        else if(in == '\n' && header)
+        {
+            printf("%c[0m",ESC);
+            header = false;
+        }
+        else
+            printf("%c", in);
     }
     printf("\n\n");
     fclose(help);
