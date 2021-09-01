@@ -6,7 +6,7 @@ which can ocure in any order, which are listed below:
 * -h show this help message
 * -r show current reading in Command line Output
 * -s store all past readings in new file (stored as biosphere.csv in current directory)
-* -f force time syncronization, even with big deviations
+* -f syncronize time
 * -i set messurment intervall in s, use -i? to get current intervall
 * -t run self test
 * -g enable (1) or disable (0) Soil Sensor, -g? to show current state

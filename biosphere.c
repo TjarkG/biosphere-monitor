@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
             printUART("TG\r");
             getUartLine(buf);
             getUartLine(buf);
+            printf("Syncronized System Times\n");
         }
         else if(strncmp(argv[i], "-i", 2) == 0)
         {
@@ -191,10 +192,12 @@ void storeReadings(void)
         fprintf(stderr, "can't open %s\n", OUTFL);
         exit(1);
     }
+    printf("Startet Saving Readings...\n");
     fprintf(out,"UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
     unsigned char buf[32];
     printUART("AR\r");
     getUartLine(buf);
+    unsigned int lnCnt = 0;
     while(1)
     {
         getUartLine(buf);
@@ -208,8 +211,10 @@ void storeReadings(void)
 
         fprintf(out, "%s,%d,%2.1f,%2.1f,%d,%d,%d,%d\n",\
         tmStr, in.light, in.temperaturOut/2.0, in.temperaturIn/2.0, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
+        lnCnt++;
     }
     fclose(out);
+    printf("Finished! %u Readings Saved\n",lnCnt);
 }
 
 void printReading(FILE *ofp, struct reading in)
