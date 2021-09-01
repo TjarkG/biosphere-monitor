@@ -30,11 +30,6 @@
 #include "itoa.h"
 #include "reading.h"
 
-#define setBit(byte, bit, condition)	byte ^= (-(condition) ^ byte) & (1<<bit)
-
-#define TestOut(bool)      if(bool) PORTD.OUT |= (1<<0); else PORTD.OUT &= ~(1<<0);
-#define TestIn    (PORTD.IN & (1<<1)) 
-
 uint32_t timeCounter = 0;
 volatile bool takeMessurment = false;
 volatile bool instruct = false;
@@ -50,46 +45,14 @@ unsigned char EEMEM soilSensor = 0;      //is a Soil Sensor connected (bool)
 struct reading getReading(void);
 void printReading(struct reading in);
 int selfDiagnosse(void);
-
-void linSort(unsigned int* data, unsigned char length)
-{
-	for (unsigned char i = 0; i < length; i++)
-		for (unsigned char j = 0; j < length-i-1; j++)
-			if (data[j] > data[j + 1])
-			{
-				short temp = data[j];
-				data[j] = data[j + 1];
-				data[j + 1] = temp;
-			}
-}
-
-unsigned int getMedian(unsigned int *readings, const unsigned char n)
-{
-	linSort(readings, n);
-	return n % 2 ? readings[n / 2] : (readings[n / 2 - 1] + readings[n / 2]) / 2;
-}
-
-unsigned char getOutsideTemp(void)
-{
-    ADCA.CTRLA = ADC_ENABLE_bm;
-    _delay_ms(2);
-    unsigned int tempArr[ADCN];
-    for(int i = 0; i<ADCN; i++)
-	{
-		ADCA.CH0.CTRL |= ADC_CH_START_bm;
-        while(!(ADCA.CH0.INTFLAGS & ADC_CH_CHIF_bm));
-        ADCA.CH0.INTFLAGS = ADC_CH_CHIF_bm;
-        tempArr[i] = ADCA.CH0.RES;
-        _delay_ms(2);
-	}
-    ADCA.CTRLA &= ~ADC_ENABLE_bm;
-    return (getMedian(tempArr, ADCN)*25)/32;
-}
+void linSort(unsigned int* data, unsigned char n);
+unsigned int getMedian(unsigned int *rd, const unsigned char n);
+unsigned char getOutsideTemp(void);
+void uartWriteIntLine(long in);
 
 int main(void)
 {
     SET_CLK_EXTERN;
-    PORTD.DIRSET = 0x01;
     PORTC.DIRSET = 0x08;
     RTC.PER = 3;
     RTC_INIT;
@@ -138,45 +101,25 @@ int main(void)
                 uartWriteString("EOF\r\n");
             }
             else if(strncmp(uartBuf,"IG",2) == 0)
-            {
-                char tmp[8];
-                _itoa(getIntervall,tmp);
-                uartWriteString(tmp);
-                uartWriteString("\r\n");
-            }
+                uartWriteIntLine(getIntervall);
             else if(strncmp(uartBuf,"IS",2) == 0)
                 setIntervall(atoi(uartBuf+2));
             else if(strncmp(uartBuf,"SG",2) == 0)
-            {
-                char tmp[8];
-                _itoa(hasSoilSensor,tmp);
-                uartWriteString(tmp);
-                uartWriteString("\r\n");
-            }
+                uartWriteIntLine(hasSoilSensor);
             else if(strncmp(uartBuf,"SS",2) == 0)
                 setSoilSensor(atoi(uartBuf+2));
             else if(strncmp(uartBuf,"TG",2) == 0)
-            {
-                char tmp[16];
-                _itoa(timeCounter,tmp);
-                uartWriteString(tmp);
-                uartWriteString("\r\n");
-            }
+                uartWriteIntLine(timeCounter);
             else if(strncmp(uartBuf,"TS",2) == 0)
                 timeCounter = atol(uartBuf+2);
             else if(strncmp(uartBuf,"DR",2) == 0)
-            {
-                char tmp[12];
-                _itoa(selfDiagnosse(),tmp);
-                uartWriteString(tmp);
-                uartWriteString("\r\n");
-            }
+                uartWriteIntLine(selfDiagnosse());
             instruct = 0;
         }
     }
 }
 
-struct reading getReading(void)
+struct reading getReading(void)     //reuturns fresh data
 {
     struct reading in = {0,0,0,0,0,0,0,0};
     in.timeRead = timeCounter;
@@ -184,42 +127,70 @@ struct reading getReading(void)
     return in;
 }
 
-void printReading(struct reading in)
+void printReading(struct reading in)    //prints in to UART
 {
-    char str[32];
-    _itoa(in.timeRead, str);
-    uartWriteString(str);
-    uartWriteString(",");
-    _itoa(in.light, str);
-    uartWriteString(str);
-    uartWriteString(",");
-    _itoa(in.temperaturOut, str);
-    uartWriteString(str);
-    uartWriteString(",");
-    _itoa(in.temperaturIn, str);
-    uartWriteString(str);
-    uartWriteString(",");
-    _itoa(in.pressure, str);
-    uartWriteString(str);
-    uartWriteString(",");
-    _itoa(in.humidityAir, str);
-    uartWriteString(str);
-    uartWriteString(",");
-    _itoa(in.humiditySoil, str);
-    uartWriteString(str);
-    uartWriteString(",");
-    _itoa(in.iaq, str);
-    uartWriteString(str);
+    char str[16];
+    for (char i = 0; i < 8; i++)
+    {
+        _itoa(readingIt(&in,i), str);
+        uartWriteString(str);
+        if(i == 7)
+            uartWriteString("\r\n");
+        else
+            uartWriteString(",");
+    }
+}
+
+void uartWriteIntLine(long in)
+{
+    char tmp[12];
+    _itoa(in,tmp);
+    uartWriteString(tmp);
     uartWriteString("\r\n");
 }
 
-int selfDiagnosse(void)
+int selfDiagnosse(void)     //returns self diagnosis errorcode
 {
     if(getOutsideTemp() == 0 || getOutsideTemp() > 100)
     {
         return -1;
     }
     return 0;
+}
+
+void linSort(unsigned int* data, unsigned char n)       //sorts data till n ascending
+{
+	for (unsigned char i = 0; i < n; i++)
+		for (unsigned char j = 0; j < n-i-1; j++)
+			if (data[j] > data[j + 1])
+			{
+				short temp = data[j];
+				data[j] = data[j + 1];
+				data[j + 1] = temp;
+			}
+}
+
+unsigned int getMedian(unsigned int *rd, const unsigned char n)   //returns Median of the Values in rd to rd[n]
+{
+	linSort(rd, n);
+	return n % 2 ? rd[n / 2] : (rd[n / 2 - 1] + rd[n / 2]) / 2;
+}
+
+unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*2
+{
+    ADCA.CTRLA = ADC_ENABLE_bm;
+    _delay_ms(2);
+    unsigned int tempArr[ADCN];
+    for(int i = 0; i<ADCN; i++)
+	{
+		ADCA.CH0.CTRL |= ADC_CH_START_bm;
+        while(!(ADCA.CH0.INTFLAGS & ADC_CH_CHIF_bm));
+        ADCA.CH0.INTFLAGS = ADC_CH_CHIF_bm;
+        tempArr[i] = ADCA.CH0.RES;
+        _delay_ms(2);
+	}
+    ADCA.CTRLA &= ~ADC_ENABLE_bm;
+    return (getMedian(tempArr, ADCN)*25)/32;
 }
 
 ISR(USARTC0_RXC_vect)       //UART ISR

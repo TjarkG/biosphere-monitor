@@ -64,4 +64,5 @@ void uartWriteString(const char *in)
         USARTC0.DATA = *in++;
     }
 }
+
 #endif /* ATxmega_help_H_ */
