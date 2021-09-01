@@ -10,8 +10,8 @@
 #define __AVR_ATxmega16A4U__
 #endif
 #define F_CPU 16000000UL
-#define BSCALE  -3
-#define BSEL    835
+#define BSCALE  -5
+#define BSEL    246
 #define ADCN    32       //Number of ADC readings taken per Messurment
 
 #include <avr/io.h>

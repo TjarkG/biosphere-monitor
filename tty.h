@@ -57,8 +57,8 @@ void startUART(char *portname)
         printf("Error opening %s: %s\n", portname, strerror(errno));
         return;
     }
-    /*baudrate 9600, 8 bits, no parity, 1 stop bit */
-    set_interface_attribs(fd, B9600);
+    /*baudrate 115200, 8 bits, no parity, 1 stop bit */
+    set_interface_attribs(fd, B115200);
 }
 
 void printUART(char *in)
