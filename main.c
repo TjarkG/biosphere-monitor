@@ -135,6 +135,7 @@ int main(void)
                     struct reading in = getReading();
                     printReading(in);
                 }
+                uartWriteString("EOF\r\n");
             }
             else if(strncmp(uartBuf,"IG",2) == 0)
             {

@@ -19,7 +19,7 @@
 #define OUTFL "biosphere.csv"   //Name of Output File
 
 void syncTime(bool force);
-struct reading getReading(void);
+struct reading getReading(char *buf);
 struct reading currentReading(void);
 void printReading(FILE *ofp, struct reading in);
 void printHelp(void);
@@ -52,24 +52,7 @@ int main(int argc, char *argv[])
             printUART("CR\r");
             getUartLine(buf);
             getUartLine(buf);
-            struct reading in = {0, 0, 0, 0, 0, 0, -1, -1};
-            char *ptr = strtok(buf, ",\n");
-            in.timeRead = atol(ptr);
-            ptr = strtok(NULL, ",\n");
-            in.light = atoi(ptr);
-            ptr = strtok(NULL, ",\n");
-            in.temperaturOut = atoi(ptr);
-            ptr = strtok(NULL, ",\n");
-            in.temperaturIn = atoi(ptr);
-            ptr = strtok(NULL, ",\n");
-            in.pressure = atoi(ptr);
-            ptr = strtok(NULL, ",\n");
-            in.humidityAir = atoi(ptr);
-            ptr = strtok(NULL, ",\n");
-            in.humiditySoil = atoi(ptr);
-            ptr = strtok(NULL, ",\n");
-            in.iaq = atoi(ptr);
-            printReading(stdout, in);
+            printReading(stdout, getReading(buf));
         }
         else if(strncmp(argv[i], "-s", 2) == 0)
         {
@@ -164,10 +147,25 @@ void printHelp(void)
     fclose(help);
 }
 
-struct reading getReading(void)
+struct reading getReading(char *buf)
 {
-    //TODO get next reading from Comport
-    struct reading in = {0, 40, 60, 55, 50, 60, 75, 100};
+    struct reading in = {0, 0, 0, 0, 0, 0, -1, -1};
+    char *ptr = strtok(buf, ",\n");
+    in.timeRead = atol(ptr);
+    ptr = strtok(NULL, ",\n");
+    in.light = atoi(ptr);
+    ptr = strtok(NULL, ",\n");
+    in.temperaturOut = atoi(ptr);
+    ptr = strtok(NULL, ",\n");unsigned char buf[32];
+    in.temperaturIn = atoi(ptr);
+    ptr = strtok(NULL, ",\n");
+    in.pressure = atoi(ptr);
+    ptr = strtok(NULL, ",\n");
+    in.humidityAir = atoi(ptr);
+    ptr = strtok(NULL, ",\n");
+    in.humiditySoil = atoi(ptr);
+    ptr = strtok(NULL, ",\n");
+    in.iaq = atoi(ptr);
     return in;
 }
 
@@ -179,17 +177,23 @@ void storeReadings(void)
         fprintf(stderr, "can't open %s\n", OUTFL);
         exit(1);
     }
-    fprintf(out,"Time,Light,T out,T in,Pressure,RH Air,RH Soil,IAQ\n");
-    for (int i = 0; i < 10; i++)
+    fprintf(out,"UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
+    unsigned char buf[32];
+    printUART("AR\r");
+    getUartLine(buf);
+    while(1)
     {
-        struct reading in = getReading();
+        getUartLine(buf);
+        if(strncmp(buf, "EOF",3))
+            break;
+        struct reading in = getReading(buf);
         char tmStr[20];
         struct tm lt;
         (void) gmtime_r(&in.timeRead, &lt);
         strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
-        fprintf(out, "%s,%d,%d,%d,%d,%d,%d,%d\n",\
-        tmStr, in.light, in.temperaturOut, in.temperaturIn, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
+        fprintf(out, "%s,%d,%2.1f,%2.1f,%d,%d,%d,%d\n",\
+        tmStr, in.light, in.temperaturOut/2.0, in.temperaturIn/2.0, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
     }
     fclose(out);
 }
