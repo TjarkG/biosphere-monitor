@@ -38,9 +38,8 @@ int main(int argc, char *argv[])
         fprintf(stderr, "%s: first argument must be target COM Port\n", prog);
         return -1;
     }
-    char *portname = argv[1];
     argc--;
-    startUART(portname);
+    startUART(argv[1]);
 
     char i = 2;
     while (--argc > 0)
