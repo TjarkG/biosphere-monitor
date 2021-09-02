@@ -203,13 +203,14 @@ void printReading(FILE *ofp, struct reading in)
     struct tm lt;
     (void) gmtime_r(&in.timeRead, &lt);
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
+
     fprintf(ofp, "Current Reading: Time: %s UTC Outside: %dlux %2.1f°C Inside: %2.1f°C %dhPa, Air: %d%%RH",\
     tmStr, in.light, (in.temperaturOut/2.0), (in.temperaturIn/2.0), in.pressure, in.humidityAir);
 
-    if(in.humiditySoil != -1)
+    if(in.humiditySoil != 0)
         fprintf(ofp, " Soil: %d%%RH", in.humiditySoil);
-
-    if(in.iaq != -1)
+    if(in.iaq != 0)
         fprintf(ofp, " %dIAQ", in.iaq);
+    
     fprintf(ofp, "\n");
 }
