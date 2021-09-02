@@ -4,7 +4,7 @@
  * Header with struct to store Sensor redings in on PC and MC
  *
  * Created: 30.08.2021 16:37:17
- *  Author: Tjark Gaudichs
+ *  Author: Tjark Gaudich
  */
 
 #ifndef reading_H_

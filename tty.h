@@ -4,7 +4,7 @@
  * Header to communicate via UART on Linux
  *
  * Created: 30.08.2021 16:37:17
- *  Author: Tjark Gaudichs
+ *  Author: Tjark Gaudich
  */
 
 #ifndef tty_H_
@@ -36,18 +36,18 @@ int set_interface_attribs(int fd, int speed)
 
     tty.c_cflag |= CLOCAL | CREAD;
     tty.c_cflag &= ~CSIZE;
-    tty.c_cflag |= CS8;         /* 8-bit characters */
-    tty.c_cflag &= ~PARENB;     /* no parity bit */
-    tty.c_cflag &= ~CSTOPB;     /* only need 1 stop bit */
-    tty.c_cflag &= ~CRTSCTS;    /* no hardware flowcontrol */
+    tty.c_cflag |= CS8;         // 8-bit characters
+    tty.c_cflag &= ~PARENB;     // no parity bit
+    tty.c_cflag &= ~CSTOPB;     // only need 1 stop bit
+    tty.c_cflag &= ~CRTSCTS;    // no hardware flowcontrol
 
-    tty.c_lflag |= ICANON | ISIG;  /* canonical input */
+    tty.c_lflag |= ICANON | ISIG;  // canonical input
     tty.c_lflag &= ~(ECHO | ECHOE | ECHONL | IEXTEN);
 
-    tty.c_iflag &= ~IGNCR;  /* preserve carriage return */
+    tty.c_iflag &= ~IGNCR;  // preserve carriage return 
     tty.c_iflag &= ~INPCK;
     tty.c_iflag &= ~(INLCR | ICRNL | IUCLC | IMAXBEL);
-    tty.c_iflag &= ~(IXON | IXOFF | IXANY);   /* no SW flowcontrol */
+    tty.c_iflag &= ~(IXON | IXOFF | IXANY);   // no SW flowcontrol
 
     tty.c_oflag &= ~OPOST;
 
@@ -63,7 +63,7 @@ int set_interface_attribs(int fd, int speed)
     return 0;
 }
 
-void startUART(char *portname)
+void startUART(char *portname)      //opens UART portname
 {
     fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0)
@@ -75,7 +75,7 @@ void startUART(char *portname)
     set_interface_attribs(fd, B115200);
 }
 
-void printUART(char *in)
+void printUART(char *in)        //prints in to UART
 {
     char length = strlen(in);
     char wlen = write(fd, in, length);
@@ -84,7 +84,7 @@ void printUART(char *in)
     tcdrain(fd);    // delay for output
 }
 
-void getUartLine(char *buf)
+void getUartLine(char *buf)     //puts on line of UART input in buf
 {
     unsigned char *p;
     int rdlen;
@@ -96,7 +96,8 @@ void getUartLine(char *buf)
         fprintf(stderr,"Error from read: %d: %s\n", rdlen, strerror(errno));
     else  // rdlen == 0
         fprintf(stderr,"Nothing read. EOF?\n");
-    if(buf[0] == '\n')
+
+    if(buf[0] == '\n')  //repeat read when only newline is found
         getUartLine(buf);
 }
 
