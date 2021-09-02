@@ -19,13 +19,11 @@
 #define OUTFL "biosphere.csv"   //Name of Output File
 #define ESC 27
 
-void syncTime(bool force);
+long getCommand(const char *cmd);
 struct reading getReading(char *buf);
-struct reading currentReading(void);
 void printReading(FILE *ofp, struct reading in);
 void printHelp(void);
 void storeReadings(void);
-long getCsvNumb(char *in);
 
 int main(int argc, char *argv[])
 {
@@ -44,23 +42,20 @@ int main(int argc, char *argv[])
     char i = 2;
     while (--argc > 0)
     {
+        unsigned char buf[32];
         if(strncmp(argv[i], "-h", 2) == 0)
             printHelp();
         else if(strncmp(argv[i], "-r", 2) == 0)
         {
-            unsigned char buf[32];
             printUART("CR\r");
             getUartLine(buf);
             getUartLine(buf);
             printReading(stdout, getReading(buf));
         }
         else if(strncmp(argv[i], "-s", 2) == 0)
-        {
             storeReadings();
-        }
         else if(strncmp(argv[i], "-f", 2) == 0)
         {
-            unsigned char buf[32];
             time_t rawtime;
             time ( &rawtime );
             sprintf(buf, "TS%ld\r",rawtime);
@@ -72,30 +67,25 @@ int main(int argc, char *argv[])
             getUartLine(buf);
             printf("Syncronized System Times\n");
         }
+        else if(strncmp(argv[i], "-i?", 3) == 0)
+        {
+            printUART("IG\r");
+            getUartLine(buf);
+            getUartLine(buf);
+            printf("Current Messurment intervall:%s",buf);
+        }
         else if(strncmp(argv[i], "-i", 2) == 0)
         {
-            unsigned char buf[32];
-            if(strncmp(argv[i], "-i?", 3) == 0)
-            {
-                printUART("IG\r");
-                getUartLine(buf);
-                getUartLine(buf);
-                printf("Current Messurment intervall:%s",buf);
-            }
-            else
-            {
-                sprintf(buf, "IS%s\r",argv[i]+2);
-                printUART(buf);
-                getUartLine(buf);
-                printUART("IG\r");
-                getUartLine(buf);
-                getUartLine(buf);
-                printf("Intervall set:%s Intervall vertified:%s",argv[i]+2,buf);
-            }
+            sprintf(buf, "IS%s\r",argv[i]+2);
+            printUART(buf);
+            getUartLine(buf);
+            printUART("IG\r");
+            getUartLine(buf);
+            getUartLine(buf);
+            printf("Intervall set:%s Intervall vertified:%s",argv[i]+2,buf);
         }
         else if(strncmp(argv[i], "-t", 2) == 0)
         {
-            unsigned char buf[32];
             printUART("DR\r");
             getUartLine(buf);
             getUartLine(buf);
@@ -105,29 +95,41 @@ int main(int argc, char *argv[])
             else
                 printf("Error detected, Code %d",error);
         }
+        else if(strncmp(argv[i], "-g?", 3) == 0)
+        {
+            /*printUART("SG\r");
+            getUartLine(buf);
+            getUartLine(buf);
+            printf("Current Soil Sensor State: %s",buf);*/
+            printf("Current Soil Sensor State: %d",getCommand("SG"));
+        }
         else if(strncmp(argv[i], "-g", 2) == 0)
         {
-            unsigned char buf[32];
-            if(strncmp(argv[i], "-g?", 3) == 0)
-            {
-                printUART("SG\r");
-                getUartLine(buf);
-                getUartLine(buf);
-                printf("Current Soil Sensor State:%s",buf);
-            }
-            else
-            {
-                sprintf(buf, "SS%s\r",argv[i]+2);
-                printUART(buf);
-                getUartLine(buf);
-                printUART("SG\r");
-                getUartLine(buf);
-                getUartLine(buf);
-                printf("Soil Sensor set:%s Soil Sensor vertified:%s",argv[i]+2,buf);
-            }
+            sprintf(buf, "SS%s\r",argv[i]+2);
+            printUART(buf);
+            getUartLine(buf);
+            printUART("SG\r");
+            getUartLine(buf);
+            getUartLine(buf);
+            printf("Soil Sensor set:%s Soil Sensor vertified:%s",argv[i]+2,buf);
         }
         i++;
     }
+}
+
+long getCommand(const char *cmd)       //send get command and put return response
+{
+    unsigned char buf[32];
+    printUART(cmd);
+    printUART("\r");
+    getUartLine(buf);
+    if(strcmp(buf, cmd))
+    {
+        fprintf(stderr, "Error tranmitting UART Command %s: recieved %s", cmd, buf);
+        return -1;
+    }
+    getUartLine(buf);
+    return atoi(buf);
 }
 
 void printHelp(void)
@@ -170,7 +172,7 @@ struct reading getReading(char *buf)
     in.light = atoi(ptr);
     ptr = strtok(NULL, ",\n");
     in.temperaturOut = atoi(ptr);
-    ptr = strtok(NULL, ",\n");unsigned char null[32];
+    ptr = strtok(NULL, ",\n");
     in.temperaturIn = atoi(ptr);
     ptr = strtok(NULL, ",\n");
     in.pressure = atoi(ptr);
