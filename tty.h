@@ -75,7 +75,7 @@ void startUART(char *portname)      //opens UART portname
     set_interface_attribs(fd, B115200);
 }
 
-void printUART(char *in)        //prints in to UART
+void printUART(const char *in)        //prints in to UART
 {
     char length = strlen(in);
     char wlen = write(fd, in, length);

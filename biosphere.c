@@ -20,6 +20,7 @@
 #define ESC 27
 
 long getCommand(const char *cmd);
+int setCommand(const char *cmd);
 struct reading getReading(char *buf);
 void printReading(FILE *ofp, struct reading in);
 void printHelp(void);
@@ -47,8 +48,7 @@ int main(int argc, char *argv[])
             printHelp();
         else if(strncmp(argv[i], "-r", 2) == 0)
         {
-            printUART("CR\r");
-            getUartLine(buf);
+            setCommand("CR");
             getUartLine(buf);
             printReading(stdout, getReading(buf));
         }
@@ -58,90 +58,69 @@ int main(int argc, char *argv[])
         {
             time_t rawtime;
             time ( &rawtime );
-            sprintf(buf, "TS%ld\r",rawtime);
-            printUART(buf);
-            getUartLine(buf);
-
-            printUART("TG\r");
-            getUartLine(buf);
-            getUartLine(buf);
+            sprintf(buf, "TS%ld",rawtime);
+            setCommand(buf);
             printf("Syncronized System Times\n");
         }
         else if(strncmp(argv[i], "-i?", 3) == 0)
-        {
-            printUART("IG\r");
-            getUartLine(buf);
-            getUartLine(buf);
-            printf("Current Messurment intervall:%s",buf);
-        }
+            printf("Current Messurment intervall: %li\n",getCommand("IG"));
         else if(strncmp(argv[i], "-i", 2) == 0)
         {
-            sprintf(buf, "IS%s\r",argv[i]+2);
-            printUART(buf);
-            getUartLine(buf);
-            printUART("IG\r");
-            getUartLine(buf);
-            getUartLine(buf);
-            printf("Intervall set:%s Intervall vertified:%s",argv[i]+2,buf);
+            sprintf(buf, "IS%s",argv[i]+2);
+            setCommand(buf);
+            printf("Intervall set:%s Intervall vertified:%ld\n",argv[i]+2,getCommand("IG"));
         }
         else if(strncmp(argv[i], "-t", 2) == 0)
         {
-            printUART("DR\r");
-            getUartLine(buf);
-            getUartLine(buf);
-            int error = atoi(buf);
+            int error = getCommand("DR");
             if(error == 0)
                 printf("Self Test passed\n");
             else
-                printf("Error detected, Code %d",error);
+                printf("Error detected, Code %d\n",error);
         }
         else if(strncmp(argv[i], "-g?", 3) == 0)
-        {
-            /*printUART("SG\r");
-            getUartLine(buf);
-            getUartLine(buf);
-            printf("Current Soil Sensor State: %s",buf);*/
-            printf("Current Soil Sensor State: %d",getCommand("SG"));
-        }
+            printf("Current Soil Sensor State: %li\n",getCommand("SG"));
         else if(strncmp(argv[i], "-g", 2) == 0)
         {
-            sprintf(buf, "SS%s\r",argv[i]+2);
-            printUART(buf);
-            getUartLine(buf);
-            printUART("SG\r");
-            getUartLine(buf);
-            getUartLine(buf);
-            printf("Soil Sensor set:%s Soil Sensor vertified:%s",argv[i]+2,buf);
+            sprintf(buf, "SS%s",argv[i]+2);
+            setCommand(buf);
+            printf("Soil Sensor set:%s Soil Sensor vertified:%ld\n",argv[i]+2,getCommand("SG"));
         }
         i++;
     }
 }
 
-long getCommand(const char *cmd)       //send get command and put return response
+long getCommand(const char *cmd)       //send get command and return response
 {
-    unsigned char buf[32];
+    unsigned char buf[16];
+    setCommand(cmd);
+    getUartLine(buf);
+    return atoi(buf);
+}
+int setCommand(const char *cmd)       //send set command
+{
+    unsigned char buf[16];
     printUART(cmd);
     printUART("\r");
     getUartLine(buf);
-    if(strcmp(buf, cmd))
+    if(strncmp(buf, cmd,strlen(cmd)))
     {
         fprintf(stderr, "Error tranmitting UART Command %s: recieved %s", cmd, buf);
         return -1;
     }
-    getUartLine(buf);
-    return atoi(buf);
+    return 0;
 }
 
 void printHelp(void)
 {
     FILE *help;
-    char in;
-
     if ((help = fopen(HELP, "r")) == NULL) 
     {
         fprintf(stderr, "can't open %s\n", HELP);
         exit(1);
     }
+
+    char in;
     bool header = false;
     while ((in = getc(help)) != EOF)
     {
