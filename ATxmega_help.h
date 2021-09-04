@@ -4,7 +4,7 @@
  * Header to help configuring xMega controllers
  *
  * Created: 04.08.2021 16:39:57
- *  Author: Tjark Gaudichs
+ *  Author: Tjark Gaudich
  */
 
 #ifndef ATxmega_help_H_

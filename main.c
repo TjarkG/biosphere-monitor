@@ -9,6 +9,7 @@
 #ifndef __AVR_ATxmega16A4U__
 #define __AVR_ATxmega16A4U__
 #endif
+
 #define F_CPU 16000000UL
 #define BSCALE  -5
 #define BSEL    246
@@ -66,7 +67,7 @@ int main(void)
 
     while (1)
     {
-        if(!(PORTD.IN & (1<<1)))
+        if(!(PORTD.IN & (1<<0)))
         {
             //PORTC.DIRCLR = 0x08;
             //sleep_enable();
