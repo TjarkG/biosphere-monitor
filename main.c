@@ -162,7 +162,15 @@ int selfDiagnosse(void)     //returns self diagnosis errorcode
 {
     if(getOutsideTemp() == 0 || getOutsideTemp() > 100)
     {
-        return -1;
+        return 1;
+    }
+    if(getBmeTemp() == 0 || getBmeTemp()  > 850)
+    {
+        return 2;
+    }
+    if(getBmePress() < 300 || getBmePress()  > 1100)
+    {
+        return 3;
     }
     return 0;
 }
