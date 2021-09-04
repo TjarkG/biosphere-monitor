@@ -15,7 +15,7 @@ struct reading
     time_t timeRead;                //UNIX Timestamp of reading beginning
     unsigned char light;            //outside illuminance       in ?
     unsigned char temperaturOut;    //outside Temperatur        in °C*2
-    unsigned char temperaturIn;     //inside Temperatur         in °C*2
+    unsigned short temperaturIn;     //inside Temperatur        in °C*10
     unsigned int pressure;          //inside Pressur            in hPa
     unsigned char humidityAir;      //inside relativ humidity   in %
     signed char humiditySoil;       //inside soil humidity      in %, 0 without a Sensor

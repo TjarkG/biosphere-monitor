@@ -30,11 +30,13 @@
 #include "ATxmega_help.h"
 #include "itoa.h"
 #include "reading.h"
+#include "bme.h"
 
 uint32_t timeCounter = 0;
 volatile bool takeMessurment = false;
 volatile bool instruct = false;
 char uartBuf[16];
+char sensType;
 unsigned int  EEMEM intervall = 600;     //sampling intervall in Seconds
 unsigned char EEMEM soilSensor = 0;      //is a Soil Sensor connected (bool)
 
@@ -59,6 +61,7 @@ int main(void)
     RTC_INIT;
     ADC0_INIT;
     UART0INIT;
+    sensType = bmeInit();
     sei();
     set_sleep_mode(SLEEP_MODE_EXT_STANDBY);
     uartWriteString("BT\r\n");
@@ -125,6 +128,8 @@ struct reading getReading(void)     //reuturns fresh data
     struct reading in = {0,0,0,0,0,0,0,0};
     in.timeRead = timeCounter;
     in.temperaturOut = getOutsideTemp();
+    if(sensType > 0)
+        in.temperaturIn = getBmeTemp();
     return in;
 }
 
