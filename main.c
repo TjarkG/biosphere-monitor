@@ -129,7 +129,10 @@ struct reading getReading(void)     //reuturns fresh data
     in.timeRead = timeCounter;
     in.temperaturOut = getOutsideTemp();
     if(sensType > 0)
+    {
         in.temperaturIn = getBmeTemp();
+        in.pressure = getBmePress();
+    }
     return in;
 }
 
