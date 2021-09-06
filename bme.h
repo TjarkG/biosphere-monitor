@@ -101,6 +101,8 @@ void bmeWriteRegister(const char reg, const unsigned char data)
 {
     bmeSelectReg(reg);
     while(!(TWIC.MASTER.STATUS & TWI_MASTER_WIF_bm));
+    TWIC.MASTER.DATA = data;
+    while(!(TWIC.MASTER.STATUS & TWI_MASTER_WIF_bm));
     TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
 }
 
