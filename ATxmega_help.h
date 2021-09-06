@@ -11,6 +11,7 @@
 #define ATxmega_help_H_
 
 #include <avr/io.h>
+#include "itoa.h"
 
 #define SET_CLK_32MHZ            \
     CCP = 0xD8;                  \
@@ -63,6 +64,14 @@ void uartWriteString(const char *in)
         while(!(USARTC0.STATUS & USART_DREIF_bm));
         USARTC0.DATA = *in++;
     }
+}
+
+void uartWriteIntLine(long in)
+{
+    char tmp[12];
+    _itoa(in,tmp);
+    uartWriteString(tmp);
+    uartWriteString("\r\n");
 }
 
 #endif /* ATxmega_help_H_ */

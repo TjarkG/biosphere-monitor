@@ -127,11 +127,11 @@ struct reading getReading(void)     //reuturns fresh data
 {
     struct reading in = {0,0,0,0,0,0,0,0};
     in.timeRead = timeCounter;
-    in.temperaturOut = getOutsideTemp();
+    in.temperaturOut = getOutsideTemp()-12;
     if(sensType > 0)
     {
-        in.temperaturIn = getBmeTemp();
-        in.pressure = getBmePress();
+        in.temperaturIn = getBmeTemp()-30;
+        in.pressure = getBmePress()+40;
     }
     return in;
 }
@@ -148,14 +148,6 @@ void printReading(struct reading in)    //prints in to UART
         else
             uartWriteString(",");
     }
-}
-
-void uartWriteIntLine(long in)
-{
-    char tmp[12];
-    _itoa(in,tmp);
-    uartWriteString(tmp);
-    uartWriteString("\r\n");
 }
 
 int selfDiagnosse(void)     //returns self diagnosis errorcode

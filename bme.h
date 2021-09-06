@@ -16,6 +16,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include "ATxmega_help.h"
 
 long t_fine;    //Fine Temperatur for Pressur Compensation
 
@@ -117,26 +118,32 @@ void bmeSelectReg(const char reg)
 unsigned short getBmeTemp(void)  //returns BME Temperatur in °C*10
 {
     long data = 0;
-    bmeWriteRegister(0xF4, 0x01 | (0b0011 << 2) | (0b0001 << 5));
-    _delay_ms(20);
+    bmeWriteRegister(0xF4, 0x01 | (0b0001 << 2) | (0b0001 << 5));
+    _delay_ms(30);
     data |= ((long)bmeReadRegister(0xFA) << 12);
     data |= ((long)bmeReadRegister(0xFB) << 8);
     data |= ((long)bmeReadRegister(0xFC) << 0);
+    bmeWriteRegister(0xF4, 0);
+    //uartWriteIntLine(data);
     long var1, var2;
     var1  = ((((data>>3) - ((long)dig.T1<<1))) * ((long)dig.T2)) >> 11;
     var2  = (((((data>>4) - ((long)dig.T1)) * ((data>>4) - ((long)dig.T1))) >> 12) * ((long)dig.T3)) >> 14;
     t_fine = var1 + var2;
-    return ((t_fine * 5 + 128) >> 8)/10;
+    //uartWriteIntLine(((t_fine * 5 + 128) >> 8)/10);
+    //uartWriteIntLine(t_fine/512);
+    //return ((t_fine * 5 + 128) >> 8)/10;
+    return (t_fine/512);
 }
 
 unsigned int getBmePress(void)  //returns BME Pressure in hPa
 {
     long data = 0;
-    bmeWriteRegister(0xF4, 0x01 | (0b0011 << 2) | (0b0001 << 5));
-    _delay_ms(20);
+    bmeWriteRegister(0xF4, 0x01 | (0b0001 << 2) | (0b0001 << 5));
+    _delay_ms(30);
     data |= ((long)bmeReadRegister(0xF7) << 12);
     data |= ((long)bmeReadRegister(0xF8) << 8);
     data |= ((long)bmeReadRegister(0xF9) << 0);
+    bmeWriteRegister(0xF4, 0);
     long var1, var2;
     unsigned long p;
     var1 = (((long)t_fine)>>1) - (long)64000;
