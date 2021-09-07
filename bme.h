@@ -118,8 +118,10 @@ void bmeSelectReg(const char reg)
 unsigned short getBmeTemp(void)  //returns BME Temperatur in °C*10
 {
     long data = 0;
-    bmeWriteRegister(0xF4, 0x01 | (0b0001 << 2) | (0b0001 << 5));
-    _delay_ms(30);
+    bmeWriteRegister(0xE0, 0xB6);
+    _delay_ms(50);
+    bmeWriteRegister(0xF4, 0x01 | (0b0011 << 2) | (0b0011 << 5));
+    _delay_ms(50);
     data |= ((long)bmeReadRegister(0xFA) << 12);
     data |= ((long)bmeReadRegister(0xFB) << 8);
     data |= ((long)bmeReadRegister(0xFC) << 0);
@@ -138,8 +140,10 @@ unsigned short getBmeTemp(void)  //returns BME Temperatur in °C*10
 unsigned int getBmePress(void)  //returns BME Pressure in hPa
 {
     long data = 0;
-    bmeWriteRegister(0xF4, 0x01 | (0b0001 << 2) | (0b0001 << 5));
-    _delay_ms(30);
+    bmeWriteRegister(0xE0, 0xB6);
+    _delay_ms(50);
+    bmeWriteRegister(0xF4, 0x01 | (0b0011 << 2) | (0b0011 << 5));
+    _delay_ms(50);
     data |= ((long)bmeReadRegister(0xF7) << 12);
     data |= ((long)bmeReadRegister(0xF8) << 8);
     data |= ((long)bmeReadRegister(0xF9) << 0);
