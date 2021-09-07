@@ -50,7 +50,7 @@
     PMIC.CTRL = PMIC_LOLVLEN_bm
 
 #define ADC0_INIT                                                               \
-    ADCA.CTRLB = ADC_RESOLUTION_8BIT_gc;                                        \
+    ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc;                                       \
     ADCA.REFCTRL = ADC_REFSEL_INT1V_gc;                                         \
     ADCA.PRESCALER = ADC_PRESCALER_DIV32_gc;                                    \
     ADCA.CTRLA = ADC_ENABLE_bm;                                                 \
@@ -66,7 +66,7 @@ void uartWriteString(const char *in)
     }
 }
 
-void uartWriteIntLine(long in)
+void uartWriteIntLine(unsigned long in)
 {
     char tmp[12];
     _itoa(in,tmp);

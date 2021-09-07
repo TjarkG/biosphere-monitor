@@ -86,6 +86,21 @@ int main(int argc, char *argv[])
             setCommand(buf);
             printf("Soil Sensor set:%s Soil Sensor vertified:%ld\n",argv[i]+2,getCommand("SG"));
         }
+        else if(strncmp(argv[i], "-ct", 3) == 0)
+        {
+            int tIn = atoi(argv[i]+3);
+
+            setCommand("CR");
+            getUartLine(buf);
+            struct reading in = getReading(buf);
+
+            int offOld = getCommand("OGT");
+
+            int off = tIn*5 - (in.temperaturOut-offOld+128) + 128;
+            sprintf(buf, "OST%d",off);
+            setCommand(buf);
+            printf("Temperatur set:%d°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn, offOld-128, off-128, getCommand("OGT")-128);
+        }
         i++;
     }
 }
@@ -190,7 +205,7 @@ void storeReadings(void)
         strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
         fprintf(out, "%s,%d,%2.1f,%2.1f,%d,%d,%d,%d\n",\
-        tmStr, in.light, in.temperaturOut/2.0, in.temperaturIn/10.0, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
+        tmStr, in.light, in.temperaturOut/5.0, in.temperaturIn/10.0, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
         lnCnt++;
     }
     fclose(out);
@@ -205,7 +220,7 @@ void printReading(FILE *ofp, struct reading in)
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
     fprintf(ofp, "Current Reading: Time: %s UTC Outside: %dlux %2.1f°C Inside: %2.1f°C %dhPa",\
-    tmStr, in.light, (in.temperaturOut/2.0), (in.temperaturIn/10.0), in.pressure);
+    tmStr, in.light, (in.temperaturOut/5.0), (in.temperaturIn/10.0), in.pressure);
 
     if(in.humidityAir != 0)
         fprintf(ofp, ", Air: %d%%RH", in.humidityAir);

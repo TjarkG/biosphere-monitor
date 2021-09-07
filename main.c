@@ -13,7 +13,7 @@
 #define F_CPU 16000000UL
 #define BSCALE  -5
 #define BSEL    246
-#define ADCN    32       //Number of ADC readings taken per Messurment
+#define ADCN    512       //Number of ADC readings taken per Messurment
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -39,19 +39,21 @@ char uartBuf[16];
 char sensType;
 unsigned int  EEMEM intervall = 600;     //sampling intervall in Seconds
 unsigned char EEMEM soilSensor = 0;      //is a Soil Sensor connected (bool)
+unsigned char EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
 
 #define setIntervall(new)   eeprom_update_word(&intervall, new)
 #define getIntervall        eeprom_read_word(&intervall)
 #define setSoilSensor(new)  eeprom_update_byte(&soilSensor, new)
 #define hasSoilSensor       eeprom_read_byte(&soilSensor)
+#define settOutOff(new)     eeprom_update_byte(&tOutOff, new)
+#define gettOutOff          (eeprom_read_byte(&tOutOff))
 
 struct reading getReading(void);
 void printReading(struct reading in);
 int selfDiagnosse(void);
-void linSort(unsigned int* data, unsigned char n);
-unsigned int getMedian(unsigned int *rd, const unsigned char n);
+void linSort(unsigned int* data, unsigned int n);
+unsigned int getMedian(unsigned int *rd, const unsigned int n);
 unsigned char getOutsideTemp(void);
-void uartWriteIntLine(long in);
 
 int main(void)
 {
@@ -104,6 +106,10 @@ int main(void)
                 }
                 uartWriteString("EOF\r\n");
             }
+            else if(strncmp(uartBuf,"OGT",3) == 0)
+                uartWriteIntLine(gettOutOff);
+            else if(strncmp(uartBuf,"OST",3) == 0)
+                settOutOff(atoi(uartBuf+3));
             else if(strncmp(uartBuf,"IG",2) == 0)
                 uartWriteIntLine(getIntervall);
             else if(strncmp(uartBuf,"IS",2) == 0)
@@ -127,7 +133,7 @@ struct reading getReading(void)     //reuturns fresh data
 {
     struct reading in = {0,0,0,0,0,0,0,0};
     in.timeRead = timeCounter;
-    in.temperaturOut = getOutsideTemp()-12;
+    in.temperaturOut = getOutsideTemp()+gettOutOff-128;
     if(sensType > 0)
     {
         in.temperaturIn = getBmeTemp();
@@ -152,7 +158,7 @@ void printReading(struct reading in)    //prints in to UART
 
 int selfDiagnosse(void)     //returns self diagnosis errorcode
 {
-    if(getOutsideTemp() == 0 || getOutsideTemp() > 100)
+    if(getOutsideTemp() == 0 || getOutsideTemp() > 500)
     {
         return 1;
     }
@@ -167,10 +173,10 @@ int selfDiagnosse(void)     //returns self diagnosis errorcode
     return 0;
 }
 
-void linSort(unsigned int* data, unsigned char n)       //sorts data till n ascending
+void linSort(unsigned int* data, unsigned int n)       //sorts data till n ascending
 {
-	for (unsigned char i = 0; i < n; i++)
-		for (unsigned char j = 0; j < n-i-1; j++)
+	for (unsigned int i = 0; i < n; i++)
+		for (unsigned int j = 0; j < n-i-1; j++)
 			if (data[j] > data[j + 1])
 			{
 				short temp = data[j];
@@ -179,16 +185,15 @@ void linSort(unsigned int* data, unsigned char n)       //sorts data till n asce
 			}
 }
 
-unsigned int getMedian(unsigned int *rd, const unsigned char n)   //returns Median of the Values in rd to rd[n]
+unsigned int getMedian(unsigned int *rd, const unsigned int n)   //returns Median of the Values in rd to rd[n]
 {
 	linSort(rd, n);
 	return n % 2 ? rd[n / 2] : (rd[n / 2 - 1] + rd[n / 2]) / 2;
 }
 
-unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*2
+unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*5
 {
     ADCA.CTRLA = ADC_ENABLE_bm;
-    _delay_ms(2);
     unsigned int tempArr[ADCN];
     for(int i = 0; i<ADCN; i++)
 	{
@@ -196,10 +201,9 @@ unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*2
         while(!(ADCA.CH0.INTFLAGS & ADC_CH_CHIF_bm));
         ADCA.CH0.INTFLAGS = ADC_CH_CHIF_bm;
         tempArr[i] = ADCA.CH0.RES;
-        _delay_ms(2);
 	}
     ADCA.CTRLA &= ~ADC_ENABLE_bm;
-    return (getMedian(tempArr, ADCN)*25)/32;
+    return (getMedian(tempArr, ADCN)/8);
 }
 
 ISR(USARTC0_RXC_vect)       //UART ISR

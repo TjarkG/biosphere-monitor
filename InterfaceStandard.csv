@@ -10,3 +10,5 @@ Soil Sensor set,SS,bool: has Sensor,non
 Time get,TG,non,UNIX Time Code
 Time set,TS,UNIX Time Code,non
 Booted,BT,non,non
+Temperatur Offset Set,OST,Offset (°C*5+128),non
+Temperatur Offset Get,OGT,non,Offset (°C*5+128)
