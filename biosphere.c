@@ -99,7 +99,14 @@ int main(int argc, char *argv[])
             int off = tIn*5 - (in.temperaturOut-offOld+128) + 128;
             sprintf(buf, "OST%d",off);
             setCommand(buf);
-            printf("Temperatur set:%d°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn, offOld-128, off-128, getCommand("OGT")-128);
+            printf("Outside Temperatur set:%d°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn, offOld-128, off-128, getCommand("OGT")-128);
+
+            offOld = getCommand("OGI");
+
+            off = tIn*5 - (in.temperaturIn-(2*(offOld+128))) + 128;
+            sprintf(buf, "OSI%d",off);
+            setCommand(buf);
+            printf("Inside Temperatur set:%d°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn, offOld-128, off-128, getCommand("OGI")-128);
         }
         i++;
     }

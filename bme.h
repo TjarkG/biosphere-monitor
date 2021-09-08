@@ -98,6 +98,28 @@ unsigned char bmeReadRegister(const char reg)
     return data;
 }
 
+long bmeRead20Bite(const char reg)
+{
+    long data = 0;
+    bmeSelectReg(reg);
+    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
+
+    TWIC.MASTER.ADDR = (0x76 << 1) | 0x01;
+    while(!((TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm)));
+
+    while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm));
+    data |= ((unsigned long)TWIC.MASTER.DATA << 12) & 0x0F0000;
+    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
+    while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm));
+    data |= ((unsigned long)TWIC.MASTER.DATA << 8) & 0x00FF00;
+    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
+    while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm));
+    data |= ((unsigned long)TWIC.MASTER.DATA << 0) & 0x0000FF;
+
+    TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
+    return data;
+}
+
 void bmeWriteRegister(const char reg, const unsigned char data)
 {
     bmeSelectReg(reg);
@@ -119,21 +141,16 @@ unsigned short getBmeTemp(void)  //returns BME Temperatur in °C*10
 {
     long data = 0;
     bmeWriteRegister(0xE0, 0xB6);
-    _delay_ms(50);
-    bmeWriteRegister(0xF4, 0x01 | (0b0011 << 2) | (0b0011 << 5));
-    _delay_ms(50);
-    data |= ((long)bmeReadRegister(0xFA) << 12);
-    data |= ((long)bmeReadRegister(0xFB) << 8);
-    data |= ((long)bmeReadRegister(0xFC) << 0);
+    _delay_ms(25);
+    bmeWriteRegister(0xF4, 0x01 | (0b0001 << 2) | (0b0001 << 5));
+    _delay_ms(20);
+    data = bmeRead20Bite(0xFA);
+
     bmeWriteRegister(0xF4, 0);
-    //uartWriteIntLine(data);
     long var1, var2;
     var1  = ((((data>>3) - ((long)dig.T1<<1))) * ((long)dig.T2)) >> 11;
     var2  = (((((data>>4) - ((long)dig.T1)) * ((data>>4) - ((long)dig.T1))) >> 12) * ((long)dig.T3)) >> 14;
     t_fine = var1 + var2;
-    //uartWriteIntLine(((t_fine * 5 + 128) >> 8)/10);
-    //uartWriteIntLine(t_fine/512);
-    //return ((t_fine * 5 + 128) >> 8)/10;
     return (t_fine/512);
 }
 

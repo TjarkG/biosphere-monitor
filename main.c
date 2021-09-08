@@ -40,6 +40,7 @@ char sensType;
 unsigned int  EEMEM intervall = 600;     //sampling intervall in Seconds
 unsigned char EEMEM soilSensor = 0;      //is a Soil Sensor connected (bool)
 unsigned char EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
+unsigned char EEMEM tInOff = 0;          //Inside Temperature Offset in C*5 +128
 
 #define setIntervall(new)   eeprom_update_word(&intervall, new)
 #define getIntervall        eeprom_read_word(&intervall)
@@ -47,6 +48,8 @@ unsigned char EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +12
 #define hasSoilSensor       eeprom_read_byte(&soilSensor)
 #define settOutOff(new)     eeprom_update_byte(&tOutOff, new)
 #define gettOutOff          (eeprom_read_byte(&tOutOff))
+#define settInOff(new)     eeprom_update_byte(&tInOff, new)
+#define gettInOff          (eeprom_read_byte(&tInOff))
 
 struct reading getReading(void);
 void printReading(struct reading in);
@@ -110,6 +113,10 @@ int main(void)
                 uartWriteIntLine(gettOutOff);
             else if(strncmp(uartBuf,"OST",3) == 0)
                 settOutOff(atoi(uartBuf+3));
+            else if(strncmp(uartBuf,"OGI",3) == 0)
+                uartWriteIntLine(gettInOff);
+            else if(strncmp(uartBuf,"OSI",3) == 0)
+                settInOff(atoi(uartBuf+3));
             else if(strncmp(uartBuf,"IG",2) == 0)
                 uartWriteIntLine(getIntervall);
             else if(strncmp(uartBuf,"IS",2) == 0)
@@ -136,7 +143,7 @@ struct reading getReading(void)     //reuturns fresh data
     in.temperaturOut = getOutsideTemp();
     if(sensType > 0)
     {
-        in.temperaturIn = getBmeTemp();
+        in.temperaturIn = getBmeTemp()+(2*(gettOutOff-128));
         in.pressure = getBmePress();
     }
     return in;
