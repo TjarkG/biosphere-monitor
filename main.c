@@ -133,7 +133,7 @@ struct reading getReading(void)     //reuturns fresh data
 {
     struct reading in = {0,0,0,0,0,0,0,0};
     in.timeRead = timeCounter;
-    in.temperaturOut = getOutsideTemp()+gettOutOff-128;
+    in.temperaturOut = getOutsideTemp();
     if(sensType > 0)
     {
         in.temperaturIn = getBmeTemp();
@@ -158,18 +158,12 @@ void printReading(struct reading in)    //prints in to UART
 
 int selfDiagnosse(void)     //returns self diagnosis errorcode
 {
-    if(getOutsideTemp() == 0 || getOutsideTemp() > 500)
-    {
+    if(getOutsideTemp() == 0 || getOutsideTemp() > 250)
         return 1;
-    }
     if(getBmeTemp() == 0 || getBmeTemp()  > 850)
-    {
         return 2;
-    }
     if(getBmePress() < 300 || getBmePress()  > 1100)
-    {
         return 3;
-    }
     return 0;
 }
 
@@ -203,7 +197,7 @@ unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*5
         tempArr[i] = ADCA.CH0.RES;
 	}
     ADCA.CTRLA &= ~ADC_ENABLE_bm;
-    return (getMedian(tempArr, ADCN)/8);
+    return (getMedian(tempArr, ADCN)/8)+gettOutOff-128;
 }
 
 ISR(USARTC0_RXC_vect)       //UART ISR
