@@ -166,7 +166,15 @@ void printHelp(void)
 
 struct reading getReading(char *buf)
 {
-    struct reading in = {0, 0, 0, 0, 0, 0, -1, -1};
+    struct reading in;
+    int i, count;
+    for (i=0, count=0; buf[i]; i++)     //count number of ocurences of ',' in input String to prevent memory acces errors
+        count += (buf[i] == ',');
+    if(count != 7)
+    {
+        fprintf(stderr, "Error getting Reading from input \"%s\" only %d of 7 ',' found\n",buf, count);
+        return in;
+    }
     char *ptr = strtok(buf, ",\n");
     in.timeRead = atol(ptr);
     ptr = strtok(NULL, ",\n");
