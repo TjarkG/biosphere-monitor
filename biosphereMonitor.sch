@@ -24198,6 +24198,20 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="53.34" y1="-10.16" x2="53.34" y2="-12.7" width="0.1524" layer="91"/>
 </segment>
 </net>
+<net name="LIGHT" class="0">
+<segment>
+<pinref part="IC1" gate="G$1" pin="PA1"/>
+<wire x1="27.94" y1="22.86" x2="45.72" y2="22.86" width="0.1524" layer="91"/>
+<label x="30.48" y="22.86" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="SOIL" class="0">
+<segment>
+<pinref part="IC1" gate="G$1" pin="PA2"/>
+<wire x1="27.94" y1="25.4" x2="45.72" y2="25.4" width="0.1524" layer="91"/>
+<label x="30.48" y="25.4" size="1.778" layer="95"/>
+</segment>
+</net>
 </nets>
 </sheet>
 <sheet>

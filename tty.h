@@ -89,7 +89,7 @@ void getUartLine(char *buf)     //puts on line of UART input in buf
     unsigned char *p;
     int rdlen;
 
-    rdlen = read(fd, buf, 32);
+    rdlen = read(fd, buf, 64);
     if (rdlen > 0)
         buf[rdlen] = 0;
     else if (rdlen < 0)

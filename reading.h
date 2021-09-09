@@ -13,12 +13,12 @@
 struct reading
 {
     time_t timeRead;                //UNIX Timestamp of reading beginning
-    unsigned char light;            //outside illuminance       in ?
+    unsigned int light;             //outside illuminance       in lux
     unsigned char temperaturOut;    //outside Temperatur        in °C*5
-    unsigned short temperaturIn;     //inside Temperatur        in °C*10
+    unsigned int temperaturIn;      //inside Temperatur         in °C*10
     unsigned int pressure;          //inside Pressur            in hPa
     unsigned char humidityAir;      //inside relativ humidity   in %
-    signed char humiditySoil;       //inside soil humidity      in %, 0 without a Sensor
+    unsigned char humiditySoil;     //inside soil humidity      in %, 0 without a Sensor
     int iaq;                        //Air Quality Index         in IAQ, 0 without Sensor
 }; 
 

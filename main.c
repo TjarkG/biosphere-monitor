@@ -13,7 +13,7 @@
 #define F_CPU 16000000UL
 #define BSCALE  -5
 #define BSEL    246
-#define ADCN    512       //Number of ADC readings taken per Messurment
+#define ADCN    256       //Number of ADC readings taken per Messurment
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -40,7 +40,7 @@ char sensType;
 unsigned int  EEMEM intervall = 600;     //sampling intervall in Seconds
 unsigned char EEMEM soilSensor = 0;      //is a Soil Sensor connected (bool)
 unsigned char EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
-unsigned int  EEMEM tInOff = 0;          //Inside Temperature Offset in C*5 +128
+unsigned char EEMEM tInOff = 0;          //Inside Temperature Offset in C*5 +128
 
 #define setIntervall(new)   eeprom_update_word(&intervall, new)
 #define getIntervall        eeprom_read_word(&intervall)
@@ -48,8 +48,8 @@ unsigned int  EEMEM tInOff = 0;          //Inside Temperature Offset in C*5 +128
 #define hasSoilSensor       eeprom_read_byte(&soilSensor)
 #define settOutOff(new)     eeprom_update_byte(&tOutOff, new)
 #define gettOutOff          (eeprom_read_byte(&tOutOff))
-#define settInOff(new)     eeprom_update_word(&tInOff, new)
-#define gettInOff          (eeprom_read_word(&tInOff))
+#define settInOff(new)     eeprom_update_byte(&tInOff, new)
+#define gettInOff          (eeprom_read_byte(&tInOff))
 
 struct reading getReading(void);
 void printReading(struct reading in);
@@ -57,6 +57,8 @@ int selfDiagnosse(void);
 void linSort(unsigned int* data, unsigned int n);
 unsigned int getMedian(unsigned int *rd, const unsigned int n);
 unsigned char getOutsideTemp(void);
+unsigned int getLight(void);
+unsigned char getSoilHum(void);
 
 int main(void)
 {
@@ -141,9 +143,11 @@ struct reading getReading(void)     //reuturns fresh data
     struct reading in = {0,0,0,0,0,0,0,0};
     in.timeRead = timeCounter;
     in.temperaturOut = getOutsideTemp();
+    in.light = getLight();
+    in.humiditySoil = getSoilHum();
     if(sensType > 0)
     {
-        in.temperaturIn = getBmeTemp()+(2*(gettInOff-128));
+        in.temperaturIn = getBmeTemp();
         in.pressure = getBmePress();
     }
     return in;
@@ -205,6 +209,36 @@ unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*5
 	}
     ADCA.CTRLA &= ~ADC_ENABLE_bm;
     return (getMedian(tempArr, ADCN)/8)+gettOutOff-128;
+}
+
+unsigned int getLight(void)  //returns iluminace in lux
+{
+    ADCA.CTRLA = ADC_ENABLE_bm;
+    unsigned int tempArr[ADCN];
+    for(int i = 0; i<ADCN; i++)
+	{
+		ADCA.CH1.CTRL |= ADC_CH_START_bm;
+        while(!(ADCA.CH1.INTFLAGS & ADC_CH_CHIF_bm));
+        ADCA.CH1.INTFLAGS = ADC_CH_CHIF_bm;
+        tempArr[i] = ADCA.CH1.RES;
+	}
+    ADCA.CTRLA &= ~ADC_ENABLE_bm;
+    return getMedian(tempArr, ADCN);
+}
+
+unsigned char getSoilHum(void)  //returns Soil Humidity in %
+{
+    ADCA.CTRLA = ADC_ENABLE_bm;
+    unsigned int tempArr[ADCN];
+    for(int i = 0; i<ADCN; i++)
+	{
+		ADCA.CH2.CTRL |= ADC_CH_START_bm;
+        while(!(ADCA.CH2.INTFLAGS & ADC_CH_CHIF_bm));
+        ADCA.CH2.INTFLAGS = ADC_CH_CHIF_bm;
+        tempArr[i] = ADCA.CH2.RES;
+	}
+    ADCA.CTRLA &= ~ADC_ENABLE_bm;
+    return getMedian(tempArr, ADCN);
 }
 
 ISR(USARTC0_RXC_vect)       //UART ISR

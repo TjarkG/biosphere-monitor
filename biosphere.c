@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     char i = 2;
     while (--argc > 0)
     {
-        unsigned char buf[32];
+        unsigned char buf[64];
         if(strncmp(argv[i], "-h", 2) == 0)
             printHelp();
         else if(strncmp(argv[i], "-r", 2) == 0)
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 
             offOld = getCommand("OGI");
 
-            off = tIn*5 - (in.temperaturIn-(2*(offOld+128))) + 128;
+            off = tIn*5 - (in.temperaturIn-offOld+128) + 128;
             sprintf(buf, "OSI%d",off);
             setCommand(buf);
             printf("Inside Temperatur set:%d°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn, offOld-128, off-128, getCommand("OGI")-128);

@@ -62,3 +62,7 @@ include/*
 #libreOffice Stuff
 *.csv#
 *.ods#
+
+#Egale
+*.s#*
+*.b#*
