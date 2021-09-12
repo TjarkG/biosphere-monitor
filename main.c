@@ -54,7 +54,7 @@ unsigned char EEMEM tInOff = 0;          //Inside Temperature Offset in C*5 +128
 struct reading getReading(void);
 void printReading(struct reading in);
 int selfDiagnosse(void);
-void linSort(unsigned int* data, unsigned int n);
+void quicksort(unsigned int *data, unsigned int n);
 unsigned int getMedian(unsigned int *rd, const unsigned int n);
 unsigned char getOutsideTemp(void);
 unsigned int getLight(void);
@@ -178,21 +178,33 @@ int selfDiagnosse(void)     //returns self diagnosis errorcode
     return 0;
 }
 
-void linSort(unsigned int* data, unsigned int n)       //sorts data till n ascending
+void quicksort(unsigned int *data, unsigned int n)       //sorts data till n ascending
 {
-	for (unsigned int i = 0; i < n; i++)
-		for (unsigned int j = 0; j < n-i-1; j++)
-			if (data[j] > data[j + 1])
-			{
-				short temp = data[j];
-				data[j] = data[j + 1];
-				data[j + 1] = temp;
-			}
+  if (n < 2) return;
+ 
+  int pivot = data[n / 2];
+ 
+  int i, j;
+  for (i = 0, j = n - 1; ; i++, j--)
+  {
+    while (data[i] < pivot) i++;
+    while (data[j] > pivot) j--;
+ 
+    if (i >= j) break;
+ 
+    int temp = data[i];
+    data[i]     = data[j];
+    data[j]     = temp;
+  }
+ 
+  quicksort(data, i);
+  quicksort(data + i, n - i);
 }
 
 unsigned int getMedian(unsigned int *rd, const unsigned int n)   //returns Median of the Values in rd to rd[n]
 {
-	linSort(rd, n);
+	//linSort(rd, n);
+    quicksort(rd, n);
 	return n % 2 ? rd[n / 2] : (rd[n / 2 - 1] + rd[n / 2]) / 2;
 }
 
