@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include "ATxmega_help.h"
 #include "itoa.h"
-#include "reading.h"
+#include "../reading.h"
 #include "bme.h"
 
 uint32_t timeCounter = 0;

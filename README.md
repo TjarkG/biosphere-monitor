@@ -12,3 +12,8 @@ which can ocure in any order, listed below:
 * -t run self test
 * -g enable (1) or disable (0) Soil Sensor, -g? to show current state
 * -ct set current ambient Temperature(°C), used for Offset Calibration
+
+Commands to compile the Current Software after cloning:
+
+* Command Line Tool: 'cc PC/biosphere.c -o PC/biosphere; ./PC/biosphere /dev/ttyUSB0 -r'
+* Microcontroller: make program -C ./Microcontroller

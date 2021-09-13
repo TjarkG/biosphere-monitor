@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <string.h>
-#include "reading.h"
+#include "../reading.h"
 #include "tty.h"
 
 #define HELP "README.md"          //Name of helpfile
