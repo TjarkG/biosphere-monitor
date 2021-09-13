@@ -15,5 +15,5 @@ which can ocure in any order, listed below:
 
 Commands to compile the Current Software after cloning:
 
-* Command Line Tool: 'cc PC/biosphere.c -o PC/biosphere; ./PC/biosphere /dev/ttyUSB0 -r'
-* Microcontroller: make program -C ./Microcontroller
+* Command Line Tool: `cc PC/biosphere.c -o PC/biosphere; ./PC/biosphere /dev/ttyUSB0 -r`
+* Microcontroller: `make program -C ./Microcontroller`
