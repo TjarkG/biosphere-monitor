@@ -17,4 +17,4 @@ Commands to compile the Current Software after cloning:
 
 * Command Line Tool: `cc PC/biosphere.c -o PC/biosphere; ./PC/biosphere /dev/ttyUSB0 -r`
 * Microcontroller: `make program -C ./Microcontroller`
-* Function Calculator: `cc Calculator/Calculator.c -o Calculator/calc; ./Calculator/calc Calculator/in.csv`
+* Function Calculator: `cc Calculator/Calculator.c -o Calculator/calc -lm; ./Calculator/calc Calculator/in.csv`
