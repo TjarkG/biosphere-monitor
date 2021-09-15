@@ -121,7 +121,7 @@ void gauss_eliminate(struct point *p, double *x, int n)
 #define A(y, x) (*mat_elem(a, y, x, n))
 
     double a[n * n];
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)     //safe all needed exponents
     {
         for (int j = 0; j < n; j++)
         {
@@ -130,7 +130,7 @@ void gauss_eliminate(struct point *p, double *x, int n)
         }
     }
 
-	int i, j, col, row, max_row,dia;
+	int i, j, col, row, max_row,dia;    //Perform Gaussia Elimination
 	double max, tmp;
  
 	for (dia = 0; dia < n; dia++) {
