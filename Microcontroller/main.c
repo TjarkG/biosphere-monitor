@@ -13,7 +13,7 @@
 #define F_CPU 16000000UL
 #define BSCALE  -5
 #define BSEL    246
-#define ADCN    256       //Number of ADC readings taken per Messurment
+#define ADCN    512       //Number of ADC readings taken per Messurment
 
 #include <avr/io.h>
 #include <avr/interrupt.h>

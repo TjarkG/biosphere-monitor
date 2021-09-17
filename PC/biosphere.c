@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
         }
         else if(strncmp(argv[i], "-ct", 3) == 0)
         {
-            int tIn = atoi(argv[i]+3);
+            int tIn = atof(argv[i]+3)*5;
 
             setCommand("CR");
             getUartLine(buf);
@@ -96,17 +96,17 @@ int main(int argc, char *argv[])
 
             int offOld = getCommand("OGT");
 
-            int off = tIn*5 - (in.temperaturOut-offOld+128) + 128;
+            int off = tIn - (in.temperaturOut-offOld+128) + 128;
             sprintf(buf, "OST%d",off);
             setCommand(buf);
-            printf("Outside Temperatur set:%d°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn, offOld-128, off-128, getCommand("OGT")-128);
+            printf("Outside Temperatur set:%2.1f°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn/5.0, offOld-128, off-128, getCommand("OGT")-128);
 
             offOld = getCommand("OGI");
 
-            off = tIn*5 - (in.temperaturIn-offOld+128) + 128;
+            off = tIn - (in.temperaturIn-offOld+128) + 128;
             sprintf(buf, "OSI%d",off);
             setCommand(buf);
-            printf("Inside Temperatur set:%d°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn, offOld-128, off-128, getCommand("OGI")-128);
+            printf("Inside Temperatur set:%2.1f°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn/5.0, offOld-128, off-128, getCommand("OGI")-128);
         }
         i++;
     }
