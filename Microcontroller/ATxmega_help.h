@@ -51,11 +51,11 @@
 
 #define ADC0_INIT                                                               \
     ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc;                                       \
-    ADCA.REFCTRL = ADC_REFSEL_INT1V_gc;                                         \
+    ADCA.REFCTRL = ADC_REFSEL_AREFA_gc;                                         \
     ADCA.PRESCALER = ADC_PRESCALER_DIV32_gc;                                    \
     ADCA.CTRLA = ADC_ENABLE_bm;                                                 \
     ADCA.CH0.CTRL = ADC_CH_INPUTMODE0_bm;                                       \
-    ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN0_gc;                                   \
+    ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN3_gc;                                   \
     ADCA.CH1.CTRL = ADC_CH_INPUTMODE0_bm;                                       \
     ADCA.CH1.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc;                                   \
     ADCA.CH2.CTRL = ADC_CH_INPUTMODE0_bm;                                       \
