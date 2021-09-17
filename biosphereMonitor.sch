@@ -24475,9 +24475,9 @@ Source: http://optoelectronics.perkinelmer.com/content/Datasheets/DTS_Photocells
 </net>
 <net name="T_OUT" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="PA0"/>
-<wire x1="45.72" y1="20.32" x2="27.94" y2="20.32" width="0.1524" layer="91"/>
-<label x="30.48" y="20.32" size="1.778" layer="95"/>
+<pinref part="IC1" gate="G$1" pin="PA3"/>
+<wire x1="27.94" y1="27.94" x2="45.72" y2="27.94" width="0.1524" layer="91"/>
+<label x="30.48" y="27.94" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="USB_RX" class="0">
@@ -24531,6 +24531,13 @@ Source: http://optoelectronics.perkinelmer.com/content/Datasheets/DTS_Photocells
 <pinref part="IC1" gate="G$1" pin="PA2"/>
 <wire x1="27.94" y1="25.4" x2="45.72" y2="25.4" width="0.1524" layer="91"/>
 <label x="30.48" y="25.4" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="2.5V" class="0">
+<segment>
+<pinref part="IC1" gate="G$1" pin="PA0"/>
+<wire x1="45.72" y1="20.32" x2="27.94" y2="20.32" width="0.1524" layer="91"/>
+<label x="30.48" y="20.32" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
