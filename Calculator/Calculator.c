@@ -108,7 +108,8 @@ void swap_row(double *a, struct point *p, int r1, int r2, int n)
 	int i;
  
 	if (r1 == r2) return;
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; i++)
+    {
 		p1 = mat_elem(a, r1, i, n);
 		p2 = mat_elem(a, r2, i, n);
 		tmp = *p1, *p1 = *p2, *p2 = tmp;
@@ -133,7 +134,8 @@ void gauss_eliminate(struct point *p, double *x, int n)
 	int i, j, col, row, max_row,dia;    //Perform Gaussia Elimination
 	double max, tmp;
  
-	for (dia = 0; dia < n; dia++) {
+	for (dia = 0; dia < n; dia++)
+    {
 		max_row = dia, max = A(dia, dia);
  
 		for (row = dia + 1; row < n; row++)
@@ -142,7 +144,8 @@ void gauss_eliminate(struct point *p, double *x, int n)
  
 		swap_row(a, p, dia, max_row, n);
  
-		for (row = dia + 1; row < n; row++) {
+		for (row = dia + 1; row < n; row++)
+        {
 			tmp = A(row, dia) / A(dia, dia);
 			for (col = dia+1; col < n; col++)
 				A(row, col) -= tmp * A(dia, col);
@@ -150,7 +153,8 @@ void gauss_eliminate(struct point *p, double *x, int n)
 			p[row].y -= tmp * p[dia].y;
 		}
 	}
-	for (row = n - 1; row >= 0; row--) {
+	for (row = n - 1; row >= 0; row--)
+    {
 		tmp = p[row].y;
 		for (j = n - 1; j > row; j--)
 			tmp -= x[j] * A(row, j);
