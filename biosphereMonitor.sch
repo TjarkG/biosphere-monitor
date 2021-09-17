@@ -24224,6 +24224,9 @@ Source: http://optoelectronics.perkinelmer.com/content/Datasheets/DTS_Photocells
 <part name="R7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="2k2"/>
 <part name="R8" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="3k3"/>
 <part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="R9" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="2k2"/>
+<part name="R10" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="3k3"/>
+<part name="GND15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -24295,6 +24298,17 @@ Source: http://optoelectronics.perkinelmer.com/content/Datasheets/DTS_Photocells
 </instance>
 <instance part="+3V8" gate="G$1" x="53.34" y="7.62" smashed="yes">
 <attribute name="VALUE" x="50.8" y="7.62" size="1.778" layer="96"/>
+</instance>
+<instance part="R9" gate="G$1" x="71.12" y="12.7" smashed="yes" rot="R90">
+<attribute name="NAME" x="69.6214" y="8.89" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="74.422" y="8.89" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="R10" gate="G$1" x="71.12" y="27.94" smashed="yes" rot="R90">
+<attribute name="NAME" x="69.6214" y="24.13" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="74.422" y="24.13" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="GND15" gate="1" x="71.12" y="2.54" smashed="yes">
+<attribute name="VALUE" x="68.58" y="0" size="1.778" layer="96"/>
 </instance>
 </instances>
 <busses>
@@ -24410,6 +24424,11 @@ Source: http://optoelectronics.perkinelmer.com/content/Datasheets/DTS_Photocells
 <pinref part="C4" gate="G$1" pin="1"/>
 <wire x1="-50.8" y1="-35.56" x2="-53.34" y2="-35.56" width="0.1524" layer="91"/>
 <junction x="-53.34" y="-35.56"/>
+</segment>
+<segment>
+<pinref part="GND15" gate="1" pin="GND"/>
+<pinref part="R9" gate="G$1" pin="1"/>
+<wire x1="71.12" y1="5.08" x2="71.12" y2="7.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -24535,8 +24554,21 @@ Source: http://optoelectronics.perkinelmer.com/content/Datasheets/DTS_Photocells
 </net>
 <net name="2.5V" class="0">
 <segment>
+<pinref part="R10" gate="G$1" pin="2"/>
+<wire x1="71.12" y1="33.02" x2="71.12" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="35.56" x2="63.5" y2="35.56" width="0.1524" layer="91"/>
+<label x="63.5" y="35.56" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="1V" class="0">
+<segment>
+<pinref part="R9" gate="G$1" pin="2"/>
+<pinref part="R10" gate="G$1" pin="1"/>
+<wire x1="71.12" y1="22.86" x2="71.12" y2="20.32" width="0.1524" layer="91"/>
+<junction x="71.12" y="20.32"/>
 <pinref part="IC1" gate="G$1" pin="PA0"/>
-<wire x1="45.72" y1="20.32" x2="27.94" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="27.94" y1="20.32" x2="71.12" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="20.32" x2="71.12" y2="17.78" width="0.1524" layer="91"/>
 <label x="30.48" y="20.32" size="1.778" layer="95"/>
 </segment>
 </net>
