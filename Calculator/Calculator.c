@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "rtFunction.h"
+#include "Function.h"
 
 #define mat_elem(a, y, x, n) (a + ((y) * (n) + (x)))
 
@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
 
     struct point nPoints[MAXGRADE];     //store limits and grade in nFunction and all points in nPoints
     struct rtFunction nFunction;
+    struct exFunction eFunction;
     int i = -2;
     while (i <= 2*MAXGRADE)
     {
@@ -78,9 +79,11 @@ int main(int argc, char *argv[])
 
     printPointArray(nPoints, nFunction.grade+1, stdout); //Print found Points
  
-	gauss_eliminate(nPoints, nFunction.a, nFunction.grade +1);
+	gauss_eliminate(nPoints, nFunction.a, nFunction.grade +1); //Get rational function
 
-    printFunction(nFunction, stdout);       //Print found function
+    printRtFunction(nFunction, stdout);       //Print found function
+
+    printExFunction(eFunction, stdout);       //Print found function
     
     fclose(in);
     return 0;
