@@ -84,13 +84,14 @@ int main(int argc, char *argv[])
 
     printf("Points found:\n");
     printPointArray(nPoints, nFunction.grade+1, stdout); //Print found Points
- 
+
+    eFunction = approxeExFunction(nPoints, nFunction.grade);
 	gauss_eliminate(nPoints, nFunction.a, nFunction.grade +1); //Get rational function
 
     printf("Wholy Rational Function calculated:\n");
     printRtFunction(nFunction, stdout);       //Print found function
 
-    eFunction = claculateExFunction(ePoints);
+    //eFunction = claculateExFunction(ePoints);
 
     printf("Exponential function thrue 3 Points calculated:\n");
     printExFunction(eFunction, stdout);       //Print found function

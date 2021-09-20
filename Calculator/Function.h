@@ -92,3 +92,54 @@ double exValue(const struct exFunction f, double x)                   //Calculat
 {
     return f.a*pow(f.b,x) + f.c;
 }
+
+struct exFunction approxeExFunction(const struct point *in, unsigned int n)     //Aproximate a Exponentinal Function from in with size n+1
+{
+    struct point ePoints[3];
+    ePoints[0] = in[0];
+    ePoints[1] = in[n/2];
+    ePoints[2] = in[n];
+
+    struct exFunction f = claculateExFunction(ePoints);
+    struct exFunction fOut = f;
+    double error = 0;
+    for (unsigned int l = 0; l < n+1; l++)
+    {
+        error += pow(fabs((in[l].y - exValue(f, (in[l]).x))),2);
+    }
+
+    unsigned long it = 0;
+
+    for (double i = (f.a*0.9); i < (f.a*1.10); i+= STEP*10)
+    {
+        for (double j = (f.b*0.9); j < (f.b*1.10); j+= STEP)
+        {
+            for (double k = (f.c - fabs(f.c*0.1)); j > (f.c + fabs(f.c*0.1)); k+= STEP*10)
+            {
+
+                struct exFunction fTemp;
+                fTemp.a = i;
+                fTemp.b = j;
+                fTemp.c = k;
+                double errorTemp = 0;
+                for (unsigned int l = 0; l < n+1; l++)
+                {
+                    errorTemp += pow(fabs((in[l].y - exValue(fTemp, (in[l]).x))),2);
+                    if(errorTemp > error)
+                        break;
+                }
+                it++;
+                //printf("i: %g j: %g k: %g errorTemp: %g error: %g attemps: %ld\n", i, j, k, errorTemp, error, it);
+                if(errorTemp < error)
+                {
+                    fOut = fTemp;
+                }
+            }
+            
+        }
+        
+    }
+    
+
+    return fOut;
+}
