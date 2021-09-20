@@ -12,7 +12,7 @@
 #include <math.h>
 
 #define MAXGRADE UCHAR_MAX
-#define MAXDIF 0.1                    //maximal Deviation for numeric solving
+#define MAXDIF 1                    //maximal Deviation for numeric solving
 #define STEP 0.0001                  //Step size for numeric solving
 
 struct rtFunction                   //rational Function
@@ -71,14 +71,16 @@ struct exFunction claculateExFunction(const struct point *in)       //calculate 
 {
     struct exFunction out;
     double i = 1;
+    double bOld = (in[1].y - in[0].y) / (pow(i,in[1].x) - pow(i,in[0].x)) * (pow(i,in[2].x) - pow(i,in[0].x)) - (in[2].y - in[0].y);
     while (1)
     {
-        double bTemp = (in[1].y - in[0].y) / (pow(i,in[1].x) - pow(i,in[0].x)) * (pow(i,in[2].x) - pow(i,in[0].x)) - (in[2].y - in[0].y);
-        if( bTemp >= -1*MAXDIF && bTemp <= MAXDIF)
+        double bTemp = fabs((in[1].y - in[0].y) / (pow(i,in[1].x) - pow(i,in[0].x)) * (pow(i,in[2].x) - pow(i,in[0].x)) - (in[2].y - in[0].y));
+        if(bTemp <= MAXDIF && bOld < bTemp)
         {
-            out.b = i;
+            out.b = i - STEP;
             break;
         }
+        bOld = bTemp;
         i += STEP;
     }
     out.a = (in[1].y - in[0].y) / (pow(out.b,in[1].x) - pow(out.b,in[0].x));
