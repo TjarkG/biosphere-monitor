@@ -9,8 +9,11 @@
 
 #include <limits.h>
 #include <stdio.h>
+#include <math.h>
 
 #define MAXGRADE UCHAR_MAX
+#define MAXDIF 0.1                    //maximal Deviation for numeric solving
+#define STEP 0.0001                  //Step size for numeric solving
 
 struct rtFunction                   //rational Function
 {
@@ -67,9 +70,19 @@ void printPointArray(const struct point *in, const unsigned int size, FILE *ofp)
 struct exFunction claculateExFunction(const struct point *in)       //calculate Exponential Function from an array of 3 Points
 {
     struct exFunction out;
-    out.c = 0;
-    out.b = 0;
-    out.a = 0;
+    double i = 1;
+    while (1)
+    {
+        double bTemp = (in[1].y - in[0].y) / (pow(i,in[1].x) - pow(i,in[0].x)) * (pow(i,in[2].x) - pow(i,in[0].x)) - (in[2].y - in[0].y);
+        if( bTemp >= -1*MAXDIF && bTemp <= MAXDIF)
+        {
+            out.b = i;
+            break;
+        }
+        i += STEP;
+    }
+    out.a = (in[1].y - in[0].y) / (pow(out.b,in[1].x) - pow(out.b,in[0].x));
+    out.c = in[0].y -(out.a * pow(out.b,in[0].x));
     return out;
 }
 

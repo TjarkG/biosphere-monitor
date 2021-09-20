@@ -77,12 +77,22 @@ int main(int argc, char *argv[])
     }
     nFunction.grade = (i/2)-1;
 
+    struct point ePoints[3];
+    ePoints[0] = nPoints[0];
+    ePoints[1] = nPoints[nFunction.grade/2];
+    ePoints[2] = nPoints[nFunction.grade];
+
+    printf("Points found:\n");
     printPointArray(nPoints, nFunction.grade+1, stdout); //Print found Points
  
 	gauss_eliminate(nPoints, nFunction.a, nFunction.grade +1); //Get rational function
 
+    printf("Wholy Rational Function calculated:\n");
     printRtFunction(nFunction, stdout);       //Print found function
 
+    eFunction = claculateExFunction(ePoints);
+
+    printf("Exponential function thrue 3 Points calculated:\n");
     printExFunction(eFunction, stdout);       //Print found function
     
     fclose(in);
