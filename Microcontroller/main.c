@@ -37,6 +37,8 @@ volatile bool takeMessurment = false;
 volatile bool instruct = false;
 char uartBuf[16];
 char sensType;
+unsigned long f = 0;
+unsigned long fOld= 0;
 unsigned int  EEMEM intervall = 600;     //sampling intervall in Seconds
 unsigned char EEMEM soilSensor = 0;      //is a Soil Sensor connected (bool)
 unsigned char EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
@@ -66,6 +68,11 @@ int main(void)
     PORTC.DIRSET = 0x08;
     RTC.PER = 3;
     RTC_INIT;
+
+    PORTD.PIN5CTRL |= PORT_ISC_FALLING_gc;  //Frequency Counter initialization
+    PORTD.INT0MASK |= (1 << 5);
+    PORTD.INTCTRL = PORT_INT0LVL_LO_gc;
+
     ADC0_INIT;
     UART0INIT;
     sensType = bmeInit();
@@ -203,7 +210,6 @@ void quicksort(unsigned int *data, unsigned int n)       //sorts data till n asc
 
 unsigned int getMedian(unsigned int *rd, const unsigned int n)   //returns Median of the Values in rd to rd[n]
 {
-	//linSort(rd, n);
     quicksort(rd, n);
 	return n % 2 ? rd[n / 2] : (rd[n / 2 - 1] + rd[n / 2]) / 2;
 }
@@ -225,17 +231,7 @@ unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*5
 
 unsigned int getLight(void)  //returns iluminace in lux
 {
-    ADCA.CTRLA = ADC_ENABLE_bm;
-    unsigned int tempArr[ADCN];
-    for(int i = 0; i<ADCN; i++)
-	{
-		ADCA.CH1.CTRL |= ADC_CH_START_bm;
-        while(!(ADCA.CH1.INTFLAGS & ADC_CH_CHIF_bm));
-        ADCA.CH1.INTFLAGS = ADC_CH_CHIF_bm;
-        tempArr[i] = ADCA.CH1.RES;
-	}
-    ADCA.CTRLA &= ~ADC_ENABLE_bm;
-    return getMedian(tempArr, ADCN);
+    return (unsigned int) (50 * pow(1.7097, (fOld/1000.0))) + 130;
 }
 
 unsigned char getSoilHum(void)  //returns Soil Humidity in %
@@ -275,8 +271,15 @@ ISR(RTC_OVF_vect)          //RTC ISR
 {
     sleep_disable();
     timeCounter++;
+    fOld = f;
+    f = 0;
     if(!(timeCounter % getIntervall))
         takeMessurment = true;
     else
         sleep_cpu();
+}
+
+ISR(PORTD_INT0_vect)
+{
+    f++;
 }

@@ -70,13 +70,10 @@ void printPointArray(const struct point *in, const unsigned int size, FILE *ofp)
 struct exFunction claculateExFunction(const struct point *in)       //calculate Exponential Function from an array of 3 Points
 {
     struct exFunction out;
-    double rMin = 1;
-    double rMax = 100;
-    double i;
+    double i = 0;
     double bOld = (in[1].y - in[0].y) / (pow(i,in[1].x) - pow(i,in[0].x)) * (pow(i,in[2].x) - pow(i,in[0].x)) - (in[2].y - in[0].y);
     while (1)
     {
-        //i = (((rMax - rMin)/2) + rMin);
         double bTemp = fabs((in[1].y - in[0].y) / (pow(i,in[1].x) - pow(i,in[0].x)) * (pow(i,in[2].x) - pow(i,in[0].x)) - (in[2].y - in[0].y));
         if(bTemp <= MAXDIF && bOld < bTemp)
         {
