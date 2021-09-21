@@ -70,10 +70,13 @@ void printPointArray(const struct point *in, const unsigned int size, FILE *ofp)
 struct exFunction claculateExFunction(const struct point *in)       //calculate Exponential Function from an array of 3 Points
 {
     struct exFunction out;
-    double i = 1;
+    double rMin = 1;
+    double rMax = 100;
+    double i;
     double bOld = (in[1].y - in[0].y) / (pow(i,in[1].x) - pow(i,in[0].x)) * (pow(i,in[2].x) - pow(i,in[0].x)) - (in[2].y - in[0].y);
     while (1)
     {
+        //i = (((rMax - rMin)/2) + rMin);
         double bTemp = fabs((in[1].y - in[0].y) / (pow(i,in[1].x) - pow(i,in[0].x)) * (pow(i,in[2].x) - pow(i,in[0].x)) - (in[2].y - in[0].y));
         if(bTemp <= MAXDIF && bOld < bTemp)
         {
@@ -103,18 +106,18 @@ struct exFunction approxeExFunction(const struct point *in, unsigned int n)     
     struct exFunction f = claculateExFunction(ePoints);
     struct exFunction fOut = f;
     double error = 0;
-    for (unsigned int l = 0; l < n+1; l++)
+    /*for (unsigned int l = 0; l < n+1; l++)
     {
         error += pow(fabs((in[l].y - exValue(f, (in[l]).x))),2);
     }
 
     unsigned long it = 0;
 
-    for (double i = (f.a*0.9); i < (f.a*1.10); i+= STEP*10)
+    for (double i = (f.a*0.99); i < (f.a*1.01); i+= STEP*1000)
     {
-        for (double j = (f.b*0.9); j < (f.b*1.10); j+= STEP)
+        for (double j = (f.b*0.99); j < (f.b*1.01); j+= STEP*100)
         {
-            for (double k = (f.c - fabs(f.c*0.1)); j > (f.c + fabs(f.c*0.1)); k+= STEP*10)
+            for (double k = (f.c - fabs(f.c*0.01)); j > (f.c + fabs(f.c*0.01)); k+= STEP*1000)
             {
 
                 struct exFunction fTemp;
@@ -129,16 +132,17 @@ struct exFunction approxeExFunction(const struct point *in, unsigned int n)     
                         break;
                 }
                 it++;
-                //printf("i: %g j: %g k: %g errorTemp: %g error: %g attemps: %ld\n", i, j, k, errorTemp, error, it);
+                printf("i: %g j: %g k: %g errorTemp: %g error: %g attemps: %ld\n", i, j, k, errorTemp, error, it);
                 if(errorTemp < error)
                 {
                     fOut = fTemp;
+                    error = errorTemp;
                 }
             }
             
         }
         
-    }
+    }*/
     
 
     return fOut;
