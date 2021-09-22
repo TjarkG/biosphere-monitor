@@ -231,7 +231,9 @@ unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*5
 
 unsigned int getLight(void)  //returns iluminace in lux
 {
-    return (unsigned int) (50 * pow(1.7097, (fOld/1000.0))) + 130;
+    if(fOld < 1300)     //Sensor cutoff Frequnecy
+        return 0;
+    return (unsigned int) ((5.60669 * pow(2.3425, (fOld/1000.0)) ) + 141.444);
 }
 
 unsigned char getSoilHum(void)  //returns Soil Humidity in %

@@ -71,10 +71,10 @@ struct exFunction claculateExFunction(const struct point *in)       //calculate 
 {
     struct exFunction out;
     double i = 0;
-    double bOld = (in[1].y - in[0].y) / (pow(i,in[1].x) - pow(i,in[0].x)) * (pow(i,in[2].x) - pow(i,in[0].x)) - (in[2].y - in[0].y);
+    long double bOld = (in[1].y - in[0].y) / (powl(i,in[1].x) - powl(i,in[0].x)) * (powl(i,in[2].x) - powl(i,in[0].x)) - (in[2].y - in[0].y);
     while (1)
     {
-        double bTemp = fabs((in[1].y - in[0].y) / (pow(i,in[1].x) - pow(i,in[0].x)) * (pow(i,in[2].x) - pow(i,in[0].x)) - (in[2].y - in[0].y));
+        long double bTemp = fabsl(((in[1].y - in[0].y) / (powl(i,in[1].x) - powl(i,in[0].x))) * (powl(i,in[2].x) - powl(i,in[0].x)) - (in[2].y - in[0].y));
         if(bTemp <= MAXDIF && bOld < bTemp)
         {
             out.b = i - STEP;
@@ -83,8 +83,8 @@ struct exFunction claculateExFunction(const struct point *in)       //calculate 
         bOld = bTemp;
         i += STEP;
     }
-    out.a = (in[1].y - in[0].y) / (pow(out.b,in[1].x) - pow(out.b,in[0].x));
-    out.c = in[0].y -(out.a * pow(out.b,in[0].x));
+    out.a = (in[1].y - in[0].y) / (powl(out.b,in[1].x) - powl(out.b,in[0].x));
+    out.c = in[0].y -(out.a * powl(out.b,in[0].x));
     return out;
 }
 
