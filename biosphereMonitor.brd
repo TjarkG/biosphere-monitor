@@ -1770,6 +1770,93 @@ Low profile connectors, straight&lt;p&gt;
 <rectangle x1="-2.794" y1="-0.254" x2="-2.286" y2="0.254" layer="51"/>
 <rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
 </package>
+<package name="1X09" urn="urn:adsk.eagle:footprint:22376/1" library_version="4">
+<description>&lt;b&gt;PIN HEADER&lt;/b&gt;</description>
+<wire x1="4.445" y1="1.27" x2="5.715" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="5.715" y1="1.27" x2="6.35" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="6.35" y1="0.635" x2="6.35" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="6.35" y1="-0.635" x2="5.715" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="6.35" y1="0.635" x2="6.985" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="6.985" y1="1.27" x2="8.255" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="8.255" y1="1.27" x2="8.89" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="8.89" y1="0.635" x2="8.89" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="8.89" y1="-0.635" x2="8.255" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="8.255" y1="-1.27" x2="6.985" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="6.985" y1="-1.27" x2="6.35" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="1.27" y1="0.635" x2="1.905" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="1.905" y1="1.27" x2="3.175" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="3.175" y1="1.27" x2="3.81" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="3.81" y1="0.635" x2="3.81" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="3.81" y1="-0.635" x2="3.175" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="3.175" y1="-1.27" x2="1.905" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="1.905" y1="-1.27" x2="1.27" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="4.445" y1="1.27" x2="3.81" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="3.81" y1="-0.635" x2="4.445" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="5.715" y1="-1.27" x2="4.445" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-3.175" y1="1.27" x2="-1.905" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-1.905" y1="1.27" x2="-1.27" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="-1.27" y1="0.635" x2="-1.27" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-1.27" y1="-0.635" x2="-1.905" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-1.27" y1="0.635" x2="-0.635" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-0.635" y1="1.27" x2="0.635" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="0.635" y1="1.27" x2="1.27" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="1.27" y1="0.635" x2="1.27" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-0.635" y1="-1.27" x2="-1.27" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-6.35" y1="0.635" x2="-5.715" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-5.715" y1="1.27" x2="-4.445" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-4.445" y1="1.27" x2="-3.81" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="-3.81" y1="0.635" x2="-3.81" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-3.81" y1="-0.635" x2="-4.445" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-4.445" y1="-1.27" x2="-5.715" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-5.715" y1="-1.27" x2="-6.35" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-3.175" y1="1.27" x2="-3.81" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="-3.81" y1="-0.635" x2="-3.175" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-1.905" y1="-1.27" x2="-3.175" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-10.795" y1="1.27" x2="-9.525" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-9.525" y1="1.27" x2="-8.89" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="-8.89" y1="0.635" x2="-8.89" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-8.89" y1="-0.635" x2="-9.525" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-8.89" y1="0.635" x2="-8.255" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-8.255" y1="1.27" x2="-6.985" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-6.985" y1="1.27" x2="-6.35" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="-6.35" y1="0.635" x2="-6.35" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-6.35" y1="-0.635" x2="-6.985" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-6.985" y1="-1.27" x2="-8.255" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-8.255" y1="-1.27" x2="-8.89" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-11.43" y1="0.635" x2="-11.43" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-10.795" y1="1.27" x2="-11.43" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="-11.43" y1="-0.635" x2="-10.795" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-9.525" y1="-1.27" x2="-10.795" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="9.525" y1="1.27" x2="10.795" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="10.795" y1="1.27" x2="11.43" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="11.43" y1="0.635" x2="11.43" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="11.43" y1="-0.635" x2="10.795" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="9.525" y1="1.27" x2="8.89" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="8.89" y1="-0.635" x2="9.525" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="10.795" y1="-1.27" x2="9.525" y2="-1.27" width="0.1524" layer="21"/>
+<pad name="1" x="-10.16" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="2" x="-7.62" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="3" x="-5.08" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="4" x="-2.54" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="5" x="0" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="6" x="2.54" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="7" x="5.08" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="8" x="7.62" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="9" x="10.16" y="0" drill="1.016" shape="long" rot="R90"/>
+<text x="-11.5062" y="1.8288" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-11.43" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
+<rectangle x1="7.366" y1="-0.254" x2="7.874" y2="0.254" layer="51"/>
+<rectangle x1="4.826" y1="-0.254" x2="5.334" y2="0.254" layer="51"/>
+<rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
+<rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
+<rectangle x1="-2.794" y1="-0.254" x2="-2.286" y2="0.254" layer="51"/>
+<rectangle x1="-5.334" y1="-0.254" x2="-4.826" y2="0.254" layer="51"/>
+<rectangle x1="-7.874" y1="-0.254" x2="-7.366" y2="0.254" layer="51"/>
+<rectangle x1="-10.414" y1="-0.254" x2="-9.906" y2="0.254" layer="51"/>
+<rectangle x1="9.906" y1="-0.254" x2="10.414" y2="0.254" layer="51"/>
+</package>
 </packages>
 <packages3d>
 <package3d name="1X04" urn="urn:adsk.eagle:package:22407/2" type="model" library_version="4">
@@ -1782,6 +1869,12 @@ Low profile connectors, straight&lt;p&gt;
 <description>PIN HEADER</description>
 <packageinstances>
 <packageinstance name="1X03"/>
+</packageinstances>
+</package3d>
+<package3d name="1X09" urn="urn:adsk.eagle:package:22483/2" type="model" library_version="4">
+<description>PIN HEADER</description>
+<packageinstances>
+<packageinstance name="1X09"/>
 </packageinstances>
 </package3d>
 </packages3d>
@@ -2408,26 +2501,26 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <attribute name="SPICEPREFIX" value="C" x="-40.65" y="1.56" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="VALUE" x="17.92" y="35.84" size="1.27" layer="27"/>
 </element>
-<element name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="100n" x="7.68" y="-23.04" smashed="yes" rot="R270">
-<attribute name="NAME" x="6.41" y="-26.89" size="1.27" layer="25"/>
-<attribute name="POPULARITY" value="88" x="-40.58" y="-71.3" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="SPICEPREFIX" value="C" x="-40.58" y="-71.3" size="1.778" layer="27" rot="R270" display="off"/>
+<element name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="100n" x="10.26" y="-26.388" smashed="yes" rot="R90">
+<attribute name="NAME" x="11.97" y="-26.462" size="1.27" layer="25"/>
+<attribute name="POPULARITY" value="88" x="58.52" y="21.872" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="SPICEPREFIX" value="C" x="58.52" y="21.872" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
 <element name="C11" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="100n" x="2.56" y="-3.84" smashed="yes" rot="R180">
 <attribute name="NAME" x="1.29" y="-6.41" size="1.27" layer="25"/>
 <attribute name="POPULARITY" value="88" x="-52.05" y="44.42" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="SPICEPREFIX" value="C" x="-52.05" y="44.42" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="C12" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="100n" x="7.68" y="-17.92" smashed="yes" rot="R270">
-<attribute name="NAME" x="6.41" y="-15.37" size="1.27" layer="25"/>
-<attribute name="POPULARITY" value="88" x="-46.93" y="-34.43" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="SPICEPREFIX" value="C" x="-46.93" y="-34.43" size="1.778" layer="27" rot="R270" display="off"/>
+<element name="C12" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="100n" x="10.18" y="-16.42" smashed="yes" rot="R270">
+<attribute name="NAME" x="11.91" y="-18.87" size="1.27" layer="25"/>
+<attribute name="POPULARITY" value="88" x="-44.43" y="-32.93" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="SPICEPREFIX" value="C" x="-44.43" y="-32.93" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="C13" library="rcl" library_urn="urn:adsk.eagle:library:334" package="E2-5" package3d_urn="urn:adsk.eagle:package:23346/2" value="4,7µF" x="-14.08" y="-26.88" smashed="yes" rot="R180">
-<attribute name="NAME" x="-11.54" y="-25.864" size="1.27" layer="25" ratio="10"/>
+<attribute name="NAME" x="-21.54" y="-26.364" size="1.27" layer="25" ratio="10"/>
 <attribute name="POPULARITY" value="14" x="-66.15" y="27.73" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="SPICEPREFIX" value="C" x="-66.15" y="27.73" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="VALUE" x="-11.54" y="-29.039" size="1.27" layer="27" ratio="10"/>
+<attribute name="VALUE" x="-21.54" y="-29.039" size="1.27" layer="27" ratio="10"/>
 </element>
 <element name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="15pF" x="16.64" y="37.12" smashed="yes" rot="R270">
 <attribute name="NAME" x="15.37" y="39.67" size="1.27" layer="25"/>
@@ -2485,11 +2578,11 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <element name="JP1" library="con-cypressindustries" library_urn="urn:adsk.eagle:library:138" package="32005-301" package3d_urn="urn:adsk.eagle:package:6446/1" value="mini B" x="0" y="-36.08" locked="yes" smashed="yes" rot="R90">
 <attribute name="MF" value="" x="27.94" y="-18.3" locked="yes" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="MPN" value="" x="27.94" y="-18.3" locked="yes" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="NAME" x="6.835" y="-33.965" size="1.27" layer="25"/>
+<attribute name="NAME" x="6.835" y="-37.465" size="1.27" layer="25"/>
 <attribute name="OC_FARNELL" value="unknown" x="27.94" y="-18.3" locked="yes" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="OC_NEWARK" value="unknown" x="27.94" y="-18.3" locked="yes" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="POPULARITY" value="1" x="27.94" y="-18.3" locked="yes" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="VALUE" x="6.835" y="-36.425" size="1.27" layer="27"/>
+<attribute name="VALUE" x="6.835" y="-39.425" size="1.27" layer="27"/>
 </element>
 <element name="JP2" library="con-harting-ml" library_urn="urn:adsk.eagle:library:149" package="ML10L" package3d_urn="urn:adsk.eagle:package:6964/1" value="PDI" x="-30.72" y="0" locked="yes" smashed="yes" rot="R90">
 <attribute name="MF" value="" x="-28.18" y="45.72" locked="yes" size="1.778" layer="27" rot="R90" display="off"/>
@@ -2539,39 +2632,39 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <attribute name="SPICEPREFIX" value="R" x="-80.21" y="-22.87" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="VALUE" x="-24.32" y="-2.56" size="1.27" layer="27"/>
 </element>
-<element name="XR2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="0" x="11.52" y="-28.16" smashed="yes">
-<attribute name="NAME" x="14.08" y="-28.16" size="1.27" layer="25"/>
-<attribute name="POPULARITY" value="86" x="48.35" y="-82.77" size="1.778" layer="27" display="off"/>
-<attribute name="SPICEPREFIX" value="R" x="48.35" y="-82.77" size="1.778" layer="27" display="off"/>
+<element name="XR2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="0" x="11.52" y="-31.66" smashed="yes">
+<attribute name="NAME" x="14.08" y="-31.66" size="1.27" layer="25"/>
+<attribute name="POPULARITY" value="86" x="48.35" y="-86.27" size="1.778" layer="27" display="off"/>
+<attribute name="SPICEPREFIX" value="R" x="48.35" y="-86.27" size="1.778" layer="27" display="off"/>
 </element>
-<element name="XR3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="0" x="11.52" y="-30.72" smashed="yes">
-<attribute name="NAME" x="14.08" y="-30.72" size="1.27" layer="25"/>
-<attribute name="POPULARITY" value="86" x="53.43" y="-85.33" size="1.778" layer="27" display="off"/>
-<attribute name="SPICEPREFIX" value="R" x="53.43" y="-85.33" size="1.778" layer="27" display="off"/>
-<attribute name="VALUE" x="14.08" y="-32" size="1.27" layer="27"/>
+<element name="XR3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="0" x="11.52" y="-34.22" smashed="yes">
+<attribute name="NAME" x="14.08" y="-34.22" size="1.27" layer="25"/>
+<attribute name="POPULARITY" value="86" x="53.43" y="-88.83" size="1.778" layer="27" display="off"/>
+<attribute name="SPICEPREFIX" value="R" x="53.43" y="-88.83" size="1.778" layer="27" display="off"/>
+<attribute name="VALUE" x="14.08" y="-35.5" size="1.27" layer="27"/>
 </element>
 <element name="R4" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10k" x="6.4" y="-5.12" smashed="yes" rot="R270">
-<attribute name="NAME" x="5.12" y="-8.96" size="1.27" layer="25"/>
+<attribute name="NAME" x="5.5" y="-3" size="1.27" layer="25"/>
 <attribute name="POPULARITY" value="86" x="-48.21" y="-31.79" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="SPICEPREFIX" value="R" x="-48.21" y="-31.79" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="R5" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10k" x="8.96" y="-5.12" smashed="yes" rot="R270">
-<attribute name="NAME" x="7.68" y="-8.96" size="1.27" layer="25"/>
+<attribute name="NAME" x="8" y="-3" size="1.27" layer="25"/>
 <attribute name="POPULARITY" value="86" x="-45.65" y="-36.87" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="SPICEPREFIX" value="R" x="-45.65" y="-36.87" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="VALUE" x="6.4" y="-10.24" size="1.27" layer="27"/>
+<attribute name="VALUE" x="11" y="-3" size="1.27" layer="27"/>
 </element>
-<element name="TP1" library="testpad" library_urn="urn:adsk.eagle:library:385" package="B2,54" package3d_urn="urn:adsk.eagle:package:27948/1" value="PTR1B2,54" x="-5.16" y="-13.27" smashed="yes">
-<attribute name="NAME" x="-6.43" y="-11.619" size="1.27" layer="25" ratio="10"/>
-<attribute name="POPULARITY" value="0" x="22.78" y="-72.96" size="1.778" layer="27" display="off"/>
-<attribute name="TP_SIGNAL_NAME" value="" x="-6.43" y="-16.445" size="1" layer="37"/>
-<attribute name="VALUE" x="-6.43" y="-14.667" size="0.0254" layer="27"/>
+<element name="TP1" library="testpad" library_urn="urn:adsk.eagle:library:385" package="B2,54" package3d_urn="urn:adsk.eagle:package:27948/1" value="PTR1B2,54" x="-4.16" y="-13.27" smashed="yes">
+<attribute name="NAME" x="-5.43" y="-11.619" size="1.27" layer="25" ratio="10"/>
+<attribute name="POPULARITY" value="0" x="23.78" y="-72.96" size="1.778" layer="27" display="off"/>
+<attribute name="TP_SIGNAL_NAME" value="" x="-5.43" y="-16.445" size="1" layer="37"/>
+<attribute name="VALUE" x="-5.43" y="-14.667" size="0.0254" layer="27"/>
 </element>
-<element name="TP2" library="testpad" library_urn="urn:adsk.eagle:library:385" package="B2,54" package3d_urn="urn:adsk.eagle:package:27948/1" value="PTR1B2,54" x="-8.96" y="-13.27" smashed="yes">
-<attribute name="NAME" x="-10.23" y="-11.619" size="1.27" layer="25" ratio="10"/>
-<attribute name="POPULARITY" value="0" x="24.06" y="-72.96" size="1.778" layer="27" display="off"/>
-<attribute name="TP_SIGNAL_NAME" value="" x="-10.23" y="-16.445" size="1" layer="37"/>
-<attribute name="VALUE" x="-10.23" y="-14.667" size="0.0254" layer="27"/>
+<element name="TP2" library="testpad" library_urn="urn:adsk.eagle:library:385" package="B2,54" package3d_urn="urn:adsk.eagle:package:27948/1" value="PTR1B2,54" x="-10.96" y="-13.27" smashed="yes">
+<attribute name="NAME" x="-12.23" y="-11.619" size="1.27" layer="25" ratio="10"/>
+<attribute name="POPULARITY" value="0" x="22.06" y="-72.96" size="1.778" layer="27" display="off"/>
+<attribute name="TP_SIGNAL_NAME" value="" x="-12.23" y="-16.445" size="1" layer="37"/>
+<attribute name="VALUE" x="-12.23" y="-14.667" size="0.0254" layer="27"/>
 </element>
 <element name="TP3" library="testpad" library_urn="urn:adsk.eagle:library:385" package="B2,54" package3d_urn="urn:adsk.eagle:package:27948/1" value="PTR1B2,54" x="-15.32" y="-31.19" smashed="yes">
 <attribute name="NAME" x="-16.59" y="-34.659" size="1.27" layer="25" ratio="10"/>
@@ -2723,11 +2816,11 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <attribute name="NAME" x="17.549" y="22.903" size="1.27" layer="25"/>
 <attribute name="POPULARITY" value="25" x="19.2" y="21.76" size="1.778" layer="27" display="off"/>
 </element>
-<element name="XR15" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10k" x="10.24" y="-23.04" smashed="yes" rot="R90">
-<attribute name="NAME" x="12.165" y="-23.05" size="1.27" layer="25"/>
-<attribute name="POPULARITY" value="86" x="10.24" y="-23.04" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="SPICEPREFIX" value="R" x="10.24" y="-23.04" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="VALUE" x="12.165" y="-24.3" size="1.27" layer="27"/>
+<element name="XR15" library="rcl" library_urn="urn:adsk.eagle:library:334" package="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="10k" x="10.24" y="-22.04" smashed="yes" rot="R90">
+<attribute name="NAME" x="12.165" y="-22.05" size="1.27" layer="25"/>
+<attribute name="POPULARITY" value="86" x="10.24" y="-22.04" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="SPICEPREFIX" value="R" x="10.24" y="-22.04" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="VALUE" x="12.165" y="-23.3" size="1.27" layer="27"/>
 </element>
 <element name="IC3" library="ftdichip" package="SSOP28" package3d_urn="urn:adsk.eagle:package:14013/1" value="FT232RL" x="0" y="-21.76" smashed="yes" rot="R270">
 <attribute name="MF" value="" x="0" y="-21.76" size="1.778" layer="27" rot="R270" display="off"/>
@@ -2739,10 +2832,9 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <attribute name="VALUE" x="-0.68" y="-17.8601" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C19" library="rcl" library_urn="urn:adsk.eagle:library:334" package="E2-5" package3d_urn="urn:adsk.eagle:package:23346/2" value="4,7µF" x="-14.08" y="-20.48" smashed="yes">
-<attribute name="NAME" x="-11.54" y="-19.464" size="1.27" layer="25" ratio="10"/>
+<attribute name="NAME" x="-21.54" y="-22.964" size="1.27" layer="25" ratio="10"/>
 <attribute name="POPULARITY" value="14" x="-14.08" y="-20.48" size="1.778" layer="27" display="off"/>
 <attribute name="SPICEPREFIX" value="C" x="-14.08" y="-20.48" size="1.778" layer="27" display="off"/>
-<attribute name="VALUE" x="-11.54" y="-22.639" size="1.27" layer="27" ratio="10"/>
 </element>
 <element name="XIC6" library="linear" library_urn="urn:adsk.eagle:library:262" package="SOT89" package3d_urn="urn:adsk.eagle:package:16478/2" value="78L05F" x="-11" y="-38" smashed="yes">
 <attribute name="NAME" x="-19.54" y="-37.325" size="1.27" layer="25"/>
@@ -2755,6 +2847,16 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <attribute name="SPICEPREFIX" value="C" x="-27" y="11.5" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="VALUE" x="-28.46" y="5.841" size="1.27" layer="27" ratio="10"/>
 </element>
+<element name="JP6" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X09" package3d_urn="urn:adsk.eagle:package:22483/2" value="" x="-7.62" y="-20" smashed="yes" rot="R270">
+<attribute name="NAME" x="-12.5062" y="-9.7912" size="1.27" layer="25" ratio="10"/>
+<attribute name="POPULARITY" value="13" x="-7.62" y="-20" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="VALUE" x="-10.795" y="-8.57" size="1.27" layer="27" rot="R270"/>
+</element>
+<element name="JP7" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X09" package3d_urn="urn:adsk.eagle:package:22483/2" value="" x="7.62" y="-20" smashed="yes" rot="R270">
+<attribute name="NAME" x="9.9938" y="-11.5512" size="1.27" layer="25" ratio="10"/>
+<attribute name="POPULARITY" value="13" x="7.62" y="-20" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="VALUE" x="4.445" y="-8.57" size="1.27" layer="27" rot="R270"/>
+</element>
 </elements>
 <signals>
 <signal name="USB_MC_D_P">
@@ -2766,9 +2868,8 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="7.68" y1="25.4476" x2="8.96" y2="24.1676" width="0.1524" layer="1"/>
 <wire x1="8.96" y1="24.1676" x2="8.96" y2="5.9689375" width="0.1524" layer="1"/>
 <wire x1="8.96" y1="5.9689375" x2="11.52" y2="3.4089375" width="0.1524" layer="1"/>
-<wire x1="11.52" y1="3.4089375" x2="11.52" y2="-17.0710625" width="0.1524" layer="1"/>
-<wire x1="12.47" y1="-30.72" x2="11.52" y2="-29.77" width="0.1524" layer="1"/>
-<wire x1="11.52" y1="-29.77" x2="11.52" y2="-17.0710625" width="0.1524" layer="1"/>
+<wire x1="11.52" y1="3.4089375" x2="11.52" y2="-33.27" width="0.1524" layer="1"/>
+<wire x1="12.47" y1="-34.22" x2="11.52" y2="-33.27" width="0.1524" layer="1"/>
 </signal>
 <signal name="USB_MC_D_N">
 <contactref element="IC1" pad="27"/>
@@ -2779,9 +2880,9 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="7.0624" y1="25.7524" x2="7.80625625" y2="25.7524" width="0.1524" layer="1"/>
 <wire x1="9.2648" y1="24.29385625" x2="9.2648" y2="6.0952" width="0.1524" layer="1"/>
 <wire x1="11.8248" y1="3.5352" x2="9.2648" y2="6.0952" width="0.1524" layer="1"/>
-<wire x1="12.47" y1="-28.16" x2="12.47" y2="-26.88" width="0.1524" layer="1"/>
-<wire x1="12.47" y1="-26.88" x2="11.8248" y2="-26.2348" width="0.1524" layer="1"/>
-<wire x1="11.8248" y1="-26.2348" x2="11.8248" y2="3.5352" width="0.1524" layer="1"/>
+<wire x1="12.47" y1="-31.66" x2="12.47" y2="-30.38" width="0.1524" layer="1"/>
+<wire x1="12.47" y1="-30.38" x2="11.8248" y2="-29.7348" width="0.1524" layer="1"/>
+<wire x1="11.8248" y1="-29.7348" x2="11.8248" y2="3.5352" width="0.1524" layer="1"/>
 </signal>
 <signal name="+3V3">
 <contactref element="JP2" pad="2"/>
@@ -2813,9 +2914,6 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="-25.6" y1="-5.12" x2="-25.6" y2="-2.23" width="0.1524" layer="1"/>
 <wire x1="-15.096" y1="-20.48" x2="-19.12" y2="-24.504" width="0.1524" layer="1"/>
 <wire x1="-19.12" y1="-24.504" x2="-19.12" y2="-31.19" width="0.1524" layer="1"/>
-<wire x1="7.68" y1="-23.99" x2="6.985" y2="-24.685" width="0.1524" layer="1"/>
-<wire x1="6.985" y1="-24.685" x2="3.625" y2="-24.685" width="0.1524" layer="1"/>
-<wire x1="10.24" y1="-23.99" x2="7.68" y2="-23.99" width="0.1524" layer="1"/>
 <wire x1="1.56" y1="21" x2="1.56" y2="18.18" width="0.1524" layer="1"/>
 <wire x1="1.56" y1="18.18" x2="2.2" y2="17.54" width="0.1524" layer="1"/>
 <wire x1="-5.84" y1="24.4" x2="-7.856" y2="24.4" width="0.1524" layer="1"/>
@@ -2824,11 +2922,13 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="7.936" y1="27.904" x2="11.19" y2="27.904" width="0.1524" layer="1"/>
 <wire x1="5.76" y1="29.2" x2="6.64" y2="29.2" width="0.1524" layer="1"/>
 <wire x1="6.64" y1="29.2" x2="7.936" y2="27.904" width="0.1524" layer="1"/>
-<wire x1="-6.115" y1="-19.485" x2="-3.625" y2="-19.485" width="0.1524" layer="1"/>
-<wire x1="-6.115" y1="-19.485" x2="-7.68" y2="-17.92" width="0.1524" layer="1"/>
-<via x="-7.68" y="-17.92" extent="1-16" drill="0.35"/>
-<wire x1="-7.68" y1="-17.92" x2="-12.536" y2="-17.92" width="0.1524" layer="16"/>
-<wire x1="-12.536" y1="-17.92" x2="-15.096" y2="-20.48" width="0.1524" layer="16"/>
+<wire x1="-5.893" y1="-18.717" x2="-8.883" y2="-18.717" width="0.1524" layer="1"/>
+<wire x1="-5.125" y1="-19.485" x2="-5.893" y2="-18.717" width="0.1524" layer="1"/>
+<wire x1="-5.125" y1="-19.485" x2="-3.625" y2="-19.485" width="0.1524" layer="1"/>
+<wire x1="-8.883" y1="-18.717" x2="-10.18" y2="-17.42" width="0.1524" layer="1"/>
+<via x="-10.18" y="-17.42" extent="1-16" drill="0.35"/>
+<wire x1="-10.18" y1="-17.42" x2="-12.036" y2="-17.42" width="0.1524" layer="16"/>
+<wire x1="-12.036" y1="-17.42" x2="-15.096" y2="-20.48" width="0.1524" layer="16"/>
 <wire x1="3.625" y1="-24.685" x2="1.645" y2="-24.685" width="0.1524" layer="1"/>
 <wire x1="1.645" y1="-24.685" x2="0" y2="-23.04" width="0.1524" layer="1"/>
 <wire x1="-31.99" y1="-5.08" x2="-38.36" y2="-5.08" width="0.1524" layer="1"/>
@@ -2844,7 +2944,8 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="1.61" y1="-3.84" x2="1.28" y2="-4.17" width="0.1524" layer="1"/>
 <wire x1="1.28" y1="-4.17" x2="1.28" y2="-6.4" width="0.1524" layer="1"/>
 <wire x1="1.28" y1="-6.4" x2="1.28" y2="-12.8" width="0.1524" layer="1"/>
-<wire x1="1.28" y1="-12.8" x2="0" y2="-14.08" width="0.1524" layer="1"/>
+<wire x1="1.28" y1="-12.8" x2="0.79" y2="-13.29" width="0.1524" layer="1"/>
+<wire x1="0.79" y1="-13.29" x2="0" y2="-14.08" width="0.1524" layer="1"/>
 <wire x1="0" y1="-14.08" x2="0" y2="-19.584" width="0.1524" layer="1"/>
 <wire x1="0" y1="-19.584" x2="0" y2="-23.04" width="0.1524" layer="1"/>
 <wire x1="-3.625" y1="-19.485" x2="-0.099" y2="-19.485" width="0.1524" layer="1"/>
@@ -2889,6 +2990,21 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="-12.499" y1="-39.981" x2="-16.519" y2="-39.981" width="0.1524" layer="1"/>
 <wire x1="-19.12" y1="-37.38" x2="-19.12" y2="-31.19" width="0.1524" layer="1"/>
 <wire x1="-16.519" y1="-39.981" x2="-19.12" y2="-37.38" width="0.1524" layer="1"/>
+<contactref element="JP7" pad="5"/>
+<wire x1="10.26" y1="-25.438" x2="10.26" y2="-24.192" width="0.1524" layer="1"/>
+<wire x1="10.26" y1="-24.192" x2="10.26" y2="-23.01" width="0.1524" layer="1"/>
+<wire x1="10.26" y1="-23.01" x2="10.24" y2="-22.99" width="0.1524" layer="1"/>
+<wire x1="3.625" y1="-24.685" x2="5.315" y2="-24.685" width="0.1524" layer="1"/>
+<wire x1="6.192" y1="-23.808" x2="8.832" y2="-23.808" width="0.1524" layer="1"/>
+<wire x1="8.832" y1="-23.808" x2="9.216" y2="-24.192" width="0.1524" layer="1"/>
+<wire x1="9.216" y1="-24.192" x2="10.26" y2="-24.192" width="0.1524" layer="1"/>
+<wire x1="5.315" y1="-24.685" x2="6.192" y2="-23.808" width="0.1524" layer="1"/>
+<wire x1="7.62" y1="-20" x2="5.5" y2="-20" width="0.1524" layer="16"/>
+<wire x1="5.5" y1="-20" x2="5" y2="-19.5" width="0.1524" layer="16"/>
+<wire x1="5" y1="-19.5" x2="5" y2="-14.5" width="0.1524" layer="16"/>
+<via x="5" y="-14.5" extent="1-16" drill="0.35"/>
+<wire x1="5" y1="-14.5" x2="2" y2="-14.5" width="0.1524" layer="1"/>
+<wire x1="2" y1="-14.5" x2="0.79" y2="-13.29" width="0.1524" layer="1"/>
 </signal>
 <signal name="GND">
 <contactref element="IC1" pad="38"/>
@@ -2984,28 +3100,16 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <vertex x="43.52" y="-15.36"/>
 <vertex x="43.52" y="-43.52"/>
 </polygon>
-<wire x1="3.625" y1="-24.035" x2="5.405" y2="-24.035" width="0.1524" layer="1"/>
-<wire x1="5.405" y1="-24.035" x2="6.4" y2="-23.04" width="0.1524" layer="1"/>
 <wire x1="3.625" y1="-24.035" x2="2.531" y2="-24.035" width="0.1524" layer="1"/>
 <wire x1="2.531" y1="-24.035" x2="2.176" y2="-23.68" width="0.1524" layer="1"/>
 <wire x1="2.176" y1="-23.68" x2="2.176" y2="-22.144" width="0.1524" layer="1"/>
 <wire x1="2.235" y1="-22.085" x2="3.625" y2="-22.085" width="0.1524" layer="1"/>
-<wire x1="6.4" y1="-23.04" x2="6.4" y2="-22.272" width="0.1524" layer="1"/>
-<wire x1="6.4" y1="-22.272" x2="6.656" y2="-22.016" width="0.1524" layer="1"/>
-<wire x1="6.656" y1="-22.016" x2="7.606" y2="-22.016" width="0.1524" layer="1"/>
-<wire x1="7.606" y1="-22.016" x2="7.68" y2="-22.09" width="0.1524" layer="1"/>
 <wire x1="3.625" y1="-19.485" x2="3.625" y2="-18.835" width="0.1524" layer="1"/>
-<wire x1="3.625" y1="-19.485" x2="2.403" y2="-19.485" width="0.1524" layer="1"/>
-<wire x1="2.176" y1="-19.712" x2="2.176" y2="-22.144" width="0.1524" layer="1"/>
-<wire x1="2.403" y1="-19.485" x2="2.176" y2="-19.712" width="0.1524" layer="1"/>
+<wire x1="3.625" y1="-19.485" x2="2.275" y2="-19.485" width="0.1524" layer="1"/>
+<wire x1="2.176" y1="-22.144" x2="2.176" y2="-19.584" width="0.1524" layer="1"/>
+<wire x1="2.275" y1="-19.485" x2="2.176" y2="-19.584" width="0.1524" layer="1"/>
 <wire x1="2.235" y1="-22.085" x2="2.176" y2="-22.144" width="0.1524" layer="1"/>
-<wire x1="3.625" y1="-18.835" x2="5.12" y2="-18.835" width="0.1524" layer="1"/>
-<wire x1="5.12" y1="-18.835" x2="5.485" y2="-18.835" width="0.1524" layer="1"/>
-<wire x1="7.35" y1="-16.97" x2="7.68" y2="-16.97" width="0.1524" layer="1"/>
-<wire x1="5.485" y1="-18.835" x2="7.35" y2="-16.97" width="0.1524" layer="1"/>
-<wire x1="5.12" y1="-18.835" x2="5.376" y2="-19.091" width="0.1524" layer="1"/>
-<wire x1="5.376" y1="-19.091" x2="5.376" y2="-19.712" width="0.1524" layer="1"/>
-<via x="5.376" y="-19.712" extent="1-16" drill="0.35"/>
+<via x="3.876" y="-16.072" extent="1-16" drill="0.35"/>
 <wire x1="16.26" y1="-6.6" x2="18.77" y2="-6.6" width="0.1524" layer="1"/>
 <wire x1="18.77" y1="-6.6" x2="18.82" y2="-6.65" width="0.1524" layer="1"/>
 <wire x1="18.82" y1="-6.65" x2="20.73" y2="-6.65" width="0.1524" layer="1"/>
@@ -3015,9 +3119,9 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="21.76" y1="-8.96" x2="21.76" y2="-9.4232" width="0.1524" layer="1"/>
 <wire x1="21.76" y1="-8.96" x2="20.48" y2="-8.96" width="0.1524" layer="1"/>
 <via x="20.48" y="-8.96" extent="1-16" drill="0.35"/>
-<wire x1="-3.625" y1="-21.435" x2="-6.075" y2="-21.435" width="0.1524" layer="1"/>
-<wire x1="-6.075" y1="-21.435" x2="-6.4" y2="-21.76" width="0.1524" layer="1"/>
-<via x="-6.4" y="-21.76" extent="1-16" drill="0.35"/>
+<wire x1="-3.625" y1="-21.435" x2="-5.225" y2="-21.435" width="0.1524" layer="1"/>
+<wire x1="-5.225" y1="-21.435" x2="-5.4" y2="-21.26" width="0.1524" layer="1"/>
+<via x="-5.4" y="-21.26" extent="1-16" drill="0.35"/>
 <wire x1="-2.89" y1="-3.84" x2="-2.89" y2="-0.85" width="0.1524" layer="1"/>
 <wire x1="-2.89" y1="-0.85" x2="-3.74" y2="0" width="0.1524" layer="1"/>
 <wire x1="3.51" y1="-3.84" x2="3.85" y2="-3.5" width="0.1524" layer="1"/>
@@ -3105,12 +3209,13 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="1.68" y1="28.4" x2="4.368" y2="28.4" width="0.1524" layer="1"/>
 <wire x1="-23.04" y1="6.4" x2="-30.67" y2="6.4" width="0.1524" layer="16"/>
 <wire x1="-30.67" y1="6.4" x2="-31.99" y2="5.08" width="0.1524" layer="16"/>
-<wire x1="-13.064" y1="-20.48" x2="-7.68" y2="-20.48" width="0.1524" layer="16"/>
-<wire x1="-7.68" y1="-20.48" x2="-6.4" y2="-21.76" width="0.1524" layer="16"/>
-<wire x1="-6.4" y1="-21.76" x2="3.328" y2="-21.76" width="0.1524" layer="16"/>
-<wire x1="3.328" y1="-21.76" x2="5.376" y2="-19.712" width="0.1524" layer="16"/>
-<wire x1="5.376" y1="-19.712" x2="3.85" y2="-18.186" width="0.1524" layer="16"/>
-<wire x1="3.85" y1="-18.186" x2="3.85" y2="-3.84" width="0.1524" layer="16"/>
+<wire x1="-13.064" y1="-20.48" x2="-10.18" y2="-20.48" width="0.1524" layer="16"/>
+<wire x1="-9.4" y1="-21.26" x2="-10.18" y2="-20.48" width="0.1524" layer="16"/>
+<wire x1="-9.4" y1="-21.26" x2="-5.4" y2="-21.26" width="0.1524" layer="16"/>
+<wire x1="-5.4" y1="-21.26" x2="-1.312" y2="-21.26" width="0.1524" layer="16"/>
+<wire x1="-1.312" y1="-21.26" x2="3.876" y2="-16.072" width="0.1524" layer="16"/>
+<wire x1="3.876" y1="-16.072" x2="3.85" y2="-16.046" width="0.1524" layer="16"/>
+<wire x1="3.85" y1="-16.046" x2="3.85" y2="-3.84" width="0.1524" layer="16"/>
 <wire x1="3.85" y1="-3.84" x2="3.85" y2="0" width="0.1524" layer="16"/>
 <wire x1="-3.74" y1="0" x2="-3.74" y2="-0.1" width="0.1524" layer="16"/>
 <wire x1="-3.74" y1="-0.1" x2="0" y2="-3.84" width="0.1524" layer="16"/>
@@ -3158,16 +3263,33 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <vertex x="43.52" y="-15.36"/>
 <vertex x="43.52" y="-43.52"/>
 </polygon>
-<wire x1="-6.4" y1="-21.76" x2="-6.4" y2="-16" width="0.1524" layer="16"/>
-<wire x1="-6.4" y1="-16" x2="-7" y2="-16" width="0.1524" layer="16"/>
-<via x="-7" y="-16" extent="1-16" drill="0.35"/>
-<wire x1="5.376" y1="-19.712" x2="8.5" y2="-19.712" width="0.1524" layer="16"/>
-<wire x1="8.5" y1="-19.712" x2="8.5" y2="-26" width="0.1524" layer="16"/>
-<via x="8.5" y="-26" extent="1-16" drill="0.35"/>
+<wire x1="-5.4" y1="-21.26" x2="-5.4" y2="-16" width="0.1524" layer="16"/>
+<wire x1="-5.4" y1="-16" x2="-5" y2="-16" width="0.1524" layer="16"/>
+<via x="-5" y="-16" extent="1-16" drill="0.35"/>
 <contactref element="XIC6" pad="2"/>
 <contactref element="XIC6" pad="2@1"/>
 <wire x1="-11" y1="-39.727" x2="-11" y2="-37.06" width="0.1524" layer="1"/>
 <wire x1="-11" y1="-37.06" x2="-11" y2="-33.28" width="0.1524" layer="1"/>
+<contactref element="JP6" pad="7"/>
+<wire x1="-7.62" y1="-25.08" x2="-6.08" y2="-25.08" width="0.1524" layer="16"/>
+<wire x1="-5.4" y1="-24.4" x2="-5.4" y2="-21.26" width="0.1524" layer="16"/>
+<wire x1="-6.08" y1="-25.08" x2="-5.4" y2="-24.4" width="0.1524" layer="16"/>
+<wire x1="9.522" y1="-16.128" x2="10.18" y2="-15.47" width="0.1524" layer="1"/>
+<wire x1="2.176" y1="-19.584" x2="2.176" y2="-16.824" width="0.1524" layer="1"/>
+<wire x1="2.928" y1="-16.072" x2="3.876" y2="-16.072" width="0.1524" layer="1"/>
+<wire x1="2.176" y1="-16.824" x2="2.928" y2="-16.072" width="0.1524" layer="1"/>
+<wire x1="3.876" y1="-16.072" x2="3.932" y2="-16.128" width="0.1524" layer="1"/>
+<wire x1="3.932" y1="-16.128" x2="9.522" y2="-16.128" width="0.1524" layer="1"/>
+<wire x1="10.26" y1="-27.338" x2="10.26" y2="-28.76" width="0.1524" layer="1"/>
+<wire x1="10.26" y1="-28.76" x2="10.5" y2="-29" width="0.1524" layer="1"/>
+<via x="10.5" y="-29" extent="1-16" drill="0.35"/>
+<via x="6.5" y="-33.5" extent="1-16" drill="0.35"/>
+<wire x1="8.8120375" y1="-31.1982" x2="8.8018" y2="-31.1982" width="0.1524" layer="16"/>
+<wire x1="8.8018" y1="-31.1982" x2="6.5" y2="-33.5" width="0.1524" layer="16"/>
+<wire x1="10.5" y1="-29" x2="10.5" y2="-29.5102375" width="0.1524" layer="16"/>
+<wire x1="10.5" y1="-29.5102375" x2="8.8120375" y2="-31.1982" width="0.1524" layer="16"/>
+<wire x1="6.5" y1="-33.5" x2="4.77" y2="-33.5" width="0.1524" layer="1"/>
+<wire x1="4.77" y1="-33.5" x2="4.45" y2="-33.18" width="0.1524" layer="1"/>
 </signal>
 <signal name="N$1">
 <contactref element="JP2" pad="5"/>
@@ -3273,36 +3395,39 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <contactref element="IC1" pad="12"/>
 <contactref element="TP2" pad="TP"/>
 <contactref element="IC3" pad="5"/>
-<wire x1="-3.625" y1="-20.135" x2="-8.025" y2="-20.135" width="0.1524" layer="1"/>
-<wire x1="-8.025" y1="-20.135" x2="-8.96" y2="-19.2" width="0.1524" layer="1"/>
-<wire x1="-8.96" y1="-19.2" x2="-8.96" y2="-13.27" width="0.1524" layer="1"/>
-<wire x1="-8.96" y1="-13.27" x2="-8.96" y2="-10.67105625" width="0.1524" layer="1"/>
-<wire x1="-8.96" y1="-10.67105625" x2="-11.8248" y2="-7.80625625" width="0.1524" layer="1"/>
+<wire x1="-10.58" y1="-20.08" x2="-11.46" y2="-19.2" width="0.1524" layer="1"/>
+<wire x1="-11.46" y1="-13.77" x2="-11.46" y2="-19.2" width="0.1524" layer="1"/>
+<wire x1="-11.46" y1="-13.77" x2="-10.96" y2="-13.27" width="0.1524" layer="1"/>
+<wire x1="-10.96" y1="-13.27" x2="-10.96" y2="-8.67105625" width="0.1524" layer="1"/>
+<wire x1="-10.96" y1="-8.67105625" x2="-11.8248" y2="-7.80625625" width="0.1524" layer="1"/>
 <wire x1="-9.2648" y1="5.24625625" x2="-9.2648" y2="11.64625625" width="0.1524" layer="1"/>
 <wire x1="-4.04" y1="16.87105625" x2="-4.04" y2="21" width="0.1524" layer="1"/>
 <wire x1="-11.8248" y1="-7.80625625" x2="-11.8248" y2="2.68625625" width="0.1524" layer="1"/>
 <wire x1="-11.8248" y1="2.68625625" x2="-9.2648" y2="5.24625625" width="0.1524" layer="1"/>
 <wire x1="-9.2648" y1="11.64625625" x2="-4.04" y2="16.87105625" width="0.1524" layer="1"/>
+<contactref element="JP6" pad="5"/>
+<wire x1="-3.625" y1="-20.135" x2="-7.485" y2="-20.135" width="0.1524" layer="1"/>
+<wire x1="-7.485" y1="-20.135" x2="-7.62" y2="-20" width="0.1524" layer="1"/>
+<wire x1="-10.58" y1="-20.08" x2="-7.7" y2="-20.08" width="0.1524" layer="1"/>
+<wire x1="-7.7" y1="-20.08" x2="-7.62" y2="-20" width="0.1524" layer="1"/>
 </signal>
 <signal name="USB_TX">
 <contactref element="IC1" pad="13"/>
 <contactref element="TP1" pad="TP"/>
 <contactref element="IC3" pad="1"/>
-<wire x1="-5.16" y1="-13.27" x2="-5.16" y2="-14.08" width="0.1524" layer="1"/>
-<wire x1="-5.16" y1="-14.08" x2="-5.16" y2="-17.112" width="0.1524" layer="1"/>
-<wire x1="-5.16" y1="-17.112" x2="-4.736" y2="-17.536" width="0.1524" layer="1"/>
-<wire x1="-4.736" y1="-17.536" x2="-3.626" y2="-17.536" width="0.1524" layer="1"/>
-<wire x1="-3.626" y1="-17.536" x2="-3.625" y2="-17.535" width="0.1524" layer="1"/>
 <wire x1="-3.24" y1="21" x2="-3.24" y2="17.24" width="0.1524" layer="1"/>
 <wire x1="-8.96" y1="11.52" x2="-8.96" y2="5.12" width="0.1524" layer="1"/>
 <wire x1="-8.96" y1="5.12" x2="-11.52" y2="2.56" width="0.1524" layer="1"/>
 <wire x1="-11.52" y1="2.56" x2="-11.52" y2="-7.68" width="0.1524" layer="1"/>
-<wire x1="-11.52" y1="-7.68" x2="-10.24" y2="-8.96" width="0.1524" layer="1"/>
-<wire x1="-10.24" y1="-8.96" x2="-6.4" y2="-8.96" width="0.1524" layer="1"/>
-<wire x1="-6.4" y1="-8.96" x2="-5.12" y2="-10.24" width="0.1524" layer="1"/>
-<wire x1="-5.12" y1="-10.24" x2="-5.12" y2="-14.04" width="0.1524" layer="1"/>
-<wire x1="-5.12" y1="-14.04" x2="-5.16" y2="-14.08" width="0.1524" layer="1"/>
+<wire x1="-11.52" y1="-7.68" x2="-9.36" y2="-9.84" width="0.1524" layer="1"/>
 <wire x1="-3.24" y1="17.24" x2="-8.96" y2="11.52" width="0.1524" layer="1"/>
+<contactref element="JP6" pad="1"/>
+<wire x1="-3.625" y1="-17.535" x2="-3.625" y2="-13.805" width="0.1524" layer="1"/>
+<wire x1="-3.625" y1="-13.805" x2="-4.16" y2="-13.27" width="0.1524" layer="1"/>
+<wire x1="-7.62" y1="-9.84" x2="-9.36" y2="-9.84" width="0.1524" layer="1"/>
+<wire x1="-7.62" y1="-9.84" x2="-5.16" y2="-9.84" width="0.1524" layer="1"/>
+<wire x1="-4.16" y1="-10.84" x2="-4.16" y2="-13.27" width="0.1524" layer="1"/>
+<wire x1="-5.16" y1="-9.84" x2="-4.16" y2="-10.84" width="0.1524" layer="1"/>
 </signal>
 <signal name="AVCC">
 <contactref element="IC1" pad="39"/>
@@ -3431,23 +3556,23 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="-23.04" y1="7.68" x2="-23.04" y2="8.96" width="0.1524" layer="1"/>
 <wire x1="-23.04" y1="8.96" x2="-21.76" y2="10.24" width="0.1524" layer="1"/>
 <wire x1="-21.76" y1="10.24" x2="-21.76" y2="15.69" width="0.1524" layer="1"/>
-<wire x1="-11.4" y1="-31.19" x2="-11.4" y2="-29.44" width="0.1524" layer="1"/>
-<wire x1="-4.84" y1="-29.44" x2="-6.4" y2="-29.44" width="0.1524" layer="1"/>
-<wire x1="-6.4" y1="-29.44" x2="-11.4" y2="-29.44" width="0.1524" layer="1"/>
-<wire x1="3.625" y1="-22.735" x2="4.785" y2="-22.735" width="0.1524" layer="1"/>
-<wire x1="4.785" y1="-22.735" x2="5.12" y2="-22.4" width="0.1524" layer="1"/>
-<wire x1="5.12" y1="-21.43" x2="7.68" y2="-18.87" width="0.1524" layer="1"/>
-<wire x1="5.12" y1="-22.4" x2="5.12" y2="-21.43" width="0.1524" layer="1"/>
+<wire x1="-7.4" y1="-32.44" x2="-7.34" y2="-32.44" width="0.1524" layer="1"/>
+<wire x1="-4.84" y1="-29.44" x2="-4.84" y2="-29.94" width="0.1524" layer="1"/>
+<wire x1="-4.84" y1="-29.94" x2="-7.34" y2="-32.44" width="0.1524" layer="1"/>
 <wire x1="-19.825" y1="19.24" x2="-19.825" y2="30.095" width="0.1524" layer="1"/>
 <wire x1="-19.825" y1="30.095" x2="-16.64" y2="33.28" width="0.1524" layer="1"/>
 <via x="-16.64" y="33.28" extent="1-16" drill="0.35"/>
 <wire x1="-16.64" y1="33.28" x2="-8.96" y2="33.28" width="0.1524" layer="16"/>
 <via x="-8.96" y="33.28" extent="1-16" drill="0.35"/>
 <wire x1="-8.96" y1="33.28" x2="-13.13" y2="33.28" width="0.1524" layer="1"/>
-<wire x1="-11.4" y1="-10.36" x2="-11.4" y2="-26.88" width="0.1524" layer="1"/>
-<wire x1="-11.4" y1="-26.88" x2="-11.4" y2="-29.44" width="0.1524" layer="1"/>
-<wire x1="-12.1296" y1="-9.6304" x2="-11.4" y2="-10.36" width="0.1524" layer="1"/>
-<wire x1="-13.064" y1="-26.88" x2="-11.4" y2="-26.88" width="0.1524" layer="1"/>
+<wire x1="-11.9" y1="-8.36" x2="-11.9" y2="-9.5" width="0.1524" layer="1"/>
+<wire x1="-11.9" y1="-16" x2="-11.9" y2="-26.88" width="0.1524" layer="1"/>
+<wire x1="-11.9" y1="-26.88" x2="-11.9" y2="-30.69" width="0.1524" layer="1"/>
+<wire x1="-11.9" y1="-30.69" x2="-11.4" y2="-31.19" width="0.1524" layer="1"/>
+<wire x1="-7.4" y1="-32.44" x2="-10.15" y2="-32.44" width="0.1524" layer="1"/>
+<wire x1="-10.15" y1="-32.44" x2="-11.4" y2="-31.19" width="0.1524" layer="1"/>
+<wire x1="-12.1296" y1="-8.1304" x2="-11.9" y2="-8.36" width="0.1524" layer="1"/>
+<wire x1="-13.064" y1="-26.88" x2="-11.9" y2="-26.88" width="0.1524" layer="1"/>
 <wire x1="18.82" y1="-8.55" x2="19.69" y2="-7.68" width="0.1524" layer="1"/>
 <wire x1="19.69" y1="-7.68" x2="20.48" y2="-7.68" width="0.1524" layer="1"/>
 <via x="20.48" y="-7.68" extent="1-16" drill="0.35"/>
@@ -3455,26 +3580,27 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="19.2" y1="-8.96" x2="19.2" y2="-11.52" width="0.1524" layer="16"/>
 <via x="19.2" y="-11.52" extent="1-16" drill="0.35"/>
 <wire x1="19.2" y1="-11.52" x2="20.1752" y2="-10.5448" width="0.1524" layer="1"/>
-<wire x1="19.2" y1="-11.52" x2="19.2" y2="-12.8" width="0.1524" layer="1"/>
-<wire x1="19.2" y1="-12.8" x2="12.8" y2="-19.2" width="0.1524" layer="1"/>
-<via x="12.8" y="-19.2" extent="1-16" drill="0.35"/>
-<wire x1="12.8" y1="-19.2" x2="10.24" y2="-19.2" width="0.1524" layer="16"/>
+<wire x1="19.2" y1="-11.52" x2="19.2" y2="-17.3" width="0.1524" layer="1"/>
+<wire x1="19.2" y1="-17.3" x2="17.3" y2="-19.2" width="0.1524" layer="1"/>
+<via x="17.3" y="-19.2" extent="1-16" drill="0.35"/>
+<wire x1="17.3" y1="-19.2" x2="10.24" y2="-19.2" width="0.1524" layer="16"/>
 <via x="10.24" y="-19.2" extent="1-16" drill="0.35"/>
-<wire x1="10.24" y1="-19.2" x2="9.91" y2="-18.87" width="0.1524" layer="1"/>
-<wire x1="9.91" y1="-18.87" x2="7.68" y2="-18.87" width="0.1524" layer="1"/>
-<wire x1="12.8" y1="-19.2" x2="14.08" y2="-20.48" width="0.1524" layer="1"/>
-<wire x1="14.08" y1="-32" x2="12.8" y2="-33.28" width="0.1524" layer="1"/>
-<wire x1="12.8" y1="-33.28" x2="10.5" y2="-33.28" width="0.1524" layer="1"/>
-<wire x1="10.5" y1="-33.28" x2="8.96" y2="-33.28" width="0.1524" layer="1"/>
-<wire x1="8.96" y1="-33.28" x2="5.12" y2="-29.44" width="0.1524" layer="1"/>
-<wire x1="5.12" y1="-29.44" x2="1.28" y2="-29.44" width="0.1524" layer="1"/>
-<via x="1.28" y="-29.44" extent="1-16" drill="0.35"/>
-<wire x1="1.28" y1="-29.44" x2="-6.4" y2="-29.44" width="0.1524" layer="16"/>
-<via x="-6.4" y="-29.44" extent="1-16" drill="0.35"/>
-<wire x1="14.08" y1="-20.48" x2="14.08" y2="-32" width="0.1524" layer="1"/>
+<wire x1="10.24" y1="-19.2" x2="10.18" y2="-19.14" width="0.1524" layer="1"/>
+<wire x1="10.18" y1="-19.14" x2="10.18" y2="-17.5" width="0.1524" layer="1"/>
+<wire x1="10.18" y1="-17.5" x2="10.18" y2="-17.37" width="0.1524" layer="1"/>
+<wire x1="17.3" y1="-19.2" x2="17.08" y2="-19.42" width="0.1524" layer="1"/>
+<wire x1="17.08" y1="-35" x2="15.8" y2="-36.28" width="0.1524" layer="1"/>
+<wire x1="15.8" y1="-36.28" x2="11" y2="-36.28" width="0.1524" layer="1"/>
+<wire x1="11" y1="-36.28" x2="5.44" y2="-36.28" width="0.1524" layer="1"/>
+<wire x1="5.28" y1="-36.44" x2="5.44" y2="-36.28" width="0.1524" layer="1"/>
+<via x="5.28" y="-36.44" extent="1-16" drill="0.35"/>
+<wire x1="5.28" y1="-36.44" x2="1.280009375" y2="-32.44" width="0.1524" layer="16"/>
+<wire x1="1.280009375" y1="-32.44" x2="-7.4" y2="-32.44" width="0.1524" layer="16"/>
+<via x="-7.4" y="-32.44" extent="1-16" drill="0.35"/>
+<wire x1="17.08" y1="-19.42" x2="17.08" y2="-35" width="0.1524" layer="1"/>
 <wire x1="-12.8" y1="7.68" x2="-12.1296" y2="7.0096" width="0.1524" layer="1"/>
 <wire x1="-12.1296" y1="7.0096" x2="-12.1296" y2="-2.56" width="0.1524" layer="1"/>
-<wire x1="-12.1296" y1="-2.56" x2="-12.1296" y2="-9.6304" width="0.1524" layer="1"/>
+<wire x1="-12.1296" y1="-2.56" x2="-12.1296" y2="-8.1304" width="0.1524" layer="1"/>
 <wire x1="-6.28" y1="0" x2="-6.4" y2="-0.12" width="0.1524" layer="16"/>
 <wire x1="-6.4" y1="-0.12" x2="-6.4" y2="-1.28" width="0.1524" layer="16"/>
 <wire x1="-6.4" y1="-1.28" x2="-7.68" y2="-2.56" width="0.1524" layer="16"/>
@@ -3487,8 +3613,19 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="-9.501" y1="-39.981" x2="-7.019" y2="-39.981" width="0.1524" layer="1"/>
 <wire x1="-7.019" y1="-39.981" x2="-5.5" y2="-41.5" width="0.1524" layer="1"/>
 <wire x1="-5.5" y1="-41.5" x2="8" y2="-41.5" width="0.1524" layer="1"/>
-<wire x1="8" y1="-41.5" x2="10.5" y2="-39" width="0.1524" layer="1"/>
-<wire x1="10.5" y1="-39" x2="10.5" y2="-33.28" width="0.1524" layer="1"/>
+<wire x1="8" y1="-41.5" x2="11" y2="-38.5" width="0.1524" layer="1"/>
+<wire x1="11" y1="-38.5" x2="11" y2="-36.28" width="0.1524" layer="1"/>
+<contactref element="JP7" pad="4"/>
+<wire x1="-11.9" y1="-9.5" x2="-13" y2="-10.6" width="0.1524" layer="1"/>
+<wire x1="-13" y1="-14.9" x2="-11.9" y2="-16" width="0.1524" layer="1"/>
+<wire x1="-13" y1="-10.6" x2="-13" y2="-14.9" width="0.1524" layer="1"/>
+<wire x1="7.62" y1="-17.46" x2="10.14" y2="-17.46" width="0.1524" layer="1"/>
+<wire x1="10.14" y1="-17.46" x2="10.18" y2="-17.5" width="0.1524" layer="1"/>
+<wire x1="3.625" y1="-22.735" x2="4.765" y2="-22.735" width="0.1524" layer="1"/>
+<wire x1="4.765" y1="-22.735" x2="5" y2="-22.5" width="0.1524" layer="1"/>
+<wire x1="5.54" y1="-17.46" x2="7.62" y2="-17.46" width="0.1524" layer="1"/>
+<wire x1="5" y1="-22.5" x2="5" y2="-18" width="0.1524" layer="1"/>
+<wire x1="5" y1="-18" x2="5.54" y2="-17.46" width="0.1524" layer="1"/>
 </signal>
 <signal name="D_N">
 <contactref element="JP1" pad="2"/>
@@ -3497,15 +3634,6 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="-0.8" y1="-33.08" x2="-0.8" y2="-31.2252" width="0.1524" layer="1"/>
 <wire x1="-0.8" y1="-31.2252" x2="-0.5524" y2="-30.9776" width="0.1524" layer="1"/>
 <wire x1="-0.5524" y1="-30.9776" x2="-0.5524" y2="-27.0013375" width="0.1524" layer="1"/>
-<wire x1="10.57" y1="-28.16" x2="9.5152" y2="-28.16" width="0.1524" layer="1"/>
-<wire x1="9.5152" y1="-28.16" x2="8.3876" y2="-29.2876" width="0.1524" layer="1"/>
-<wire x1="7.5276" y1="-29.2876" x2="6.4" y2="-28.16" width="0.1524" layer="1"/>
-<wire x1="8.3876" y1="-29.2876" x2="7.5276" y2="-29.2876" width="0.1524" layer="1"/>
-<wire x1="3.625" y1="-25.335" x2="4.6798" y2="-25.335" width="0.1524" layer="1"/>
-<wire x1="4.6798" y1="-25.335" x2="4.8524" y2="-25.5076" width="0.1524" layer="1"/>
-<wire x1="5.5866625" y1="-25.5076" x2="4.8524" y2="-25.5076" width="0.1524" layer="1"/>
-<wire x1="6.4" y1="-28.16" x2="6.4" y2="-26.3209375" width="0.1524" layer="1"/>
-<wire x1="6.4" y1="-26.3209375" x2="5.5866625" y2="-25.5076" width="0.1524" layer="1"/>
 <wire x1="-0.5524" y1="-27.0013375" x2="1.1139375" y2="-25.335" width="0.1524" layer="1"/>
 <wire x1="1.1139375" y1="-25.335" x2="1.1498625" y2="-25.335" width="0.1524" layer="1"/>
 <wire x1="1.1498625" y1="-25.335" x2="1.1642625" y2="-25.3206" width="0.1524" layer="1"/>
@@ -3514,6 +3642,17 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="1.39574375" y1="-25.32060625" x2="2.28590625" y2="-25.32060625" width="0.1524" layer="1"/>
 <wire x1="2.28590625" y1="-25.32060625" x2="2.3003" y2="-25.335" width="0.1524" layer="1"/>
 <wire x1="2.3003" y1="-25.335" x2="3.625" y2="-25.335" width="0.1524" layer="1"/>
+<wire x1="10.57" y1="-31.66" x2="9.5152" y2="-31.66" width="0.1524" layer="1"/>
+<wire x1="9.5152" y1="-31.66" x2="8.3749" y2="-32.8003" width="0.1524" layer="1"/>
+<wire x1="8.3749" y1="-32.8003" x2="7.5" y2="-32.8003" width="0.1524" layer="1"/>
+<wire x1="7.5" y1="-32.8003" x2="6.0056" y2="-31.3059" width="0.1524" layer="1"/>
+<wire x1="6.0056" y1="-31.3059" x2="6.0056" y2="-31.29985625" width="0.1524" layer="1"/>
+<wire x1="6.0056" y1="-31.29985625" x2="5.68014375" y2="-30.9744" width="0.1524" layer="1"/>
+<wire x1="5.68014375" y1="-30.9744" x2="5.6741" y2="-30.9744" width="0.1524" layer="1"/>
+<wire x1="5.6741" y1="-30.9744" x2="5.5" y2="-30.8003" width="0.1524" layer="1"/>
+<wire x1="5.5" y1="-26.1048625" x2="5.5" y2="-30.8003" width="0.1524" layer="1"/>
+<wire x1="3.625" y1="-25.335" x2="4.7301375" y2="-25.335" width="0.1524" layer="1"/>
+<wire x1="4.7301375" y1="-25.335" x2="5.5" y2="-26.1048625" width="0.1524" layer="1"/>
 </signal>
 <signal name="D_P">
 <contactref element="JP1" pad="3"/>
@@ -3527,15 +3666,17 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="1.28000625" y1="-25.60000625" x2="2.17016875" y2="-25.60000625" width="0.1524" layer="1"/>
 <wire x1="1.28" y1="-25.6" x2="1.28000625" y2="-25.60000625" width="0.1524" layer="1"/>
 <wire x1="-0.2476" y1="-30.9776" x2="-0.2476" y2="-27.1276" width="0.1524" layer="1"/>
-<wire x1="10.57" y1="-30.72" x2="9.5152" y2="-30.72" width="0.1524" layer="1"/>
-<wire x1="9.5152" y1="-30.72" x2="8.3876" y2="-29.5924" width="0.1524" layer="1"/>
-<wire x1="8.3876" y1="-29.5924" x2="7.4013375" y2="-29.5924" width="0.1524" layer="1"/>
-<wire x1="7.4013375" y1="-29.5924" x2="6.0952" y2="-28.2862625" width="0.1524" layer="1"/>
-<wire x1="3.625" y1="-25.985" x2="4.6798" y2="-25.985" width="0.1524" layer="1"/>
-<wire x1="4.6798" y1="-25.985" x2="4.8524" y2="-25.8124" width="0.1524" layer="1"/>
-<wire x1="5.4604" y1="-25.8124" x2="4.8524" y2="-25.8124" width="0.1524" layer="1"/>
-<wire x1="6.0952" y1="-28.2862625" x2="6.0952" y2="-26.4472" width="0.1524" layer="1"/>
-<wire x1="6.0952" y1="-26.4472" x2="5.4604" y2="-25.8124" width="0.1524" layer="1"/>
+<wire x1="10.57" y1="-34.22" x2="9.5152" y2="-34.22" width="0.1524" layer="1"/>
+<wire x1="9.5152" y1="-34.22" x2="8.3749" y2="-33.0797" width="0.1524" layer="1"/>
+<wire x1="7.3842625" y1="-33.0797" x2="5.7262" y2="-31.4216375" width="0.1524" layer="1"/>
+<wire x1="5.5583625" y1="-31.2538" x2="5.2206" y2="-30.9160375" width="0.1524" layer="1"/>
+<wire x1="5.7262" y1="-31.4216375" x2="5.7262" y2="-31.41559375" width="0.1524" layer="1"/>
+<wire x1="5.7262" y1="-31.41559375" x2="5.56440625" y2="-31.2538" width="0.1524" layer="1"/>
+<wire x1="5.56440625" y1="-31.2538" x2="5.5583625" y2="-31.2538" width="0.1524" layer="1"/>
+<wire x1="8.3749" y1="-33.0797" x2="7.3842625" y2="-33.0797" width="0.1524" layer="1"/>
+<wire x1="5.2206" y1="-26.2206" x2="5.2206" y2="-30.9160375" width="0.1524" layer="1"/>
+<wire x1="3.625" y1="-25.985" x2="4.985" y2="-25.985" width="0.1524" layer="1"/>
+<wire x1="4.985" y1="-25.985" x2="5.2206" y2="-26.2206" width="0.1524" layer="1"/>
 </signal>
 <signal name="N$7">
 <contactref element="JP1" pad="1"/>
@@ -3735,12 +3876,12 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <signal name="N$28">
 <contactref element="XR15" pad="2"/>
 <contactref element="IC3" pad="19"/>
-<wire x1="3.625" y1="-23.385" x2="5.159" y2="-23.385" width="0.1524" layer="1"/>
-<wire x1="5.632" y1="-22.912" x2="5.159" y2="-23.385" width="0.1524" layer="1"/>
-<wire x1="10.24" y1="-22.09" x2="8.63" y2="-20.48" width="0.1524" layer="1"/>
-<wire x1="5.632" y1="-21.632" x2="5.632" y2="-22.912" width="0.1524" layer="1"/>
-<wire x1="8.63" y1="-20.48" x2="6.784" y2="-20.48" width="0.1524" layer="1"/>
-<wire x1="6.784" y1="-20.48" x2="5.632" y2="-21.632" width="0.1524" layer="1"/>
+<wire x1="3.625" y1="-23.385" x2="5.115" y2="-23.385" width="0.1524" layer="1"/>
+<wire x1="5.115" y1="-23.385" x2="5.5" y2="-23" width="0.1524" layer="1"/>
+<wire x1="10.082" y1="-21.248" x2="10.24" y2="-21.09" width="0.1524" layer="1"/>
+<wire x1="5.5" y1="-23" x2="5.5" y2="-21.764" width="0.1524" layer="1"/>
+<wire x1="5.5" y1="-21.764" x2="6.016" y2="-21.248" width="0.1524" layer="1"/>
+<wire x1="6.016" y1="-21.248" x2="10.082" y2="-21.248" width="0.1524" layer="1"/>
 </signal>
 </signals>
 <mfgpreviewcolors>
