@@ -14,6 +14,8 @@
 #define BSCALE  -5
 #define BSEL    246
 #define ADCN    512       //Number of ADC readings taken per Messurment
+#define ADRMAX  0x3FFFFF  //Highest Flash Adress
+#define REDSIZE 16        //Size of a Reading in Flash
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -44,6 +46,7 @@ unsigned int  EEMEM intervall = 600;     //sampling intervall in Seconds
 unsigned char EEMEM soilSensor = 0;      //is a Soil Sensor connected (bool)
 unsigned char EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
 unsigned char EEMEM tInOff = 0;          //Inside Temperature Offset in C*5 +128
+unsigned long EEMEM flashAdr = 0;        //Adress of the start of the last reading in the SPI Flash
 
 #define setIntervall(new)   eeprom_update_word(&intervall, new)
 #define getIntervall        eeprom_read_word(&intervall)
@@ -51,8 +54,10 @@ unsigned char EEMEM tInOff = 0;          //Inside Temperature Offset in C*5 +128
 #define hasSoilSensor       eeprom_read_byte(&soilSensor)
 #define settOutOff(new)     eeprom_update_byte(&tOutOff, new)
 #define gettOutOff          (eeprom_read_byte(&tOutOff))
-#define settInOff(new)     eeprom_update_byte(&tInOff, new)
-#define gettInOff          (eeprom_read_byte(&tInOff))
+#define settInOff(new)      eeprom_update_byte(&tInOff, new)
+#define gettInOff           (eeprom_read_byte(&tInOff))
+#define setFlashAdr(new)    eeprom_update_dword(&flashAdr, new)
+#define getFlashAdr         (eeprom_read_dword(&flashAdr))
 
 struct reading getReading(void);
 void printReading(struct reading in);
@@ -91,10 +96,32 @@ int main(void)
             takeMessurment = false;
             PORTC.DIRSET = 0x08;
             struct reading in = getReading();
-            //printReading(in);
-            in.iaq++;
-            //TODO: Store Reading on SD Card
-            _delay_ms(10);
+            printReading(in);
+
+            unsigned long adrTmp = getFlashAdr;     //Jump to Adress of the new Reading
+            adrTmp += REDSIZE;
+            if (adrTmp > ADRMAX - REDSIZE)
+                adrTmp = 0;
+            setFlashAdr(adrTmp);
+
+            if (adrTmp % 4096)                      //Erase Sector if a new Sector is entert
+                sectorErase4kB(adrTmp);
+
+            byteWrite(in.timeRead >> 24,    adrTmp + 0);
+            byteWrite(in.timeRead >> 16,    adrTmp + 1);
+            byteWrite(in.timeRead >> 8,     adrTmp + 2);
+            byteWrite(in.timeRead >> 0,     adrTmp + 3);
+            byteWrite(in.light >> 8,        adrTmp + 4);
+            byteWrite(in.light >> 0,        adrTmp + 5);
+            byteWrite(in.temperaturOut >> 0,adrTmp + 6);
+            byteWrite(in.temperaturIn >> 8, adrTmp + 7);
+            byteWrite(in.temperaturIn >> 0, adrTmp + 8);
+            byteWrite(in.pressure >> 8,     adrTmp + 9);
+            byteWrite(in.pressure >> 0,     adrTmp + 10);
+            byteWrite(in.humidityAir >> 0,  adrTmp + 11);
+            byteWrite(in.humiditySoil >> 0, adrTmp + 12);
+            byteWrite(in.iaq >> 8,          adrTmp + 13);
+            byteWrite(in.iaq >> 0,          adrTmp + 14);
         }
         else if(instruct)
         {

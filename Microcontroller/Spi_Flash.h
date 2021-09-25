@@ -75,7 +75,6 @@ unsigned long JEDEC_ID (void)    //Read JEDEC-ID
 
 void READ (unsigned char *out, unsigned char n, unsigned long adress)   //Read n Bytes from adress onwards
 {
-    WREN();
     CE_LOW;
     SPI_SendData(0x03);
     SPI_SendData(adress >> 16);
@@ -105,6 +104,7 @@ void WRSR (void)        //Write Status Register
 
 void byteWrite (unsigned char in, unsigned long adress)   //Write in to adress
 {
+    WREN();
     CE_LOW;
     SPI_SendData(0x02);
     SPI_SendData(adress >> 16);
@@ -113,6 +113,25 @@ void byteWrite (unsigned char in, unsigned long adress)   //Write in to adress
     SPI_SendData(in);
     CE_HIGH;
     _delay_us(TBP);
-} 
+}
+
+void chipErase(void)
+{
+    WREN();
+    CE_LOW;
+    SPI_SendData(0x60);
+    CE_HIGH;
+}
+
+void sectorErase4kB(unsigned long adress)   //Erases Sektor in whitch adress is lokated
+{
+    WREN();
+    CE_LOW;
+    SPI_SendData(0x20);
+    SPI_SendData(adress >> 16);
+    SPI_SendData(adress >> 8);
+    SPI_SendData(adress >> 0);
+    CE_HIGH;
+}
 
 #endif //SPI_FLASH_H_
