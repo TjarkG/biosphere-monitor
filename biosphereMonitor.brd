@@ -3279,7 +3279,6 @@ Designrules for JLCPCB 2-Layer Boards</description>
 <wire x1="-15.32" y1="-28.68" x2="-16.38" y2="-27.62" width="0.1524" layer="1"/>
 <wire x1="-19.67" y1="-27.62" x2="-19.67" y2="-17.14" width="0.1524" layer="1"/>
 <wire x1="-19.67" y1="-17.14" x2="-19.83" y2="-16.98" width="0.1524" layer="1"/>
-<wire x1="3.625" y1="-24.035" x2="10.26" y2="-27.338" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$1">
 <contactref element="JP2" pad="5"/>
