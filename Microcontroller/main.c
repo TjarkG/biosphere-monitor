@@ -31,6 +31,7 @@
 #include "itoa.h"
 #include "../reading.h"
 #include "bme.h"
+#include "Spi_Flash.h"
 
 uint32_t timeCounter = 0;
 volatile bool takeMessurment = false;
@@ -78,19 +79,14 @@ int main(void)
     sensType = bmeInit();
     sei();
     set_sleep_mode(SLEEP_MODE_EXT_STANDBY);
+    Flash_init();
     uartWriteString("BT\r\n");
     _delay_ms(10);
     sleep_enable();
 
     while (1)
     {
-        if(!(PORTD.IN & (1<<0)))
-        {
-            //PORTC.DIRCLR = 0x08;
-            //sleep_enable();
-            //sleep_cpu();
-        }
-        else if(takeMessurment)
+        if(takeMessurment)
         {
             takeMessurment = false;
             PORTC.DIRSET = 0x08;
@@ -182,6 +178,8 @@ int selfDiagnosse(void)     //returns self diagnosis errorcode
         return 2;
     if(getBmePress() < 300 || getBmePress()  > 1100)
         return 3;
+    if(JEDEC_ID() != 0xBF258D)      //Check for Flash Signature
+        return 4;
     return 0;
 }
 
