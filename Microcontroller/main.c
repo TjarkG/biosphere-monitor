@@ -39,7 +39,6 @@ uint32_t timeCounter = 0;
 volatile bool takeMessurment = false;
 volatile bool instruct = false;
 char uartBuf[16];
-char sensType;
 unsigned long f = 0;
 unsigned long fOld= 0;
 unsigned int  EEMEM intervall = 600;     //sampling intervall in Seconds
@@ -81,11 +80,10 @@ int main(void)
 
     ADC0_INIT;
     UART0INIT;
-    sensType = bmeInit();
+    bmeInit();
     sei();
     set_sleep_mode(SLEEP_MODE_EXT_STANDBY);
     Flash_init();
-    uartWriteString("BT\r\n");
     _delay_ms(10);
     sleep_enable();
 
@@ -183,6 +181,8 @@ int main(void)
                 timeCounter = atol(uartBuf+2);
             else if(strncmp(uartBuf,"DR",2) == 0)
                 uartWriteIntLine(selfDiagnosse());
+            else if(strncmp(uartBuf,"ID",2) == 0)
+                uartWriteIntLine(bmeReadRegister(0xD0));
             instruct = 0;
         }
     }
@@ -195,7 +195,7 @@ struct reading getReading(void)     //reuturns fresh data
     in.temperaturOut = getOutsideTemp();
     in.light = getLight();
     in.humiditySoil = getSoilHum();
-    if(sensType > 0)
+    if(id > 0)
     {
         in.temperaturIn = getBmeTemp();
         in.pressure = getBmePress();
