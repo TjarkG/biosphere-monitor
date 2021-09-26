@@ -200,6 +200,10 @@ struct reading getReading(void)     //reuturns fresh data
         in.temperaturIn = getBmeTemp();
         in.pressure = getBmePress();
     }
+    if(id >=0x60) //BME installed
+        in.humidityAir = getBmeHumidity();
+    if(id == 0x61)
+        in.iaq = getBmeIaq();
     return in;
 }
 

@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     char i = 2;
     while (--argc > 0)
     {
-        unsigned char buf[64];
+        unsigned char buf[128];
         if(strncmp(argv[i], "-h", 2) == 0)
             printHelp();
         else if(strncmp(argv[i], "-r", 2) == 0)
@@ -53,7 +53,9 @@ int main(int argc, char *argv[])
             printReading(stdout, getReading(buf));
         }
         else if(strncmp(argv[i], "-s", 2) == 0)
+        {
             storeReadings();
+        }
         else if(strncmp(argv[i], "-f", 2) == 0)
         {
             time_t rawtime;

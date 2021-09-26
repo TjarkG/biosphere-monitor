@@ -18,6 +18,8 @@
 #include <util/delay.h>
 #include "ATxmega_help.h"
 
+#define TARGTEMP 300    //Heater Temperature in °C
+
 long t_fine;    //Fine Temperatur for Pressur Compensation
 char id;        //Sensor ID
 
@@ -124,6 +126,21 @@ char bmeInit(void)
         dig.P9 = bmeReadRegister(0x9E);
         dig.P9 |= bmeReadRegister(0x9F)<<8;
         dig.P10 = bmeReadRegister(0xA0);
+
+        dig.H1 = (bmeReadRegister(0xE2) & 0xF);
+        dig.H1 |= bmeReadRegister(0xE3)<<4;
+        dig.H2 = (bmeReadRegister(0xE2)>>4 & 0xF);
+        dig.H2 |= bmeReadRegister(0xE1)<<4;
+        dig.H3 = bmeReadRegister(0xE4);
+        dig.H4 = bmeReadRegister(0xE5);
+        dig.H5 = bmeReadRegister(0xE6);
+        dig.H6 = bmeReadRegister(0xE7);
+        dig.H7 = bmeReadRegister(0xE8);
+
+        dig.GH1 = bmeReadRegister(0xED);
+        dig.GH2 = bmeReadRegister(0xEB);
+        dig.GH2 |= bmeReadRegister(0xEC)<<8;
+        dig.GH3 = bmeReadRegister(0xEE);
     }
 
     return id;
@@ -193,7 +210,7 @@ unsigned short getBmeTemp(void)  //returns BME Temperatur in °C*10
         _delay_ms(20);
         data = bmeRead20Bite(0xFA);
 
-        bmeWriteRegister(0xF4, 0);
+        bmeWriteRegister(0x74, 0);
         long var1, var2;
         var1  = ((((data>>3) - ((long)dig.T1<<1))) * ((long)dig.T2)) >> 11;
         var2  = (((((data>>4) - ((long)dig.T1)) * ((data>>4) - ((long)dig.T1))) >> 12) * ((long)dig.T3)) >> 14;
@@ -213,26 +230,27 @@ unsigned short getBmeTemp(void)  //returns BME Temperatur in °C*10
         var2 = (var1 * (int32_t)dig.T2) >> 11; 
         var3 = ((((var1 >> 1) * (var1 >> 1)) >> 12) * ((int32_t)dig.T3 << 4)) >> 14; 
         t_fine = var2 + var3; 
-        return ((t_fine * 5) + 128) >> 8; 
+        return (((t_fine * 5) + 128) >> 8) / 10; 
     }
     return 0;
 }
 
 unsigned int getBmePress(void)  //returns BME Pressure in hPa
 {
+    long data = 0;
+    unsigned long p = 0;
+    bmeWriteRegister(0xE0, 0xB6);
+    _delay_ms(25);
     if(id == 0x58 || id == 0x60)
     {
-        long data = 0;
-        bmeWriteRegister(0xE0, 0xB6);
-        _delay_ms(50);
         bmeWriteRegister(0xF4, 0x01 | (0b0011 << 2) | (0b0011 << 5));
         _delay_ms(50);
         data |= ((long)bmeReadRegister(0xF7) << 12);
         data |= ((long)bmeReadRegister(0xF8) << 8);
         data |= ((long)bmeReadRegister(0xF9) << 0);
         bmeWriteRegister(0xF4, 0);
+
         long var1, var2;
-        unsigned long p;
         var1 = (((long)t_fine)>>1) - (long)64000;
         var2 = (((var1>>2) * (var1>>2)) >> 11 ) * ((long)dig.P6);
         var2 = var2 + ((var1*((long)dig.P5))<<1);
@@ -249,9 +267,111 @@ unsigned int getBmePress(void)  //returns BME Pressure in hPa
         var1 = (((long)dig.P9) * ((long)(((p>>3) * (p>>3))>>13)))>>12;
         var2 = (((long)(p>>2)) * ((long)dig.P8))>>13;
         p = (unsigned long)((long)p + ((var1 + var2 + dig.P7) >> 4));
-        return p/100;
+    }
+    if(id == 0x61)
+    {
+        bmeWriteRegister(0x74, 0x01 | (0b010 << 2) | (0b010 << 5));
+        _delay_ms(50);
+        data |= ((long)bmeReadRegister(0xF7) << 12);
+        data |= ((long)bmeReadRegister(0xF8) << 8);
+        data |= ((long)bmeReadRegister(0xF9) << 0);
+        bmeWriteRegister(0x74, 0);
+
+        long var1, var2, var3;
+        var1 = ((int32_t)t_fine >> 1) - 64000;  
+        var2 = ((((var1 >> 2) * (var1 >> 2)) >> 11) * (int32_t)dig.P6) >> 2;  
+        var2 = var2 + ((var1 * (int32_t)dig.P5) << 1);   
+        var2 = (var2 >> 2) + ((int32_t)dig.P4 << 16);  
+        var1 = (((((var1 >> 2) * (var1 >> 2)) >> 13) *((int32_t)dig.P3 << 5)) >> 3) + (((int32_t)dig.P2 * var1) >> 1); 
+        var1 = var1 >> 18;  
+        var1 = ((32768 + var1) * (int32_t)dig.P1) >> 15;  
+        p = 1048576 - data;  
+        p = (uint32_t)((p - (var2 >> 12)) * ((uint32_t)3125));  
+        if (p >= (1UL << 30))  
+            p = ((p / (uint32_t)var1) << 1);  
+        else  
+            p = ((p << 1) / (uint32_t)var1);  
+        var1 = ((int32_t)dig.P9 * (int32_t)(((p >> 3) * (p >> 3)) >> 13)) >> 12;  
+        var2 = ((int32_t)(p >> 2) * (int32_t)dig.P8) >> 13;  
+        var3 = ((int32_t)(p >> 8) * (int32_t)(p >> 8) * (int32_t)(p >> 8) * (int32_t)dig.P10) >> 17;  
+        p = (int32_t)(p) + ((var1 + var2 + var3 + ((int32_t)dig.P7 << 7)) >> 4); 
+    }
+    return p/100;
+}
+
+unsigned char getBmeHumidity(void)
+{
+    int data = 0;
+    bmeWriteRegister(0xE0, 0xB6);
+    _delay_ms(25);
+    if(id == 0x60)
+    {
+        return 0;
+    }
+    else if(id == 0x61)
+    {
+        bmeWriteRegister(0x72, 0b011);
+        bmeWriteRegister(0x74, 0x01);
+        _delay_ms(50);
+        data |= ((long)bmeReadRegister(0x25) << 8);
+        data |= ((long)bmeReadRegister(0x26) << 0);
+        bmeWriteRegister(0x74, 0);
+
+        long var1, var2, var3, var4, var5, var6;
+        long temp_scaled = ((t_fine * 5) + 128) >> 8; 
+        var1 = (int32_t)data - (int32_t)((int32_t)dig.H1 << 4) - (((temp_scaled * (int32_t)dig.H3) / ((int32_t)100)) >> 1); 
+        var2 = ((int32_t)dig.H2 * (((temp_scaled * (int32_t)dig.H4) / ((int32_t)100)) + (((temp_scaled * ((temp_scaled * (int32_t)dig.H5) / ((int32_t)100))) >> 6) / ((int32_t)100)) + ((int32_t)(1 << 14)))) >> 10; 
+        var3 = var1 * var2; 
+        var4 = (((int32_t)dig.H6 << 7) + ((temp_scaled * (int32_t)dig.H7) / ((int32_t)100))) >> 4; 
+        var5 = ((var3 >> 14) * (var3 >> 14)) >> 10; 
+        var6 = (var4 * var5) >> 1;
+        return ((((var3 + var6) >> 10) * ((int32_t) 1000)) >> 12) / 1000; 
     }
     return 0;
+}
+
+int getBmeIaq(void)
+{
+    long varh1, varh2, varh3, varh4, varh5;
+    long amb_temp = ((t_fine * 5) + 128) >> 8;
+    unsigned char res_heat_range = (bmeReadRegister(0x02) & 0x30) >> 4;
+    signed char res_heat_val = bmeReadRegister(0x00);
+    varh1 = (((int32_t)amb_temp * dig.GH3) / 10) << 8; 
+    varh2 = (dig.GH1 + 784) * (((((dig.GH2 + 154009) * TARGTEMP * 5) / 100) + 3276800) / 10); 
+    varh3 = varh1 + (varh2 >> 1); 
+    varh4 = (varh3 / (res_heat_range + 4)); 
+    varh5 = (131 * res_heat_val) + 65536; 
+    long res_heat_x100 = (int32_t)(((varh4 / varh5) - 250) * 34); 
+    unsigned char res_heat_x = (uint8_t)((res_heat_x100 + 50) / 100);
+    bmeWriteRegister(0x5A, res_heat_x);
+    bmeWriteRegister(0x64, 25);
+
+
+    bmeWriteRegister(0x71, 0x08);
+    //_delay_ms(50);
+
+    while (bmeReadRegister(0x1D) & (1 << 6))
+    {
+        uartWriteString("waiting");
+    }
+    unsigned char gas_range = bmeReadRegister(0x2B) & 0x0F;
+    unsigned int gas_adc = (bmeReadRegister(0x2B) & 0xC0) >> 6;
+    gas_adc |= bmeReadRegister(0x2A) << 2;
+    char range_switching_error = bmeReadRegister(0x04);
+
+    uint32_t lookup_table1[16] = {
+        2147483647, 2147483647, 2147483647, 2147483647, 2147483647, 2126008810, 2147483647, 2130303777,
+        2147483647, 2147483647, 2143188679, 2136746228, 2147483647, 2126008810, 2147483647, 2147483647
+    };
+    uint32_t lookup_table2[16] = {
+        4096000000, 2048000000, 1024000000, 512000000, 255744255, 127110228, 64000000, 32258064,
+        16016016, 8000000, 4000000, 2000000, 1000000, 500000, 250000, 125000
+    };
+
+    int64_t var1 = ((int64_t)(((1340 + (5 * (int64_t)range_switching_error)) * (int64_t)lookup_table1[gas_range])) >> 16);
+    int64_t var2 = (int64_t)(gas_adc << 15) - (int64_t)(1UL << 24) + var1; 
+    int32_t gas_res = (int32_t)((((int64_t)(lookup_table2[gas_range]  * (int64_t)var1) >> 9) + (var2 >> 1)) / var2); 
+    return 0;//gas_res;
 }
 
 #endif //bme_H_
