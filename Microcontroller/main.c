@@ -96,7 +96,6 @@ int main(void)
             takeMessurment = false;
             PORTC.DIRSET = 0x08;
             struct reading in = getReading();
-            printReading(in);
 
             unsigned long adrTmp = getFlashAdr;     //Jump to Adress of the new Reading
             adrTmp += REDSIZE;
@@ -104,7 +103,7 @@ int main(void)
                 adrTmp = 0;
             setFlashAdr(adrTmp);
 
-            if (adrTmp % 4096)                      //Erase Sector if a new Sector is entert
+            if (adrTmp % 4096 == 0)    //Erase Sector if a new Sector is entert
                 sectorErase4kB(adrTmp);
 
             byteWrite(in.timeRead >> 24,    adrTmp + 0);
@@ -133,14 +132,35 @@ int main(void)
             }
             else if(strncmp(uartBuf,"AR",2) == 0)
             {
-                //TODO:print readings
-                for(int i = 0; i<10; i++)
+                unsigned long adr = getFlashAdr;
+                for(unsigned long i = 0; i <= adr; i += REDSIZE)
                 {
-                    struct reading in = getReading();
+                    struct reading in;
+                    unsigned char tmp[REDSIZE];
+                    READ(tmp, sizeof(tmp), i);
+
+                    in.timeRead         = (long) tmp[0] << 24;
+                    in.timeRead         |= (long) tmp[1] << 16;
+                    in.timeRead         |= (long) tmp[2] << 8;
+                    in.timeRead         |= (long) tmp[3] << 0;
+                    in.light            = (int) tmp[4] << 8;
+                    in.light            |= tmp[5];
+                    in.temperaturOut    = tmp[6];
+                    in.temperaturIn     = (int) tmp[7] << 8;
+                    in.temperaturIn     |= tmp[8];
+                    in.pressure         = (int) tmp[9] << 8;
+                    in.pressure         |= tmp[10];
+                    in.humidityAir      = tmp[11];
+                    in.humiditySoil     = tmp[12];
+                    in.iaq              = (int) tmp[13] << 8;
+                    in.iaq              |= tmp[14];
+
                     printReading(in);
                 }
                 uartWriteString("EOF\r\n");
             }
+            else if(strncmp(uartBuf,"DEL",3) == 0)
+                setFlashAdr(ADRMAX);
             else if(strncmp(uartBuf,"OGT",3) == 0)
                 uartWriteIntLine(gettOutOff);
             else if(strncmp(uartBuf,"OST",3) == 0)

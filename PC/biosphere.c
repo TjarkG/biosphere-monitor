@@ -86,6 +86,12 @@ int main(int argc, char *argv[])
             setCommand(buf);
             printf("Soil Sensor set:%s Soil Sensor vertified:%ld\n",argv[i]+2,getCommand("SG"));
         }
+        else if(strncmp(argv[i], "-delete", 8) == 0)
+        {
+            sprintf(buf, "DEL");
+            setCommand(buf);
+            printf("Flash Deleted\n");
+        }
         else if(strncmp(argv[i], "-ct", 3) == 0)
         {
             int tIn = atof(argv[i]+3)*5;

@@ -12,6 +12,7 @@ which can ocure in any order, listed below:
 * -t run self test
 * -g enable (1) or disable (0) Soil Sensor, -g? to show current state
 * -ct set current ambient Temperature(°C), used for Offset Calibration
+* -delete delete Flash
 
 Commands to compile the Current Software after cloning:
 

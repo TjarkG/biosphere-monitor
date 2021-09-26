@@ -20,6 +20,7 @@
 #define CE_LOW  PORTC.OUTCLR = (1 << 4)
 #define CE_HIGH PORTC.OUTSET = (1 << 4)
 #define TBP 12                                     //Wait Time after Write, in us
+#define TSE 27                                     //Wait Time after Sector Erase, in ms
 
 void Flash_init(void);
 unsigned char SPI_SendData(unsigned char Data);
@@ -132,6 +133,7 @@ void sectorErase4kB(unsigned long adress)   //Erases Sektor in whitch adress is 
     SPI_SendData(adress >> 8);
     SPI_SendData(adress >> 0);
     CE_HIGH;
+    _delay_ms(TSE);
 }
 
 #endif //SPI_FLASH_H_
