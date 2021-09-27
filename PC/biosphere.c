@@ -227,8 +227,8 @@ void storeReadings(void)
         (void) gmtime_r(&in.timeRead, &lt);
         strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
-        fprintf(out, "%s,%d,%2.1f,%2.1f,%d,%d,%d,%d\n",\
-        tmStr, in.light, in.temperaturOut/5.0, in.temperaturIn/10.0, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
+        fprintf(out, "%s,%d,\"%d,%d\",\"%d,%d\",%d,%d,%d,%d\n",\
+        tmStr, in.light, in.temperaturOut/5, in.temperaturOut%5, in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
         lnCnt++;
     }
     fclose(out);
