@@ -80,14 +80,6 @@ int main(int argc, char *argv[])
             else
                 printf("Error detected, Code %d\n",error);
         }
-        else if(strncmp(argv[i], "-g?", 3) == 0)
-            printf("Current Soil Sensor State: %li\n",getCommand("SG"));
-        else if(strncmp(argv[i], "-g", 2) == 0)
-        {
-            sprintf(buf, "SS%s",argv[i]+2);
-            setCommand(buf);
-            printf("Soil Sensor set:%s Soil Sensor vertified:%ld\n",argv[i]+2,getCommand("SG"));
-        }
         else if(strncmp(argv[i], "-delete", 8) == 0)
         {
             sprintf(buf, "DEL");

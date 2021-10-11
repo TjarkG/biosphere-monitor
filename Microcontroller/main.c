@@ -6,6 +6,9 @@
  * Target : BiosphereMonitor.brd
  * Fuses:
  * avrdude -c avrispmkII -p atxmega32a4u -U fuse1:w:0x00:m -U fuse2:w:0xdf:m -U fuse4:w:0xfe:m -U fuse5:w:0xff:m
+ * 
+ * Initialazation of a new Unit:
+ * cc PC/biosphere.c -o PC/biosphere; ./PC/biosphere /dev/ttyUSB0 -delete -f -ct23 -i60 -t -r
  */ 
 
 #ifndef __AVR_ATxmega32A4U__
@@ -44,15 +47,12 @@ char uartBuf[16];
 unsigned long f = 0;
 unsigned long fOld= 0;
 unsigned int  EEMEM intervall = 600;     //sampling intervall in Seconds
-unsigned char EEMEM soilSensor = 0;      //is a Soil Sensor connected (bool)
 unsigned char EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
 unsigned char EEMEM tInOff = 0;          //Inside Temperature Offset in C*5 +128
 unsigned long EEMEM flashAdr = 0;        //Adress of the start of the last reading in the SPI Flash
 
 #define setIntervall(new)   eeprom_update_word(&intervall, new)
 #define getIntervall        eeprom_read_word(&intervall)
-#define setSoilSensor(new)  eeprom_update_byte(&soilSensor, new)
-#define hasSoilSensor       eeprom_read_byte(&soilSensor)
 #define settOutOff(new)     eeprom_update_byte(&tOutOff, new)
 #define gettOutOff          (eeprom_read_byte(&tOutOff))
 #define settInOff(new)      eeprom_update_byte(&tInOff, new)
@@ -173,10 +173,6 @@ int main(void)
                 uartWriteIntLine(getIntervall);
             else if(strncmp(uartBuf,"IS",2) == 0)
                 setIntervall(atoi(uartBuf+2));
-            else if(strncmp(uartBuf,"SG",2) == 0)
-                uartWriteIntLine(hasSoilSensor);
-            else if(strncmp(uartBuf,"SS",2) == 0)
-                setSoilSensor(atoi(uartBuf+2));
             else if(strncmp(uartBuf,"TG",2) == 0)
                 uartWriteIntLine(timeCounter);
             else if(strncmp(uartBuf,"TS",2) == 0)
@@ -299,7 +295,7 @@ unsigned char getSoilHum(void)  //returns Soil Humidity in %
         tempArr[i] = ADCA.CH2.RES;
 	}
     ADCA.CTRLA &= ~ADC_ENABLE_bm;
-    return getMedian(tempArr, ADCN)*100/4096;
+    return (getMedian(tempArr, ADCN)*100/4096)-4;
 }
 
 ISR(USARTC0_RXC_vect)       //UART ISR

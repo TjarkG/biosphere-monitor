@@ -10,7 +10,6 @@ which can ocure in any order, listed below:
 * -f syncronize time
 * -i set messurment intervall in s, use -i? to get current intervall
 * -t run self test
-* -g enable (1) or disable (0) Soil Sensor, -g? to show current state
 * -ct set current ambient Temperature(°C), used for Offset Calibration
 * -delete delete Flash
 
