@@ -371,7 +371,8 @@ int getBmeIaq(void)
     int64_t var1 = ((int64_t)(((1340 + (5 * (int64_t)range_switching_error)) * (int64_t)lookup_table1[gas_range])) >> 16);
     int64_t var2 = (int64_t)(gas_adc << 15) - (int64_t)(1UL << 24) + var1; 
     int32_t gas_res = (int32_t)((((int64_t)(lookup_table2[gas_range]  * (int64_t)var1) >> 9) + (var2 >> 1)) / var2); 
-    return 0;//gas_res;
+    gas_res = 0;
+    return gas_res;
 }
 
 #endif //bme_H_

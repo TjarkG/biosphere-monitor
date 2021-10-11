@@ -4,10 +4,12 @@
  * Created: 26.08.2021 21:30:14
  * Author : Tjark Gaudich
  * Target : BiosphereMonitor.brd
+ * Fuses:
+ * avrdude -c avrispmkII -p atxmega32a4u -U fuse1:w:0x00:m -U fuse2:w:0xdf:m -U fuse4:w:0xfe:m -U fuse5:w:0xff:m
  */ 
 
-#ifndef __AVR_ATxmega16A4U__
-#define __AVR_ATxmega16A4U__
+#ifndef __AVR_ATxmega32A4U__
+#define __AVR_ATxmega32A4U__
 #endif
 
 #define F_CPU 16000000UL
