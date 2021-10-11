@@ -67,7 +67,21 @@ char bmeInit(void)
     TWIC.MASTER.CTRLA = TWI_MASTER_ENABLE_bm;
     TWIC.MASTER.STATUS |= TWI_MASTER_BUSSTATE_IDLE_gc;
 
-    id = bmeReadRegister(0xD0);      //Get Device ID
+    bmeSelectReg(0xD0);         //Get Device ID
+    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
+    TWIC.MASTER.ADDR = (0x76 << 1) | 0x01;
+    int i = 0;
+    while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm))
+    {
+        _delay_us(1);
+        i++;
+        if(i > 1000)
+            return 0;
+    }
+    while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm));
+    id = TWIC.MASTER.DATA;
+    TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
+
     /*Sensor IDs
     * 0x58 BMP280
     * 0x60 BME280

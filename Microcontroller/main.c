@@ -180,7 +180,12 @@ int main(void)
             else if(strncmp(uartBuf,"DR",2) == 0)
                 uartWriteIntLine(selfDiagnosse());
             else if(strncmp(uartBuf,"ID",2) == 0)
-                uartWriteIntLine(bmeReadRegister(0xD0));
+            {
+                if(id > 0)
+                    uartWriteIntLine(bmeReadRegister(0xD0));
+                else
+                    uartWriteIntLine(0);
+            }
             instruct = 0;
         }
     }
@@ -193,12 +198,12 @@ struct reading getReading(void)     //reuturns fresh data
     in.temperaturOut = getOutsideTemp();
     in.light = getLight();
     in.humiditySoil = getSoilHum();
-    if(id > 0)
+    if(id > 0) //BME installed
     {
         in.temperaturIn = getBmeTemp();
         in.pressure = getBmePress();
     }
-    if(id >=0x60) //BME installed
+    if(id >=0x60)
         in.humidityAir = getBmeHumidity();
     if(id == 0x61)
         in.iaq = getBmeIaq();
@@ -223,10 +228,13 @@ int selfDiagnosse(void)     //returns self diagnosis errorcode
 {
     if(getOutsideTemp() == 0 || getOutsideTemp() > 250)
         return 1;
-    if(getBmeTemp() == 0 || getBmeTemp()  > 850)
-        return 2;
-    if(getBmePress() < 300 || getBmePress()  > 1100)
-        return 3;
+    if(id > 0)  //if a BME is installed
+    {
+        if(getBmeTemp() == 0 || getBmeTemp()  > 850)
+            return 2;
+        if(getBmePress() < 300 || getBmePress()  > 1100)
+            return 3;
+    }
     if(JEDEC_ID() != 0xBF258D)      //Check for Flash Signature
         return 4;
     return 0;
