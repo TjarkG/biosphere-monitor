@@ -62,7 +62,20 @@ int main(int argc, char *argv[])
             time ( &rawtime );
             sprintf(buf, "TS%ld",rawtime);
             setCommand(buf);
-            printf("Syncronized System Times\n");
+            if(abs(rawtime - getCommand("TG")) > 3)
+            {
+                printf("first syncronization atempt faild, trying again\n");
+                time_t rawtime;
+                time ( &rawtime );
+                sprintf(buf, "TS%ld",rawtime);
+                setCommand(buf);
+                if(abs(rawtime - getCommand("TG")) > 3)
+                    fprintf(stderr, "Time Syncronization failed\n");
+                else
+                    printf("Syncronized System Times on second attempt\n");
+            }
+            else
+                printf("Syncronized System Times\n");
         }
         else if(strncmp(argv[i], "-i?", 3) == 0)
             printf("Current Messurment intervall: %li\n",getCommand("IG"));
