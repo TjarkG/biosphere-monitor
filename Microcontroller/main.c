@@ -62,7 +62,7 @@ unsigned long EEMEM flashAdr = 0;        //Adress of the start of the last readi
 
 struct reading getReading(void);
 void printReading(struct reading in);
-int selfDiagnosse(void);
+long selfDiagnosse(void);
 void quicksort(unsigned int *data, unsigned int n);
 unsigned int getMedian(unsigned int *rd, const unsigned int n);
 unsigned char getOutsideTemp(void);
@@ -224,20 +224,56 @@ void printReading(struct reading in)    //prints in to UART
     }
 }
 
-int selfDiagnosse(void)     //returns self diagnosis errorcode
+long selfDiagnosse(void)     //returns self diagnosis errorcode
 {
-    if(getOutsideTemp() == 0 || getOutsideTemp() > 250)
-        return 1;
-    if(id > 0)  //if a BME is installed
+    long errCode = 0;
+
+    ADCA.CTRLA = ADC_ENABLE_bm;                     //Read Voltage at Vref Pin. Should always be 4095 counts
+    ADCA.CH1.CTRL |= ADC_CH_START_bm;
+    while(!(ADCA.CH1.INTFLAGS & ADC_CH_CHIF_bm));
+    ADCA.CH1.INTFLAGS = ADC_CH_CHIF_bm;
+    if(ADCA.CH1.RES < 4090)
+        errCode |= (1 << 1);
+    ADCA.CTRLA &= ~ADC_ENABLE_bm;
+
+    time_t timeTmp = timeCounter;                   //is the RTC running?
+    _delay_ms(1010);
+    if(timeCounter - timeTmp < 1)
+        errCode |= (1 << 2);
+
+    if(timeCounter < 1577833200)                    //is the RTC initialized (time after 2020)?
+        errCode |= (1 << 3);
+
+    if(JEDEC_ID() != 0xBF258D)                      //Flash Signature as expected?
+        errCode |= (1 << 4);
+    //TODO: Flash read/write test
+
+    if(!(PORTC.IN & (1 << 2)))                      //UART Rx and Tx should be high when nothing is tranmited
+        errCode |= (1 << 7);
+    if(!(PORTC.IN & (1 << 3)))
+        errCode |= (1 << 8);
+
+    unsigned char tTmp = getOutsideTemp();          //Temperatur Sensor Plausibility
+    if(tTmp == 0 || tTmp > 250)
+        errCode |= (1 << 9);
+
+    if(fOld < 1100 || fOld > 10000)                 //Light Frequency Range
+        errCode |= (1 << 10);
+
+    if(getIntervall == UINT16_MAX)                  //Sampling Intervall not set
+        errCode |= (1 << 11);
+
+    if(gettOutOff == UINT8_MAX || gettInOff == UINT8_MAX)//Temperatur Offset not set
+        errCode |= (1 << 12);
+
+    if(id == 0)                                     //BME Connected?
+        errCode |= (1 << 13);
+    else                                            //BME Readings in range?
     {
-        if(getBmeTemp() == 0 || getBmeTemp()  > 850)
-            return 2;
-        if(getBmePress() < 300 || getBmePress()  > 1100)
-            return 3;
+        if(getBmeTemp() == 0 || getBmeTemp()  > 850 || getBmePress() < 300 || getBmePress()  > 1100)
+            errCode |= (1 << 14);
     }
-    if(JEDEC_ID() != 0xBF258D)      //Check for Flash Signature
-        return 4;
-    return 0;
+    return errCode;
 }
 
 void quicksort(unsigned int *data, unsigned int n)       //sorts data till n ascending
@@ -286,7 +322,7 @@ unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*5
 
 unsigned int getLight(void)  //returns iluminace in lux
 {
-    if(fOld < 1300)     //Sensor cutoff Frequnecy
+    if(fOld < 1100)     //Sensor cutoff Frequency
         return 0;
     return (unsigned int) ((5.60669 * pow(2.3425, (fOld/1000.0)) ) + 141.444);
 }

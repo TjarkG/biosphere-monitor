@@ -57,7 +57,7 @@
     ADCA.CH0.CTRL = ADC_CH_INPUTMODE0_bm;                                       \
     ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN3_gc;                                   \
     ADCA.CH1.CTRL = ADC_CH_INPUTMODE0_bm;                                       \
-    ADCA.CH1.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc;                                   \
+    ADCA.CH1.MUXCTRL = ADC_CH_MUXPOS_PIN0_gc;                                   \
     ADCA.CH2.CTRL = ADC_CH_INPUTMODE0_bm;                                       \
     ADCA.CH2.MUXCTRL = ADC_CH_MUXPOS_PIN2_gc
 
