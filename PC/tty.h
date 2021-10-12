@@ -69,7 +69,7 @@ void startUART(char *portname)      //opens UART portname
     if (fd < 0)
     {
         fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
-        return;
+        exit(2);
     }
     //baudrate 115200, 8 bits, no parity, 1 stop bit
     set_interface_attribs(fd, B115200);
