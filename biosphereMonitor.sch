@@ -28126,13 +28126,6 @@ Source: http://www.ftdichip.com/Documents/DataSheets/DS_FT232R_v104.pdf</descrip
 </net>
 <net name="USB_RX" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="PC2"/>
-<wire x1="27.94" y1="-10.16" x2="45.72" y2="-10.16" width="0.1524" layer="91"/>
-<label x="30.48" y="-10.16" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="USB_TX" class="0">
-<segment>
 <pinref part="IC1" gate="G$1" pin="PC3"/>
 <wire x1="27.94" y1="-7.62" x2="45.72" y2="-7.62" width="0.1524" layer="91"/>
 <label x="30.48" y="-7.62" size="1.778" layer="95"/>
@@ -28255,6 +28248,13 @@ Source: http://www.ftdichip.com/Documents/DataSheets/DS_FT232R_v104.pdf</descrip
 <wire x1="53.34" y1="-38.1" x2="53.34" y2="-43.18" width="0.1524" layer="91"/>
 <wire x1="53.34" y1="-43.18" x2="71.12" y2="-43.18" width="0.1524" layer="91"/>
 <label x="30.48" y="-38.1" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="USB_TX" class="0">
+<segment>
+<pinref part="IC1" gate="G$1" pin="PC2"/>
+<wire x1="27.94" y1="-10.16" x2="45.72" y2="-10.16" width="0.1524" layer="91"/>
+<label x="30.48" y="-10.16" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
