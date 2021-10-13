@@ -233,7 +233,7 @@ void storeReadings(void)
         strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
         fprintf(out, "%s,%d,\"%d,%d\",\"%d,%d\",%d,%d,%d,%d\n",\
-        tmStr, in.light, in.temperaturOut/5, in.temperaturOut%5, in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
+        tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
         lnCnt++;
     }
     fclose(out);
