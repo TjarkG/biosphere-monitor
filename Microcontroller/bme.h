@@ -59,7 +59,7 @@ unsigned char bmeReadRegister(const char reg);
 void bmeWriteRegister(const char reg, const unsigned char data);
 void bmeSelectReg(const char reg);
 unsigned short getBmeTemp(void);
-unsigned int getBmePress(void);
+unsigned int getBmePress(unsigned char inTemp);
 
 char bmeInit(void)
 {
@@ -249,8 +249,9 @@ unsigned short getBmeTemp(void)  //returns BME Temperatur in °C*10
     return 0;
 }
 
-unsigned int getBmePress(void)  //returns BME Pressure in hPa
+unsigned int getBmePress(unsigned char inTemp)  //returns BME Pressure in hPa
 {
+    t_fine = ((long) inTemp*512) + 26;
     long data = 0;
     unsigned long p = 0;
     bmeWriteRegister(0xE0, 0xB6);
