@@ -58,7 +58,7 @@ char bmeInit(void);
 unsigned char bmeReadRegister(const char reg);
 void bmeWriteRegister(const char reg, const unsigned char data);
 void bmeSelectReg(const char reg);
-unsigned short getBmeTemp(void);
+unsigned int getBmeTemp(void);
 unsigned int getBmePress(unsigned char inTemp);
 
 char bmeInit(void)
@@ -213,7 +213,7 @@ void bmeSelectReg(const char reg)
     while(!(TWIC.MASTER.STATUS & TWI_MASTER_WIF_bm));
 }
 
-unsigned short getBmeTemp(void)  //returns BME Temperatur in °C*10
+unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
 {
     long data = 0;
     bmeWriteRegister(0xE0, 0xB6);
@@ -229,7 +229,7 @@ unsigned short getBmeTemp(void)  //returns BME Temperatur in °C*10
         var1  = ((((data>>3) - ((long)dig.T1<<1))) * ((long)dig.T2)) >> 11;
         var2  = (((((data>>4) - ((long)dig.T1)) * ((data>>4) - ((long)dig.T1))) >> 12) * ((long)dig.T3)) >> 14;
         t_fine = var1 + var2;
-        return ((t_fine/512)/17) + 200;
+        return (t_fine/512);
     }
     else if(id == 0x61)
     {
