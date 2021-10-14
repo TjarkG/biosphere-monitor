@@ -229,7 +229,7 @@ unsigned short getBmeTemp(void)  //returns BME Temperatur in °C*10
         var1  = ((((data>>3) - ((long)dig.T1<<1))) * ((long)dig.T2)) >> 11;
         var2  = (((((data>>4) - ((long)dig.T1)) * ((data>>4) - ((long)dig.T1))) >> 12) * ((long)dig.T3)) >> 14;
         t_fine = var1 + var2;
-        return (t_fine/512);
+        return ((t_fine/512)/17) + 200;
     }
     else if(id == 0x61)
     {
