@@ -215,7 +215,7 @@ void storeReadings(void)
         fprintf(stderr, "can't open %s\n", OUTFL);
         exit(1);
     }
-    printf("Startet Saving Readings...\n");
+    fprintf(stdout, "Startet Saving Readings...\n");
     fprintf(out,"UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
     unsigned char buf[32];
     printUART("AR\r");
@@ -234,10 +234,15 @@ void storeReadings(void)
 
         fprintf(out, "%s,%d,\"%d,%d\",\"%d,%d\",%d,%d,%d,%d\n",\
         tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
+        if(lnCnt%250 == 0)
+        {
+            putc('#', stdout);
+            fflush(stdout);
+        }
         lnCnt++;
     }
     fclose(out);
-    printf("Finished! %u Readings Saved\n",lnCnt);
+    fprintf(stdout, "\nFinished! %u Readings Saved\n",lnCnt);
 }
 
 void printReading(FILE *ofp, struct reading in)
