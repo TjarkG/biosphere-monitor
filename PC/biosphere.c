@@ -19,6 +19,9 @@
 #define OUTFL "biosphere.csv"   //Name of Output File
 #define ESC 27
 
+static char *errCodes[] = {"UART Transmittion", "AVCC", "RTC running", "RTC initialized", "Flash Signatur", "Flash write", "Flash read", "UART Tx level",
+"UART Rx level", "Outside Temperatur", "Light Sensor", "Intervall set", "Temperatur offset set", "BME connected", "BME Readings in range"};
+
 long getCommand(const char *cmd);
 int setCommand(const char *cmd);
 struct reading getReading(char *buf);
@@ -87,11 +90,19 @@ int main(int argc, char *argv[])
         }
         else if(strncmp(argv[i], "-t", 2) == 0)
         {
+            printf("Self Test started\n");
             int error = getCommand("DR");
+
+            printf("\n");
+            for (int i = 0; i < (sizeof(errCodes) / sizeof(errCodes[0])); i++)
+            {
+                printf("%-24s%s\n", errCodes[i], (error & (1 << i)) ? "Error": "Ok");
+            }
+            
             if(error == 0)
-                printf("Self Test passed\n");
+                printf("\nSelf Test passed\n");
             else
-                printf("Error detected, Code %d\n",error);
+                printf("\nError detected, Code %d\n",error);
         }
         else if(strncmp(argv[i], "-delete", 8) == 0)
         {
