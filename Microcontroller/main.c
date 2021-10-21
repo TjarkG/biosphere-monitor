@@ -246,7 +246,19 @@ long selfDiagnosse(void)     //returns self diagnosis errorcode
 
     if(JEDEC_ID() != 0xBF258D)                      //Flash Signature as expected?
         errCode |= (1 << 4);
-    //TODO: Flash read/write test
+
+    if(flashAdr < (ADRMAX-4096))                    //Flash read/write check only if last sector isn't allready used
+    {
+        sectorErase4kB(ADRMAX-4096);
+        byteWrite(0xAA, ADRMAX-4096);
+        unsigned char test[1];
+        READ(test, 1, ADRMAX-4096);
+        if(test[0] == 0xFF)                            //Not Erased properly
+            errCode |= (1 << 5);
+        if(test[0] != 0xAA)                            //Read or Write went wrong
+            errCode |= (1 << 6);
+        sectorErase4kB(ADRMAX-4096);
+    }
 
     if(!(PORTC.IN & (1 << 2)))                      //UART Rx and Tx should be high when nothing is tranmited
         errCode |= (1 << 7);
