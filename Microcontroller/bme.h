@@ -49,6 +49,13 @@ struct cal    //compensation Values
     unsigned char H6;
     signed char H7;
 
+    unsigned char HE1;
+    signed short HE2;
+    unsigned char HE3;
+    signed short HE4;
+    signed short HE5;
+    signed char HE6;
+
     signed char GH1;
     signed short GH2;
     signed char GH3;
@@ -115,6 +122,19 @@ char bmeInit(void)
         dig.P8 |= bmeReadRegister(0x9D)<<8;
         dig.P9 = bmeReadRegister(0x9E);
         dig.P9 |= bmeReadRegister(0x9F)<<8;
+
+        if(id == 0x60)
+        {
+            dig.HE1 = bmeReadRegister(0xA1);
+            dig.HE2 = bmeReadRegister(0xE1);
+            dig.HE2 |= bmeReadRegister(0xE2)<<8;
+            dig.HE3 = bmeReadRegister(0xE3);
+            dig.HE4 = bmeReadRegister(0xE4)<<4;
+            dig.HE4 |= (bmeReadRegister(0xE5) & 0x0F);
+            dig.HE5 = (bmeReadRegister(0xE5) & 0xF0) >> 4;
+            dig.HE5 |= bmeReadRegister(0xE6)<<4;
+            dig.HE6 = bmeReadRegister(0xE7);
+        }
     }
     else if(id == 0x61)
     {
@@ -309,7 +329,35 @@ unsigned char getBmeHumidity(void)
     int data = 0;
     if(id == 0x60)
     {
-        return 0;
+        bmeWriteRegister(0xF2, 0b011);
+        _delay_ms(15);
+        data = ((unsigned int)bmeReadRegister(0xFD) << 8);
+        data |= bmeReadRegister(0xFE);
+
+        double var; 
+        var = (((double)t_fine) - 76800.0); 
+        var = (data - (((double)dig.HE4) * 64.0 + ((double)dig.HE5) / 16384.0 * var)) * (((double)dig.HE2) / 65536.0 * (1.0 + ((double)dig.HE6) /
+        67108864.0 * var * (1.0 + ((double)dig.HE3) / 67108864.0 * var))); 
+        var = var * (1.0 - ((double)dig.HE1) * var / 524288.0); 
+        
+        if (var > 100.0) 
+            var = 100.0; 
+        else if (var < 0.0) 
+            var = 0.0;
+        return var;
+        /*long var;                         //Fixed Point Formular from datasheet doesnt work for some reason
+        var = (t_fine - ((long)76800));
+        uartWriteIntLine(var);
+        var = (((((data << 14) - (((long)dig.HE4) << 20) - (((long)dig.HE5) * var)) + 16384L) >> 15) * (((((((var * 
+        ((long)dig.HE6)) >> 10) * (((var * ((long)dig.HE3)) >> 11) + 32768L)) >> 10) + 2097152L) * ((long)dig.HE2) + 8192) >> 14)); 
+        uartWriteIntLine(var);
+        var = (var - (((((var >> 15) * (var >> 15)) >> 7) * ((long)dig.HE1)) >> 4));
+        uartWriteIntLine(var);
+        var = (var < 0 ? 0 : var);
+        uartWriteIntLine(var);  
+        var = (var > 419430400 ? 419430400 : var);
+        uartWriteIntLine(var);
+        return (var>>12);*/
     }
     else if(id == 0x61)
     {
