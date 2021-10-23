@@ -59,7 +59,7 @@ unsigned char bmeReadRegister(const char reg);
 void bmeWriteRegister(const char reg, const unsigned char data);
 void bmeSelectReg(const char reg);
 unsigned int getBmeTemp(void);
-unsigned int getBmePress(unsigned char inTemp);
+unsigned int getBmePress(void);
 
 char bmeInit(void)
 {
@@ -216,14 +216,11 @@ void bmeSelectReg(const char reg)
 unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
 {
     long data = 0;
-    bmeWriteRegister(0xE0, 0xB6);
-    _delay_ms(25);
     if(id == 0x58 || id == 0x60)
     {
-        bmeWriteRegister(0xF4, (0x01 | (0b0001 << 2) | (0b0001 << 5)));
-        _delay_ms(20);
+        bmeWriteRegister(0xF4, (0x01 | (0b0011 << 2) | (0b0001 << 5)));
+        _delay_ms(15);
         data = bmeRead20Bite(0xFA);
-        bmeWriteRegister(0xF4, 0);
 
         long var1, var2;
         var1  = ((((data>>3) - ((long)dig.T1<<1))) * ((long)dig.T2)) >> 11;
@@ -249,19 +246,14 @@ unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
     return 0;
 }
 
-unsigned int getBmePress(unsigned char inTemp)  //returns BME Pressure in hPa
+unsigned int getBmePress(void)  //returns BME Pressure in hPa
 {
-    t_fine = ((long) inTemp*512) + 26;
     long data = 0;
     unsigned long p = 0;
-    bmeWriteRegister(0xE0, 0xB6);
-    _delay_ms(25);
     if(id == 0x58 || id == 0x60)
     {
-        bmeWriteRegister(0xF4, (0x01 | (0b0011 << 2) | (0b0011 << 5)));
-        _delay_ms(50);
+        //No initialization needed, reading out data from Temperatur Messurment
         data = bmeRead20Bite(0xF7);
-        bmeWriteRegister(0xF4, 0);
 
         long var1, var2;
         var1 = (((long)t_fine)>>1) - (long)64000;
@@ -315,8 +307,6 @@ unsigned int getBmePress(unsigned char inTemp)  //returns BME Pressure in hPa
 unsigned char getBmeHumidity(void)
 {
     int data = 0;
-    bmeWriteRegister(0xE0, 0xB6);
-    _delay_ms(25);
     if(id == 0x60)
     {
         return 0;

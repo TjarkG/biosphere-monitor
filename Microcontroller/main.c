@@ -201,7 +201,7 @@ struct reading getReading(void)     //reuturns fresh data
     if(id > 0) //BME installed
     {
         in.temperaturIn = getBmeTemp();
-        in.pressure = getBmePress(in.temperaturOut*2);
+        in.pressure = getBmePress();
     }
     if(id >=0x60)
         in.humidityAir = getBmeHumidity();
@@ -282,7 +282,7 @@ long selfDiagnosse(void)     //returns self diagnosis errorcode
         errCode |= (1 << 13);
     else                                            //BME Readings in range?
     {
-        if(getBmeTemp() == 0 || getBmeTemp()  > 850 || getBmePress(tTmp*2) < 300 || getBmePress(tTmp*2)  > 1100)
+        if(getBmeTemp() == 0 || getBmeTemp()  > 850 || getBmePress() < 300 || getBmePress()  > 1100)
             errCode |= (1 << 14);
     }
     return errCode;
