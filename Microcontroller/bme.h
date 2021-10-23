@@ -184,13 +184,13 @@ long bmeRead20Bite(const char reg)
     while(!((TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm)));
 
     while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm));
-    data |= ((unsigned long)TWIC.MASTER.DATA << 12) & 0x0F0000;
+    data |= ((unsigned long)TWIC.MASTER.DATA << 12) & 0xFF000;
     TWIC.MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
     while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm));
-    data |= ((unsigned long)TWIC.MASTER.DATA << 8) & 0x00FF00;
+    data |= ((unsigned long)TWIC.MASTER.DATA << 4) & 0x00FF0;
     TWIC.MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
     while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm));
-    data |= ((unsigned long)TWIC.MASTER.DATA << 0) & 0x0000FF;
+    data |= ((unsigned long)TWIC.MASTER.DATA >> 4) & 0x0000F;
 
     TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
     return data;
@@ -220,11 +220,11 @@ unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
     _delay_ms(25);
     if(id == 0x58 || id == 0x60)
     {
-        bmeWriteRegister(0xF4, 0x01 | (0b0001 << 2) | (0b0001 << 5));
+        bmeWriteRegister(0xF4, (0x01 | (0b0001 << 2) | (0b0001 << 5)));
         _delay_ms(20);
         data = bmeRead20Bite(0xFA);
+        bmeWriteRegister(0xF4, 0);
 
-        bmeWriteRegister(0x74, 0);
         long var1, var2;
         var1  = ((((data>>3) - ((long)dig.T1<<1))) * ((long)dig.T2)) >> 11;
         var2  = (((((data>>4) - ((long)dig.T1)) * ((data>>4) - ((long)dig.T1))) >> 12) * ((long)dig.T3)) >> 14;
@@ -258,11 +258,9 @@ unsigned int getBmePress(unsigned char inTemp)  //returns BME Pressure in hPa
     _delay_ms(25);
     if(id == 0x58 || id == 0x60)
     {
-        bmeWriteRegister(0xF4, 0x01 | (0b0011 << 2) | (0b0011 << 5));
+        bmeWriteRegister(0xF4, (0x01 | (0b0011 << 2) | (0b0011 << 5)));
         _delay_ms(50);
-        data |= ((long)bmeReadRegister(0xF7) << 12);
-        data |= ((long)bmeReadRegister(0xF8) << 8);
-        data |= ((long)bmeReadRegister(0xF9) << 0);
+        data = bmeRead20Bite(0xF7);
         bmeWriteRegister(0xF4, 0);
 
         long var1, var2;
