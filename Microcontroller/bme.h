@@ -318,7 +318,8 @@ unsigned char getBmeHumidity(void)
     if(id == 0x60)
     {
         bmeWriteRegister(0xF2, 0b011);
-        _delay_ms(15);
+        bmeWriteRegister(0xF4, (0x01 | (0b0011 << 2) | (0b0001 << 5)));
+        _delay_ms(25);
         data = ((unsigned int)bmeReadRegister(0xFD) << 8);
         data |= bmeReadRegister(0xFE);
 
@@ -333,19 +334,6 @@ unsigned char getBmeHumidity(void)
         else if (var < 0.0) 
             var = 0.0;
         return var;
-        /*long var;                         //Fixed Point Formular from datasheet doesnt work for some reason
-        var = (t_fine - ((long)76800));
-        uartWriteIntLine(var);
-        var = (((((data << 14) - (((long)dig.HE4) << 20) - (((long)dig.HE5) * var)) + 16384L) >> 15) * (((((((var * 
-        ((long)dig.HE6)) >> 10) * (((var * ((long)dig.HE3)) >> 11) + 32768L)) >> 10) + 2097152L) * ((long)dig.HE2) + 8192) >> 14)); 
-        uartWriteIntLine(var);
-        var = (var - (((((var >> 15) * (var >> 15)) >> 7) * ((long)dig.HE1)) >> 4));
-        uartWriteIntLine(var);
-        var = (var < 0 ? 0 : var);
-        uartWriteIntLine(var);  
-        var = (var > 419430400 ? 419430400 : var);
-        uartWriteIntLine(var);
-        return (var>>12);*/
     }
     else if(id == 0x61)
     {
@@ -369,6 +357,10 @@ unsigned char getBmeHumidity(void)
 
 int getBmeIaq(void)
 {
+    //configuration
+    bmeWriteRegister(0x71, 0x10);
+    bmeWriteRegister(0x64, 25);
+
     long varh1, varh2, varh3, varh4, varh5;
     long amb_temp = ((t_fine * 5) + 128) >> 8;
     unsigned char res_heat_range = (bmeReadRegister(0x02) & 0x30) >> 4;
@@ -379,20 +371,15 @@ int getBmeIaq(void)
     varh4 = (varh3 / (res_heat_range + 4)); 
     varh5 = (131 * res_heat_val) + 65536; 
     long res_heat_x100 = (long)(((varh4 / varh5) - 250) * 34); 
-    unsigned char res_heat_x = (uint8_t)((res_heat_x100 + 50) / 100);
+    unsigned char res_heat_x = (unsigned char)((res_heat_x100 + 50) / 100);
     bmeWriteRegister(0x5A, res_heat_x);
-    bmeWriteRegister(0x64, 25);
+    bmeWriteRegister(0x72, 0b01);
+    _delay_ms(50);
 
-
-    bmeWriteRegister(0x71, 0x08);
-    //_delay_ms(50);
-
-    while (bmeReadRegister(0x1D) & (1 << 6))
-    {
-        uartWriteString("waiting");
-    }
-    unsigned char gas_range = bmeReadRegister(0x2B) & 0x0F;
-    unsigned int gas_adc = (bmeReadRegister(0x2B) & 0xC0) >> 6;
+    //Readout
+    unsigned char gas_r_lsb = bmeReadRegister(0x2B);
+    unsigned char gas_range = gas_r_lsb & 0x0F;
+    unsigned int gas_adc = (gas_r_lsb & 0xC0) >> 6;
     gas_adc |= bmeReadRegister(0x2A) << 2;
     char range_switching_error = bmeReadRegister(0x04);
 
@@ -407,8 +394,7 @@ int getBmeIaq(void)
 
     int64_t var1 = ((int64_t)(((1340 + (5 * (int64_t)range_switching_error)) * (int64_t)lookup_table1[gas_range])) >> 16);
     int64_t var2 = (int64_t)(gas_adc << 15) - (int64_t)(1UL << 24) + var1; 
-    long gas_res = (long)((((int64_t)(lookup_table2[gas_range]  * (int64_t)var1) >> 9) + (var2 >> 1)) / var2); 
-    gas_res = 0;
+    long gas_res = (long)((((int64_t)(lookup_table2[gas_range]  * (int64_t)var1) >> 9) + (var2 >> 1)) / var2);
     return gas_res;
 }
 
