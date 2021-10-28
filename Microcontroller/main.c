@@ -106,14 +106,6 @@ int main(void)
             if (adrTmp % 4096 == 0)    //Erase Sector if a new Sector is entert
                 sectorErase4kB(adrTmp);
 
-            unsigned char tmp[1];
-            READ(tmp,1,adrTmp);
-            if(tmp[0] != 0xFF && adrTmp < (ADRMAX - 4096))
-            {
-                setFlashAdr(adrTmp + 4096);
-                continue;
-            }
-
             byteWrite(in.timeRead >> 24,    adrTmp + 0);
             byteWrite(in.timeRead >> 16,    adrTmp + 1);
             byteWrite(in.timeRead >> 8,     adrTmp + 2);
