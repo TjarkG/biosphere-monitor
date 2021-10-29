@@ -10,6 +10,8 @@
 #ifndef tty_H_
 #define tty_H_
 
+#ifdef __unix
+
 #include <errno.h>
 #include <fcntl.h> 
 #include <stdio.h>
@@ -100,5 +102,11 @@ void getUartLine(char *buf)     //puts on line of UART input in buf
     if(buf[0] == '\n')  //repeat read when only newline is found
         getUartLine(buf);
 }
+
+#endif //unix
+
+#ifdef _WIN32
+
+#endif // WIN32
 
 #endif //tty_H_

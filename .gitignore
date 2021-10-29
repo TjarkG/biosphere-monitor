@@ -57,12 +57,17 @@ dkms.conf
 *.lst
 *.map
 *.sym
+
+#include path because it is extracted from Atmel Studio
 include/*
 
-#libreOffice Stuff
+#LibreOffice Stuff
 *.csv#
 *.ods#
 
-#Egale
+#Eagle
 *.s#*
 *.b#*
+
+#VS Code Config File: has to be different for Windows and Linux
+~/c_cpp_properties.json
