@@ -134,6 +134,7 @@ int main(int argc, char *argv[])
         }
         i++;
     }
+    stopUART();
 }
 
 long getCommand(const char *cmd)       //send get command and return response
@@ -151,7 +152,7 @@ int setCommand(const char *cmd)       //send set command
     getUartLine(buf);
     if(strncmp(buf, cmd,strlen(cmd)))
     {
-        fprintf(stderr, "Error tranmitting UART Command %s: recieved %s", cmd, buf);
+        fprintf(stderr, "Error tranmitting UART Command %s: recieved %s\n", cmd, buf);
         return -1;
     }
     return 0;

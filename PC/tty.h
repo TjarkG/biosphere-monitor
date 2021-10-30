@@ -10,13 +10,14 @@
 #ifndef tty_H_
 #define tty_H_
 
-#ifdef __unix
-
 #include <errno.h>
-#include <fcntl.h> 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef __unix
+
+#include <fcntl.h> 
 #include <termios.h>
 #include <unistd.h>
 
@@ -77,6 +78,8 @@ void startUART(char *portname)      //opens UART portname
     set_interface_attribs(fd, B115200);
 }
 
+void stopUART(void){}                 //not needed for unix
+
 void printUART(const char *in)        //prints in to UART
 {
     char length = strlen(in);
@@ -106,6 +109,130 @@ void getUartLine(char *buf)     //puts on line of UART input in buf
 #endif //unix
 
 #ifdef _WIN32
+
+#include<windows.h>
+
+HANDLE com;
+
+void startUART(char *portname)      //opens UART portname
+{
+    char nameTmp[16];
+    sprintf(nameTmp,"\\\\.\\%s", portname);
+    com = CreateFileA(nameTmp,                //port name
+                      GENERIC_READ | GENERIC_WRITE, //Read/Write
+                      0,                            // No Sharing
+                      0,                            // No Security
+                      OPEN_EXISTING,                // Open existing port only
+                      0,                            // Non Overlapped I/O
+                      0);                           // Null for Comm Devices
+
+    if (com == INVALID_HANDLE_VALUE)
+    {
+        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
+        exit(2);
+    }
+    else
+      printf("opening serial port successful\n");
+
+    DCB dcbConfig;
+
+    if(GetCommState(com, &dcbConfig))
+    {
+        dcbConfig.BaudRate = 115200;
+        dcbConfig.ByteSize = 8;
+        dcbConfig.Parity = NOPARITY;
+        dcbConfig.StopBits = ONESTOPBIT;
+        dcbConfig.fBinary = TRUE;
+        dcbConfig.fParity = TRUE;
+    }
+    else
+        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
+
+    if(!SetCommState(com, &dcbConfig))
+        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
+
+    COMMTIMEOUTS commTimeout;
+
+    if(GetCommTimeouts(com, &commTimeout))
+    {
+        commTimeout.ReadIntervalTimeout     = 1000 * 2;
+        commTimeout.ReadTotalTimeoutConstant     = 1000 * 2;
+        commTimeout.ReadTotalTimeoutMultiplier     = 1000 * 10;
+        commTimeout.WriteTotalTimeoutConstant     = 1000 * 2;
+        commTimeout.WriteTotalTimeoutMultiplier = 1000 * 10;
+    }
+    else
+        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
+
+    if(!SetCommTimeouts(com, &commTimeout))
+        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
+}
+
+void stopUART(void)
+{
+    if(com != INVALID_HANDLE_VALUE)
+    {
+        CloseHandle(com);
+        com = INVALID_HANDLE_VALUE;
+    }
+}
+
+void printUART(const char *in)        //prints in to UART
+{
+    unsigned char length = strlen(in);
+    unsigned char bytesSend = 0;
+
+    while(bytesSend < length)
+    {
+        unsigned long bytesWritten;
+
+        if(WriteFile(com, &in[bytesSend], 1, &bytesWritten, NULL) != 0)
+        {
+            if(bytesWritten > 0)
+                ++bytesSend;
+            else
+                fprintf(stderr,"Error from write: %d, %s\n", bytesWritten, strerror(errno));
+        }
+        else
+            fprintf(stderr,"Error from write: %d, %s\n", bytesWritten, strerror(errno));
+    }
+}
+
+void getUartLine(char *buf)     //puts on line of UART input in buf
+{
+    unsigned long eventMask;
+    char buf2[32];
+
+    if(!SetCommMask(com, EV_RXCHAR))
+        fprintf(stderr,"Error from read: %s\n", strerror(errno));
+    if(WaitCommEvent(com, &eventMask, NULL))
+    {
+        char szBuf;
+        unsigned long rdlen;
+        unsigned long rges = 0;
+        do
+        {
+            if(ReadFile(com, &szBuf, 1, &rdlen, NULL) != 0)
+            {
+                if(rdlen > 0)
+                {
+                    buf[rges++] = szBuf;
+                    //printf("%c",szBuf);
+                    if(szBuf == '\n')
+                    {
+                        //ReadFile(com, &szBuf, 1, &rdlen, NULL);
+                        break;
+                    }
+                }
+            }
+            else
+                fprintf(stderr,"Error from read: %s\n", strerror(errno));
+        } while(rdlen > 0);
+    }
+    else
+        fprintf(stderr,"Error from read: %s\n", strerror(errno));
+    //printf("%s", buf);
+}
 
 #endif // WIN32
 
