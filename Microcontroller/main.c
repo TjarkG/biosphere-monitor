@@ -351,7 +351,7 @@ unsigned char getSoilHum(void)  //returns Soil Humidity in %
         tempArr[i] = ADCA.CH2.RES;
 	}
     ADCA.CTRLA &= ~ADC_ENABLE_bm;
-    return (getMedian(tempArr, ADCN)*100/4096)-4;
+    return (getMedian(tempArr, ADCN)/41);
 }
 
 ISR(USARTC0_RXC_vect)       //UART ISR
