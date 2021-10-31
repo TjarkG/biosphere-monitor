@@ -123,14 +123,14 @@ int main(int argc, char *argv[])
             int off = tIn - (in.temperaturOut-offOld+128) + 128;
             sprintf(buf, "OST%d",off);
             setCommand(buf);
-            printf("Outside Temperatur set:%2.1f°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn/5.0, offOld-128, off-128, getCommand("OGT")-128);
+            printf("Outside Temperatur set:%2.1fC Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn/5.0, offOld-128, off-128, getCommand("OGT")-128);
 
             offOld = getCommand("OGI");
 
             off = tIn - (in.temperaturIn-offOld+128) + 128;
             sprintf(buf, "OSI%d",off);
             setCommand(buf);
-            printf("Inside Temperatur set:%2.1f°C Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn/5.0, offOld-128, off-128, getCommand("OGI")-128);
+            printf("Inside Temperatur set:%2.1fC Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn/5.0, offOld-128, off-128, getCommand("OGI")-128);
         }
         i++;
     }
@@ -274,7 +274,7 @@ void printReading(FILE *ofp, struct reading in)
     #endif
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
-    fprintf(ofp, "Current Reading: Time: %s UTC Outside: %dlux %2.1f°C Inside: %2.1f°C %dhPa",\
+    fprintf(ofp, "Current Reading: Time: %s UTC Outside: %dlux %2.1fC Inside: %2.1fC %dhPa",\
     tmStr, in.light, (in.temperaturOut/5.0), (in.temperaturIn/10.0), in.pressure);
 
     if(in.humidityAir != 0)

@@ -131,19 +131,18 @@ void startUART(char *portname)      //opens UART portname
         fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
         exit(2);
     }
-    else
-      printf("opening serial port successful\n");
 
     DCB dcbConfig;
 
     if(GetCommState(com, &dcbConfig))
     {
-        dcbConfig.BaudRate = 115200;
+        dcbConfig.BaudRate = CBR_115200;
         dcbConfig.ByteSize = 8;
         dcbConfig.Parity = NOPARITY;
         dcbConfig.StopBits = ONESTOPBIT;
         dcbConfig.fBinary = TRUE;
         dcbConfig.fParity = TRUE;
+        dcbConfig.fInX = TRUE;
     }
     else
         fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
@@ -201,7 +200,6 @@ void printUART(const char *in)        //prints in to UART
 void getUartLine(char *buf)     //puts on line of UART input in buf
 {
     unsigned long eventMask;
-    char buf2[32];
 
     if(!SetCommMask(com, EV_RXCHAR))
         fprintf(stderr,"Error from read: %s\n", strerror(errno));
@@ -217,10 +215,8 @@ void getUartLine(char *buf)     //puts on line of UART input in buf
                 if(rdlen > 0)
                 {
                     buf[rges++] = szBuf;
-                    //printf("%c",szBuf);
                     if(szBuf == '\n')
                     {
-                        //ReadFile(com, &szBuf, 1, &rdlen, NULL);
                         break;
                     }
                 }
@@ -228,10 +224,10 @@ void getUartLine(char *buf)     //puts on line of UART input in buf
             else
                 fprintf(stderr,"Error from read: %s\n", strerror(errno));
         } while(rdlen > 0);
+        buf[rges] = '\0';
     }
     else
         fprintf(stderr,"Error from read: %s\n", strerror(errno));
-    //printf("%s", buf);
 }
 
 #endif // WIN32
