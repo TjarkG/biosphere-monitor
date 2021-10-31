@@ -72,6 +72,7 @@ void uartWriteString(const char *in)
 
 void uartWriteIntLine(unsigned long in)
 {
+    _delay_ms(100);
     char tmp[12];
     _itoa(in,tmp);
     uartWriteString(tmp);
