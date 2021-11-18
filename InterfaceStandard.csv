@@ -1,14 +1,13 @@
-Interface Protocoll for the Biosphere Monitor,,,
-Name,Instruction,Parameter,returns
-All Readings,AR,non,List of all stored readings
-Current Reading,CR,non,Current Sensor reading
-Sample intervall get,IG,non,Intervall in s
-Sample intervall set,IS,Time in s,non
-Self diagnose,DR,non,Errorcode or 0
-Time get,TG,non,UNIX Time Code
-Time set,TS,UNIX Time Code,non
-Booted,BT,non,non
-Temperatur Offset Set,OST,Offset (°C*5+128),non
-Temperatur Offset Get,OGT,non,Offset (°C*5+128)
+Interface Protocoll for the Biosphere Monitor,,,,
+Name,Instruction,Parameter,returns,
+All Readings,AR,non,List of all stored readings,
+Current Reading,CR,non,Current Sensor reading,
+Sample intervall get,IG,non,Intervall in s,
+Sample intervall set,IS,Time in s,non,
+Self diagnose,DR,non,Errorcode or 0,
+Time get,TG,non,UNIX Time Code,
+Time set,TS,UNIX Time Code,non,
+Temperatur Offset Set,OST,Offset (°C*5+128),non,
+Temperatur Offset Get,OGT,non,Offset (°C*5+128),
 Delete,DEL,non,non,resets Flash to beginning
-Get ID, ID, non, Chip ID, Reads out the Chip ID of connected BME / BMP Sensor
+Get ID,ID,non,Chip ID,Reads out the Chip ID of connected BME / BMP Sensor

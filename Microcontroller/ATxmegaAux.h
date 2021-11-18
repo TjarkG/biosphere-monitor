@@ -7,8 +7,8 @@
  *  Author: Tjark Gaudich
  */
 
-#ifndef ATxmega_help_H_
-#define ATxmega_help_H_
+#ifndef ATxmegaAux_H_
+#define ATxmegaAux_H_
 
 #include <avr/io.h>
 #include "itoa.h"
@@ -79,4 +79,4 @@ void uartWriteIntLine(unsigned long in)
     uartWriteString("\r\n");
 }
 
-#endif /* ATxmega_help_H_ */
+#endif /* ATxmegaAux_H_ */

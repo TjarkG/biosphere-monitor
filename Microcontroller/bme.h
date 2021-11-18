@@ -16,7 +16,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include "ATxmega_help.h"
+#include "ATxmegaAux.h"
 
 #define TARGTEMP 300    //Heater Temperature in °C
 
@@ -63,10 +63,13 @@ struct cal    //compensation Values
 
 char bmeInit(void);
 unsigned char bmeReadRegister(const char reg);
+long bmeRead20Bite(const char reg);
 void bmeWriteRegister(const char reg, const unsigned char data);
 void bmeSelectReg(const char reg);
 unsigned int getBmeTemp(void);
 unsigned int getBmePress(void);
+unsigned char getBmeHumidity(void);
+int getBmeIaq(void);
 
 char bmeInit(void)
 {

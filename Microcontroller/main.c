@@ -16,7 +16,7 @@
 #endif
 
 #define F_CPU 16000000UL
-#define BSCALE  -5
+#define BSCALE  -5        //Baudrate: 115200
 #define BSEL    246
 #define ADCN    512       //Number of ADC readings taken per Messurment
 #define ADRMAX  0x3FFFFF  //Highest Flash Adress
@@ -34,7 +34,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "ATxmega_help.h"
+#include "ATxmegaAux.h"
 #include "itoa.h"
 #include "../reading.h"
 #include "bme.h"
@@ -44,19 +44,17 @@ uint32_t timeCounter = 0;
 volatile bool takeMessurment = false;
 volatile bool instruct = false;
 char uartBuf[16];
-unsigned long f = 0;
-unsigned long fOld= 0;
+unsigned long lightF = 0;
+unsigned long lightFnom= 0;              //Frequency Counter Frequenc in Hz
+
 unsigned int  EEMEM intervall = 600;     //sampling intervall in Seconds
 unsigned char EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
-unsigned char EEMEM tInOff = 0;          //Inside Temperature Offset in C*5 +128
 unsigned long EEMEM flashAdr = 0;        //Adress of the start of the last reading in the SPI Flash
 
 #define setIntervall(new)   eeprom_update_word(&intervall, new)
 #define getIntervall        eeprom_read_word(&intervall)
 #define settOutOff(new)     eeprom_update_byte(&tOutOff, new)
 #define gettOutOff          (eeprom_read_byte(&tOutOff))
-#define settInOff(new)      eeprom_update_byte(&tInOff, new)
-#define gettInOff           (eeprom_read_byte(&tInOff))
 #define setFlashAdr(new)    eeprom_update_dword(&flashAdr, new)
 #define getFlashAdr         (eeprom_read_dword(&flashAdr))
 
@@ -94,7 +92,6 @@ int main(void)
         if(takeMessurment)
         {
             takeMessurment = false;
-            PORTC.DIRSET = 0x08;
             struct reading in = getReading();
 
             unsigned long adrTmp = getFlashAdr;     //Jump to Adress of the new Reading
@@ -103,7 +100,7 @@ int main(void)
                 adrTmp = 0;
             setFlashAdr(adrTmp);
 
-            if (adrTmp % 4096 == 0)    //Erase Sector if a new Sector is entert
+            if (adrTmp % 4096 == 0)                 //Erase Sector if a new Sector is entert
                 sectorErase4kB(adrTmp);
 
             byteWrite(in.timeRead >> 24,    adrTmp + 0);
@@ -124,7 +121,6 @@ int main(void)
         }
         else if(instruct)
         {
-            PORTC.DIRSET = 0x08;
             if(strncmp(uartBuf,"CR",2) == 0)
             {
                 struct reading in = getReading();
@@ -165,10 +161,6 @@ int main(void)
                 uartWriteIntLine(gettOutOff);
             else if(strncmp(uartBuf,"OST",3) == 0)
                 settOutOff(atoi(uartBuf+3));
-            else if(strncmp(uartBuf,"OGI",3) == 0)
-                uartWriteIntLine(gettInOff);
-            else if(strncmp(uartBuf,"OSI",3) == 0)
-                settInOff(atoi(uartBuf+3));
             else if(strncmp(uartBuf,"IG",2) == 0)
                 uartWriteIntLine(getIntervall);
             else if(strncmp(uartBuf,"IS",2) == 0)
@@ -180,12 +172,7 @@ int main(void)
             else if(strncmp(uartBuf,"DR",2) == 0)
                 uartWriteIntLine(selfDiagnosse());
             else if(strncmp(uartBuf,"ID",2) == 0)
-            {
-                if(id > 0)
-                    uartWriteIntLine(bmeReadRegister(0xD0));
-                else
-                    uartWriteIntLine(0);
-            }
+                uartWriteIntLine(id);
             instruct = 0;
         }
     }
@@ -269,13 +256,13 @@ long selfDiagnosse(void)     //returns self diagnosis errorcode
     if(tTmp == 0 || tTmp > 250)
         errCode |= (1 << 9);
 
-    if(fOld < 1100 || fOld > 10000)                 //Light Frequency Range
+    if(lightFnom < 1100 || lightFnom > 10000)       //Light Frequency Range
         errCode |= (1 << 10);
 
     if(getIntervall == UINT16_MAX)                  //Sampling Intervall not set
         errCode |= (1 << 11);
 
-    if(gettOutOff == UINT8_MAX || gettInOff == UINT8_MAX)//Temperatur Offset not set
+    if(gettOutOff == UINT8_MAX)                     //Temperatur Offset not set
         errCode |= (1 << 12);
 
     if(id == 0)                                     //BME Connected?
@@ -334,9 +321,9 @@ unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*5
 
 unsigned int getLight(void)  //returns iluminace in lux
 {
-    if(fOld < 1200)     //Sensor cutoff Frequency
+    if(lightFnom < 1200)     //Sensor cutoff Frequency
         return 0;
-    return (unsigned int) ((66.46 * pow(1.732, (fOld/1000.0)) ) - 133.5);
+    return (unsigned int) ((66.46 * pow(1.732, (lightFnom/1000.0)) ) - 133.5);
 }
 
 unsigned char getSoilHum(void)  //returns Soil Humidity in %
@@ -376,15 +363,16 @@ ISR(RTC_OVF_vect)          //RTC ISR
 {
     sleep_disable();
     timeCounter++;
-    fOld = f;
-    f = 0;
+    lightFnom = lightF;
+    lightF = 0;
     if(!(timeCounter % getIntervall))
         takeMessurment = true;
     else
         sleep_cpu();
 }
 
+//ISR for Frequency Counter
 ISR(PORTD_INT0_vect)
 {
-    f++;
+    lightF++;
 }
