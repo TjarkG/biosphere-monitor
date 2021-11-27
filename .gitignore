@@ -71,3 +71,25 @@ include/*
 
 #VS Code Config File: has to be different for Windows and Linux
 ~/c_cpp_properties.json
+
+#LaTeX
+*.aux
+*.bit
+*.blg
+*.bbl
+*.lof
+*.log
+*.lot
+*.glo
+*.glx
+*.gxg
+*.gxs
+*.idx
+*.ilg
+*.ind
+*.out
+*.url
+*.svn
+*.toc
+*.swp
+*.bak
