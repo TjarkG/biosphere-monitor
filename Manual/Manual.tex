@@ -13,7 +13,7 @@
 \maketitle
 
 \section{Vorwort}
-Das folgende Dokument soll gleichzeitig als Dokumentation und Bedienungsanleitung für die Biosphären Umweltmessgeräte ("die Geräte") dienen, die ich für den Astrobiologie Projektkurs 2021/2022 bei Herr Krobbach entwickelt habe. Damit soll eine Nutzung und Wartung dieser Geräte weit über den Zeitraum meiner Schullaufbahn hinaus ermöglicht werden. Besonderer Fokus wird deshalb auf die Kommunikation mit dem PC zum auslesen der Messwerte gelegt, da dieser vulnerabel für Änderungen des Betriebssystems ist, doch auch alle anderen Aspekte der Geräte sollen so sehr vertieft werden, dass sie ohne großes Vorwissen verstanden und repariert werden können. Sämtliche Quelldateien sind zusammen mit dieser Dokumentation auf 
+Das folgende Dokument soll gleichzeitig als Dokumentation und Bedienungsanleitung für die Biosphären Umweltmessgeräte ("die Geräte") dienen, die ich für den Astrobiologie Projektkurs 2021/2022 bei Herr Krobbach entwickelt habe. Damit soll eine Nutzung und Wartung dieser Geräte weit über den Zeitraum meiner Schullaufbahn hinaus ermöglicht werden. Besonderer Fokus wird deshalb auf die Kommunikation mit dem PC zum Auslesen der Messwerte gelegt, da dieser vulnerabel für Änderungen des Betriebssystems ist, doch auch alle anderen Aspekte der Geräte sollen so sehr vertieft werden, dass sie ohne großes Vorwissen verstanden und repariert werden können. Sämtliche Quelldateien sind zusammen mit dieser Dokumentation auf 
 GitHub\cite{Github} frei zugänglich.
 \tableofcontents
 \listoffigures
@@ -21,7 +21,7 @@ GitHub\cite{Github} frei zugänglich.
 \chapter{Mechanik}
 
 Mechanisch lassen sich die Geräte in vier Komponenten unterteilen:
-eine Grundplatte (in \autoref{fig:Querschnitt} Dunkelgrau), an der alle andere Teile und das Glas der Biosphäre befestigt werden, eine Platine mit Sensoren im inneren (nicht gezeigt) und die Hauptplatine (grün) außen sowie ein Deckel (hellgrau), der die Elektronik vor Beschädigungen schützt.
+eine Grundplatte (in \autoref{fig:Querschnitt} Dunkelgrau), an der alle andere Teile und das Glas der Biosphäre befestigt werden, eine Platine mit Sensoren im Inneren (nicht gezeigt) und die Hauptplatine (grün) außen sowie ein Deckel (hellgrau), der die Elektronik vor Beschädigungen schützt.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1\textwidth]{Querschnitt}
@@ -29,6 +29,8 @@ eine Grundplatte (in \autoref{fig:Querschnitt} Dunkelgrau), an der alle andere T
 	\label{fig:Querschnitt}
 \end{figure}
 \\Auf die Platinen wird in \autoref{ch:elektrisch} näher eingegangen, hier reicht es uns zu wissen das die unterer Platine nur über ihren Stecker befestigt wird und die obere ein Achteck von 85mm Durchmesser ist, vier Löcher mit je 50mm Abstand zueinander und 4mm Durchmesser zur Befestigung hat und 1,6mm Dick ist.
+
+Deckel und Grundplatte sind beide aus PLA 3d gedruckt. Dabei wurde eine Auflösung von 0,2mm bei 100\% Infill verwendet
 \section{Grundplatte}
 Entsprechend dieser Maße ist die Oberseite der Grundplatte mit vier Röhren ausgestattet, in die M4 Einschraubmuffen montiert werden. Interessant ist jedoch die Unterseite, die in das Gurkenglas eingeklebt wird. Da die Luftmenge in der Biosphäre konstant ist kommt es bei Temperaturänderungen zu einer Druckänderung nach  dem Gesetz von Amontons \cite[S.~119]{Tafelwerk}, denen die Grundplatte und ihre Verklebung standhalten müssen. $p_0$ und $T_0$ sind dabei Druck und absolute Temperatur beim Verschließen der Biosphäre.
 \begin{align}
@@ -41,7 +43,28 @@ Nehmen wir an, das die Biosphäre bei 20°C (293K) und Normaldruck verschlossen 
 \Delta p = 373K  \times \frac{1013hPa}{293K} - 1013hPa \approx 277hPa
 \label{eq:pressure100C}
 \end{align}
-so ergibt sich nach \autoref{eq:pressure100C} ein Druckunterschied von 277hPa. Diese Druckfestigkeit mit einer Silikon Verklebung zu erreichen ist relativ einfach, beim Übergang zwischen Grundplatte und anschließendem Ring in PLA 3d-Druck Technik wird sie jedoch zu Herausforderung. Um eine höhere Festigkeit zu erreichen wurde dieser Übergang nach dem Druck zusätzlich mit einem Lötkolben verschmolzen. Diese Kombination hielt beim Anschließen eines Kompressors an einen Modifizierten Deckel etwa 300hPa Überdruck stand.
+so ergibt sich nach \autoref{eq:pressure100C} ein Druckunterschied von 277hPa. Diese Druckfestigkeit mit einer Silikon Verklebung zu erreichen ist relativ einfach, beim Übergang zwischen Grundplatte und anschließendem Ring wird sie jedoch zu Herausforderung. Um eine höhere Festigkeit zu erreichen wurde dieser Übergang nach dem Druck zusätzlich mit einem Lötkolben verschmolzen. Diese Kombination hielt beim Anschließen eines Kompressors an einen Modifizierten Deckel etwa 300hPa Überdruck stand.
+
+Falls sich zeigen sollte, das dies nicht ausreicht wäre eine Verdickung des Übergangs oder der Druck aus einem festeren Material, z.B.~Nylon, empfehlenswert.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[height = 5cm]{Stiftleisten}
+	\caption{Fertig montierte Stiftleisten mit Sensorplatine}
+	\label{fig:Stiftleisten}
+\end{figure}
+
+In der Platte befinden sich sieben Löcher, durch die Stiftleisten gesteckt werden um die Sensoren im Inneren mit der Hauptplatine zu verbinden. Dabei wird eine Stiftleiste von oben eingesteckt, mit Epoxidharz (UHU Endfest 3000) verklebt, von unten eine weitere Stiftleiste angelötet und die Lötstelle mit Heißkleber fixiert.
+
+\section{Deckel}
+Der Deckel besteht aus einem Achteck mit Abschlussplatte und eingesenkten Löchern, durch die er und die Hauptplatine mit vier M4~x~16 Schrauben an der Grundplatte befestigt werden. Beim Entfernen muss darauf geachtet werden, dass keine Kabel eingesteckt sind und der Deckel gerade nach oben abgezogen wird, um die durch ihn vorstehende Fotodiode nicht zu beschädigen.
+\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{Komplett}
+	\caption{Vollständig montiertes Gerät}
+	\label{fig:Komplett}
+\end{figure}
 
 \chapter{elektrisch}
 \label{ch:elektrisch}
@@ -56,7 +79,7 @@ so ergibt sich nach \autoref{eq:pressure100C} ein Druckunterschied von 277hPa. D
   2021
   
 \bibitem{Tafelwerk}
-  Prof. Dr. Lothar Meyer et al.,
+  Prof.~Dr.~Lothar Meyer et al.,
   \textit{Das große Tafelwerk interaktiv 2.0},
   Cornelsen Verlag, Berlin,
   1.Auflage, 8. Druck 2018
