@@ -70,6 +70,7 @@ include/*
 *.b#*
 
 #VS Code Config File: has to be different for Windows and Linux
+.vscode
 ~/c_cpp_properties.json
 
 #LaTeX
@@ -93,3 +94,6 @@ include/*
 *.toc
 *.swp
 *.bak
+
+#Output Files
+biosphere.csv
