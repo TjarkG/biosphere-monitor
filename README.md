@@ -1,4 +1,4 @@
-# Documentation for the Biosphere monitor command line tool
+# Getting started with the Biosphere monitor command line tool
 
 The Command line interface is started with `./biosphere`,
 followed by a Port number (e.g. `/dev/ttyUSB0`) and optinal arguments,
@@ -18,3 +18,5 @@ Commands to compile the Current Software after cloning:
 * Command Line Tool: `cc PC/biosphere.c -o PC/biosphere; ./PC/biosphere /dev/ttyUSB0 -r`
 * Microcontroller: `make program -C ./Microcontroller`
 * Function Calculator: `cc Calculator/Calculator.c -o Calculator/calc -lm; ./Calculator/calc Calculator/in.csv`
+
+Complete Documentation (in German) can be found in /Documentation/Manual.pdf
