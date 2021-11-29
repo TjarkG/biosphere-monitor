@@ -28,7 +28,7 @@ eine Grundplatte (in \autoref{fig:Querschnitt} Dunkelgrau), an der alle andere T
 	\caption{Querschnitt durch das Gerät}
 	\label{fig:Querschnitt}
 \end{figure}
-\\Auf die Platinen wird in \autoref{ch:elektrisch} näher eingegangen, hier reicht es uns zu wissen das die unterer Platine nur über ihren Stecker befestigt wird und die obere ein Achteck von 85mm Durchmesser ist, vier Löcher mit je 50mm Abstand zueinander und 4mm Durchmesser zur Befestigung hat und 1,6mm Dick ist.
+\\Auf die Platinen wird in \autoref{ch:elektronik} näher eingegangen, hier reicht es uns zu wissen das die unterer Platine nur über ihren Stecker befestigt wird und die obere ein Achteck von 85mm Durchmesser ist, vier Löcher mit je 50mm Abstand zueinander und 4mm Durchmesser zur Befestigung hat und 1,6mm Dick ist.
 
 Deckel und Grundplatte sind beide aus PLA 3d gedruckt. Dabei wurde eine Auflösung von 0,2mm bei 100\% Infill verwendet
 \section{Grundplatte}
@@ -47,9 +47,11 @@ so ergibt sich nach \autoref{eq:pressure100C} ein Druckunterschied von 277hPa. D
 
 Falls sich zeigen sollte, das dies nicht ausreicht wäre eine Verdickung des Übergangs oder der Druck aus einem festeren Material, z.B.~Nylon, empfehlenswert.
 
+Bei der Verklebung der Grundplatte mit dem Glas der Biosphäre sollte Aquariensilikon verwendet werden, da Sanitärsilikon für die Oranismen in der Biosphäre schädliche Zusatzstoffe enthalten kann.
+
 \begin{figure}[h]
 	\centering
-	\includegraphics[height = 5cm]{pic/Stiftleisten}
+	\includegraphics[height = 4cm]{pic/Stiftleisten}
 	\caption{Fertig montierte Stiftleisten mit Sensorplatine}
 	\label{fig:Stiftleisten}
 \end{figure}
@@ -66,15 +68,33 @@ Der Deckel besteht aus einem Achteck mit Abschlussplatte und eingesenkten Löche
 	\label{fig:Komplett}
 \end{figure}
 
-\chapter{elektrisch}
-\label{ch:elektrisch}
-\chapter{Software}
+\chapter{Elektronik}
+\label{ch:elektronik}
+Die Elektronik besteht aus der Hauptplatine, die in fünf Funktionsblöcke unterteilt ist, einer Adapterplatine für den Luftsensor und einem ansteckbaren Bodenfeuchtigkeitssensor. Die Funktionsblöcke ensprechen den Seiten von "`biosphereMonitor.sch"', die Adapterplatine findet sich in "`Adapter.sch"'. Beide Schaltpläne und ihre dazugehörigen Platinen sind mit Eagle verfasst worden.
+
+Eagle ist in als Demoversion und für Bildungszwecke kostenlos und lässt sich unter \url{https://www.autodesk.de/products/eagle/free-download} herunterladen.
+\section{Mikrocontroller}
+Alls Mikroncontroller findet ein ATxmega32A4AU oder 16A4AU von Microchip Verwendung (IC1). Dieser wird über die PDI Schnittstelle auf JP2 Programmiert. Das Pinout dieses Steckers ist kompaktibel mit dem des AVR~ISP~MK~II Programiergeräts von Atmel/Microchip
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{pic/Microcontroller}
+	\caption{Mikrocontroller}
+	\label{fig:Microcontroller}
+\end{figure}
+\section{Stromverteilung}
+\section{USB-UART Wandler}
+\section{Außensensoren}
+\section{Anschlüsse Innensensoren}
+\section{Adapterplatine}
+\section{Bodenfeuchtigkeitssensor}
 
 \begin{thebibliography}{9}
-
+  
 \bibitem{Github}
   Tjark Gaudich,
-  \textit{\url{https://github.com/TjarkG/biosphere-monitor}},
+  \textit{Biospher Monitor},\\
+  \url{github.com/TjarkG/biosphere-monitor}\\
   GitHub.com,
   2021
   
@@ -83,6 +103,61 @@ Der Deckel besteht aus einem Achteck mit Abschlussplatte und eingesenkten Löche
   \textit{Das große Tafelwerk interaktiv 2.0},
   Cornelsen Verlag, Berlin,
   1. Auflage, 8. Druck 2018
+  
+\bibitem{ds:xmega}
+  Microchip Technology Inc.,
+  \textit{ATxmega32A4U datasheet},\\
+  \url{ww1.microchip.com/downloads/en/DeviceDoc/ATxmega128-64-32-16A4U-DataSheet-DS40002166A.pdf}\\
+  Microchip.com,
+  2011-2020
+  
+\bibitem{ds:Flash}
+  Microchip Technology Inc.,
+  \textit{SST25VF040 datasheet},\\
+  \url{ww1.microchip.com/downloads/en/DeviceDoc/20005051E.pdf}\\
+  Microchip.com,
+  2005-2020
+  
+\bibitem{ds:usb}
+  Future Technology Devices International Limited,
+  \textit{FT2323R datasheet},\\
+  \url{ftdichip.com/wp-content/uploads/2020/08/DS_FT232R.pdf}\\
+  ftdichip.com, 2020
+  
+\bibitem{ds:temp}
+  Texas Instruments Incorporated,
+  \textit{LM35 datasheet},\\
+  \url{ti.com/lit/gpn/lm35}\\
+  TI.com,
+  1999-2017
+  
+\bibitem{ds:light}
+  Vishay Semiconductors,
+  \textit{BPW96 datasheet},\\
+  \url{vishay.com/docs/81532/bpw96.pdf}\\
+  vishay.com,
+  2011
+  
+\bibitem{ds:BMP280}
+  Bosch Sensortec GmbH,
+  \textit{BMP280 datasheet},\\
+  \url{bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf}\\
+  bosch-sensortec.com,
+  Oktober 2021
+  
+\bibitem{ds:BME280}
+  Bosch Sensortec GmbH,
+  \textit{BME280 datasheet},\\
+  \url{www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf}\\
+  bosch-sensortec.com,
+  Oktober 2021
+  
+\bibitem{ds:BME680}
+  Bosch Sensortec GmbH,
+  \textit{BME680 datasheet},\\
+  \url{www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme680-ds001.pdf}\\
+  bosch-sensortec.com,
+  Januar 2021
 
 \bibitem{CLanguage}
   Brian W.Kernighan, Dennis M.Ritchie,
