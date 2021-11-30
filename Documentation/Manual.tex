@@ -10,7 +10,13 @@
     \addtolength{\topmargin}{-2cm}
     \addtolength{\textheight}{2cm}
 \begin{document}
+
+\pagenumbering{Alph}
+\begin{titlepage}
 \maketitle
+\thispagestyle{empty}
+\end{titlepage}
+\pagenumbering{arabic}
 
 \section{Vorwort}
 Das folgende Dokument soll gleichzeitig als Dokumentation und Bedienungsanleitung für die Biosphären Umweltmessgeräte ("die Geräte") dienen, die ich für den Astrobiologie Projektkurs 2021/2022 bei Herr Krobbach entwickelt habe. Damit soll eine Nutzung und Wartung dieser Geräte weit über den Zeitraum meiner Schullaufbahn hinaus ermöglicht werden. Besonderer Fokus wird deshalb auf die Kommunikation mit dem PC zum Auslesen der Messwerte gelegt, da dieser vulnerabel für Änderungen des Betriebssystems ist, doch auch alle anderen Aspekte der Geräte sollen so sehr vertieft werden, dass sie ohne großes Vorwissen verstanden und repariert werden können. Sämtliche Quelldateien sind zusammen mit dieser Dokumentation auf 
@@ -72,25 +78,56 @@ Der Deckel besteht aus einem Achteck mit Abschlussplatte und eingesenkten Löche
 \label{ch:elektronik}
 Die Elektronik besteht aus der Hauptplatine, die in fünf Funktionsblöcke unterteilt ist, einer Adapterplatine für den Luftsensor und einem ansteckbaren Bodenfeuchtigkeitssensor. Die Funktionsblöcke ensprechen den Seiten von "`biosphereMonitor.sch"', die Adapterplatine findet sich in "`Adapter.sch"'. Beide Schaltpläne und ihre dazugehörigen Platinen sind mit Eagle verfasst worden.
 
-Eagle ist in als Demoversion und für Bildungszwecke kostenlos und lässt sich unter \url{https://www.autodesk.de/products/eagle/free-download} herunterladen.
+Eagle ist in als Demoversion und für Bildungszwecke kostenlos und lässt sich unter \url{https://www.autodesk.de/products/eagle/free-download}\\ herunterladen.
 \section{Mikrocontroller}
-Alls Mikroncontroller findet ein ATxmega32A4AU oder 16A4AU von Microchip Verwendung (IC1). Dieser wird über die PDI Schnittstelle auf JP2 Programmiert. Das Pinout dieses Steckers ist kompaktibel mit dem des AVR~ISP~MK~II Programiergeräts von Atmel/Microchip
+\label{sec:Mikrocontroller}
+Alls Mikroncontroller findet ein ATxmega32A4AU\cite{ds:xmega} oder 16A4AU von Microchip Verwendung (IC1). Dieser wird über die PDI Schnittstelle auf JP2 Programmiert. Das Pinout dieses Steckers ist kompaktibel mit dem des AVR ISP MK II Programiergeräts von Atmel/Microchip.
+
+An Pin 36 und 37 ist der Hauptquartz Q1 angeschlossen. Die Frequenz dieses Quartzes kann 4 bis 20MHz betragen und muss in "`main.c"' und "`makefile"' als F\_CPU eingetragen werden. Standard ist 16MHz.
+
+An Pin 32 und 33 ist Q2, der 32,768kHz Uhrenquartz für die Realtimeclock angebracht.
+
+Pin 42 und 43 sind analoge Eingänge für Temperatursensor (siehe \autoref{sec:Außensensoren}) und Bodenfeuchtigkeitssensor (siehe \autoref{sec:Bodenfeuchtigkeitssensor}), Pin 40 die Analoge Referenzspannung. Diese wird mit einem 33k/22k Spannungsteiler von 2,5V auf 1V geteilt.
+
+Pin 12 (Tx) und 13 (Rx) verbinden UART0 mit dem USB UART Wandler (\autoref{sec:USB-UART Wandler}). In Revision 1.0 der Platinen sind diese Pins vertauscht, weshalb sie mit angelöteten Drähten vertauscht werden müssen.
+
+Pin 26 und 27 sind die eingebaute USB Schnittstelle. Diese wird aktuell nicht genutzt, es ist jedoch eine Verbindung zum USB Stecker JP1 vorgesehen.
+
+Pin 25 ist der Eingang vom Lichtsensor (\autoref{sec:Außensensoren}) und löst intern bei Steigender Flanke einen Pin Change Interuppt aus.
+
+Pin 10 und 11 sind mit TWI C, der I²C Schnittstelle für den Luftsensoren (\autoref{sec:Adapterplatine}) belegt.
+
+Pin 14 bis 17 sind mit der Spi Schnittstelle, Pin 20 und 21 mit den Kontrollsignalen für den Spi Flash belegt.
+Bei diesem Flash handelt es sich um einen 4Mb 
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\textwidth]{pic/Microcontroller}
-	\caption{Mikrocontroller}
+	\includegraphics[width=1\textwidth]{pic/Microcontroller}
+	\caption{Schaltplan Mikrocontroller}
 	\label{fig:Microcontroller}
 \end{figure}
+
 \section{Stromverteilung}
+\label{sec:Stromverteilung}
+
 \section{USB-UART Wandler}
+\label{sec:USB-UART Wandler}
+
 \section{Außensensoren}
+\label{sec:Außensensoren}
+
 \section{Anschlüsse Innensensoren}
+\label{sec:Innensensoren}
+
 \section{Adapterplatine}
+\label{sec:Adapterplatine}
+
 \section{Bodenfeuchtigkeitssensor}
+\label{sec:Bodenfeuchtigkeitssensor}
 
 \begin{thebibliography}{9}
-  
+\raggedright 
+
 \bibitem{Github}
   Tjark Gaudich,
   \textit{Biospher Monitor},\\
@@ -107,41 +144,41 @@ Alls Mikroncontroller findet ein ATxmega32A4AU oder 16A4AU von Microchip Verwend
 \bibitem{ds:xmega}
   Microchip Technology Inc.,
   \textit{ATxmega32A4U datasheet},\\
-  \url{ww1.microchip.com/downloads/en/DeviceDoc/ATxmega128-64-32-16A4U-DataSheet-DS40002166A.pdf}\\
+  \url{www.microchip.com/downloads/en/DeviceDoc/ATxmega128-64-32-16A4U-DataSheet-DS40002166A.pdf}\\
   Microchip.com,
   2011-2020
   
 \bibitem{ds:Flash}
   Microchip Technology Inc.,
   \textit{SST25VF040 datasheet},\\
-  \url{ww1.microchip.com/downloads/en/DeviceDoc/20005051E.pdf}\\
+  \url{www.microchip.com/downloads/en/DeviceDoc/20005051E.pdf}\\
   Microchip.com,
   2005-2020
   
 \bibitem{ds:usb}
   Future Technology Devices International Limited,
   \textit{FT2323R datasheet},\\
-  \url{ftdichip.com/wp-content/uploads/2020/08/DS_FT232R.pdf}\\
+  \url{www.ftdichip.com/wp-content/uploads/2020/08/DS_FT232R.pdf}\\
   ftdichip.com, 2020
   
 \bibitem{ds:temp}
   Texas Instruments Incorporated,
   \textit{LM35 datasheet},\\
-  \url{ti.com/lit/gpn/lm35}\\
+  \url{www.ti.com/lit/gpn/lm35}\\
   TI.com,
   1999-2017
   
 \bibitem{ds:light}
   Vishay Semiconductors,
   \textit{BPW96 datasheet},\\
-  \url{vishay.com/docs/81532/bpw96.pdf}\\
+  \url{www.vishay.com/docs/81532/bpw96.pdf}\\
   vishay.com,
   2011
   
 \bibitem{ds:BMP280}
   Bosch Sensortec GmbH,
   \textit{BMP280 datasheet},\\
-  \url{bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf}\\
+  \url{www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf}\\
   bosch-sensortec.com,
   Oktober 2021
   
