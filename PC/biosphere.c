@@ -16,7 +16,6 @@
 #include "tty.h"
 
 #define HELP "README.md"          //Name of helpfile
-#define OUTFL "biosphere.csv"   //Name of Output File
 #define ESC 27
 
 static char *errCodes[] = {"UART Transmittion", "AVCC", "RTC running", "RTC initialized", "Flash Signatur", "Flash erase", "Flash read/write", "UART Tx level",

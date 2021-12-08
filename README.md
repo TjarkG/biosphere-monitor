@@ -6,7 +6,7 @@ which can ocure in any order, listed below:
 
 * -h show this help message
 * -r show current reading in Command line Output
-* -s store all past readings in new file (stored as biosphere.csv in current directory)
+* -s show all saved readings. use `./PC/biosphere /dev/ttyUSB0 -s > biosphere.csv` to save them as a file
 * -f syncronize time
 * -i set messurment intervall in s, use -i? to get current intervall
 * -t run self test
