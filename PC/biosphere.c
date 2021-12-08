@@ -26,7 +26,7 @@ int setCommand(const char *cmd);
 struct reading getReading(char *buf);
 void printReading(FILE *ofp, struct reading in);
 void printHelp(void);
-void storeReadings(void);
+void storeReadings(bool commenting);
 
 int main(int argc, char *argv[])
 {
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
         }
         else if(strncmp(argv[i], "-s", 2) == 0)
         {
-            storeReadings();
+            storeReadings(strncmp(argv[i], "-sc", 3) == 0);
         }
         else if(strncmp(argv[i], "-f", 2) == 0)
         {
@@ -208,9 +208,10 @@ struct reading getReading(char *buf)
     return in;
 }
 
-void storeReadings(void)
+void storeReadings(bool commenting)
 {
-    fprintf(stderr, "Startet Saving Readings...\n");
+    if(commenting)
+        fprintf(stderr, "Startet Saving Readings...\n");
     printf("UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
     unsigned char buf[32];
     printUART("AR\r");
@@ -234,14 +235,15 @@ void storeReadings(void)
 
         printf("%s,%d,%d.%d,%d.%d,%d,%d,%d,%d\n",\
         tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
-        if(lnCnt%250 == 0)
+        if(lnCnt%250 == 0 && commenting)
         {
             putc('#', stderr);
             fflush(stderr);
         }
         lnCnt++;
     }
-    fprintf(stderr, "\nFinished! %lu Readings Saved\n",lnCnt);
+    if(commenting)
+        fprintf(stderr, "\nFinished! %lu Readings Saved\n",lnCnt);
 }
 
 void printReading(FILE *ofp, struct reading in)
