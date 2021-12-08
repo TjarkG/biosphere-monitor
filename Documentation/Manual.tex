@@ -150,7 +150,7 @@ Die Helligkeit wird mit einer Fotodiode vom Typ BPW96 \cite{ds:light} gemessen, 
 \end{tabular}
 \end{figure}
 
-Diese werden in \autoref{eq:lightB} bis \ref{eq:lightC} eingsetzt, um \autoref{eq:light} zu erhalten. Die dadurch erreichte Annäherung ist in \autoref{fig:Licht} oder $Lux~Messurments.ods$ zu erkennen.
+Diese werden in \autoref{eq:lightB} bis \ref{eq:lightC} eingsetzt, um \autoref{eq:light} zu erhalten. Die dadurch erreichte Annäherung ist in \autoref{fig:Licht} oder $Lux~Messurments.ods$\footnote{\url{https://github.com/TjarkG/biosphere-monitor/blob/main/Documentation/Lux\%20Messurments.ods}} zu erkennen.
 
 \begin{align}
 y_3-y_1=\frac{y_2-y_1}{b^{x_2}-b^{x_1}}\cdot(b^{x_3}-b^{x_1}) \iff b \approx 1,65
@@ -179,7 +179,7 @@ f(x) = 83,75 \cdot 1,65^x -158,26
 	\label{fig:Licht}
 \end{figure}
 
-Dieser Werte sind auch in die Entsprechende Funktion in $main.c$ eingesetzt
+Dieser Werte sind auch in die Entsprechende Funktion in $main.c$\footnote{\url{https://github.com/TjarkG/biosphere-monitor/blob/main/Microcontroller/main.c}} eingesetzt
 \begin{lstlisting}
 unsigned int getLight(void)  //returns iluminace in lux
 {
