@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
             setCommand(buf);
             if(abs(rawtime - getCommand("TG")) > 3)
             {
-                printf("first syncronization atempt faild, trying again\n");
+                fprintf(stderr, "first syncronization atempt faild, trying again\n");
                 time_t rawtime;
                 time ( &rawtime );
                 sprintf(buf, "TS%ld",rawtime);
@@ -75,25 +75,22 @@ int main(int argc, char *argv[])
                 if(abs(rawtime - getCommand("TG")) > 3)
                     fprintf(stderr, "Time Syncronization failed\n");
                 else
-                    printf("Syncronized System Times on second attempt\n");
+                    fprintf(stderr, "Syncronized System Times on second attempt\n");
             }
-            else
-                printf("Syncronized System Times\n");
         }
         else if(strncmp(argv[i], "-i?", 3) == 0)
-            printf("Current Messurment intervall: %li\n",getCommand("IG"));
+            printf("Messurment intervall: %li\n",getCommand("IG"));
         else if(strncmp(argv[i], "-i", 2) == 0)
         {
             sprintf(buf, "IS%s",argv[i]+2);
             setCommand(buf);
+            //TODO: check for succesful vertification
             printf("Intervall set:%s Intervall vertified:%ld\n",argv[i]+2,getCommand("IG"));
         }
         else if(strncmp(argv[i], "-t", 2) == 0)
         {
-            printf("Self Test started\n");
             int error = getCommand("DR");
 
-            printf("\n");
             for (int i = 0; i < (sizeof(errCodes) / sizeof(errCodes[0])); i++)
             {
                 printf("%-24s%s\n", errCodes[i], (error & (1 << i)) ? "Error": "Ok");
@@ -108,7 +105,6 @@ int main(int argc, char *argv[])
         {
             sprintf(buf, "DEL");
             setCommand(buf);
-            printf("Flash Deleted\n");
         }
         else if(strncmp(argv[i], "-ct", 3) == 0)
         {
@@ -123,6 +119,7 @@ int main(int argc, char *argv[])
             int off = tIn - (in.temperaturOut-offOld+128) + 128;
             sprintf(buf, "OST%d",off);
             setCommand(buf);
+            //TODO: check for succesful vertification
             printf("Outside Temperatur set:%2.1fC Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn/5.0, offOld-128, off-128, getCommand("OGT")-128);
         }
         i++;
@@ -220,7 +217,7 @@ void storeReadings(void)
         fprintf(stderr, "can't open %s\n", OUTFL);
         exit(1);
     }
-    fprintf(stdout, "Startet Saving Readings...\n");
+    fprintf(stderr, "Startet Saving Readings...\n");
     fprintf(out,"UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
     unsigned char buf[32];
     printUART("AR\r");
@@ -246,13 +243,13 @@ void storeReadings(void)
         tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
         if(lnCnt%250 == 0)
         {
-            putc('#', stdout);
-            fflush(stdout);
+            putc('#', stderr);
+            fflush(stderr);
         }
         lnCnt++;
     }
     fclose(out);
-    fprintf(stdout, "\nFinished! %u Readings Saved\n",lnCnt);
+    fprintf(stderr, "\nFinished! %u Readings Saved\n",lnCnt);
 }
 
 void printReading(FILE *ofp, struct reading in)
