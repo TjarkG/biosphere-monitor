@@ -113,8 +113,47 @@ Bei diesem Flash handelt es sich um einen 4Mb
 \section{USB-UART Wandler}
 \label{sec:USB-UART Wandler}
 
+\pagebreak
 \section{Außensensoren}
 \label{sec:Außensensoren}
+Außen werden zwei Messwerte erhoben: Temperatur und Helligkeit.
+
+Die Temperatur wird mit einem analogen Temperatursensor vom Typ LM35 \cite{ds:temp} der an TP6 eine Spannung von
+$ 10mV * t~(in~^\circ C)$ anlegt. Diese wird vom Mikrocontroller (\autoref{sec:Mikrocontroller}) gemessen.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{pic/OutsideSensors}
+	\caption{Schaltplan Außensensoren}
+	\label{fig:Außensensor}
+\end{figure}
+
+Die Helligkeit wird mit einer Fotodiode vom Typ BPW96 \cite{ds:light} gemessen, die parralel zu R8 im Timingpfad des NE555 eingebaut ist. R11 und 12 teilen die Spannung des Ausgangssignales von 5V auf 3,3V, so das an TP7 ein 3,3V Rechtecksignal mit einer Frequenz exponential zur Lichteinstrahlung anliegt. Um die Einstrahlung zu bestimmen ist im Mikrocontroller eine Funktion fest einprogrammiert, die anhand der Messreihe aus $Lux~Messurments.ods$ bestimmt wurde. Die Formel hat das Format $f(x)=a \cdot x^b + c$. Um diese Formel zu füllen werden zunächst drei Punkte aus der Messreihe ausgewählt.
+
+\begin{figure}[h]
+\centering
+\begin{tabular}{c|c}
+	x & y\\
+	\hline
+	1,27 & 0\\
+	3,93 & 442\\
+	6,21 & 1880\\
+\end{tabular}
+\end{figure}
+
+diese werden in \autoref{eq:lightB} bis \ref{eq:lightC} eingsetzt, um \autoref{} zu erhalten. Die dadurch erreichte Annäherung kann in $Lux~Messurments.ods$ als $l(f)$ gesehen werden.
+
+\begin{align}
+\label{eq:lightB}
+\end{align}
+
+\begin{align}
+\label{eq:lightA}
+\end{align}
+
+\begin{align}
+\label{eq:lightC}
+\end{align}
 
 \section{Anschlüsse Innensensoren}
 \label{sec:Innensensoren}
