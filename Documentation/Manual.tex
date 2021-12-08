@@ -2,7 +2,15 @@
 \usepackage[ngerman]{babel}
 \usepackage{graphicx}
 \usepackage{mathtools}
+\usepackage{listings}
+\usepackage{color}
 \usepackage[citecolor=black, colorlinks=true, urlcolor=blue, linkcolor=black]{hyperref}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{amber}{rgb}{0.8, 0.5, 0.2}
+
     \title{\textbf{Biosphären Mess- und Überwachungsgeräte -- Funktionsprinzipien und Bedienungsanleitung}}
     \author{Tjark Gaudich}
     \date{November 2021}
@@ -10,6 +18,7 @@
     \addtolength{\topmargin}{-2cm}
     \addtolength{\textheight}{2cm}
 \begin{document}
+\lstset{basicstyle=\footnotesize, language=C, commentstyle=\color{mygreen}, keywordstyle=\color{blue}, stringstyle=\color{mymauve}, tabsize=4}
 
 \pagenumbering{Alph}
 \begin{titlepage}
@@ -128,32 +137,57 @@ $ 10mV * t~(in~^\circ C)$ anlegt. Diese wird vom Mikrocontroller (\autoref{sec:M
 	\label{fig:Außensensor}
 \end{figure}
 
-Die Helligkeit wird mit einer Fotodiode vom Typ BPW96 \cite{ds:light} gemessen, die parralel zu R8 im Timingpfad des NE555 eingebaut ist. R11 und 12 teilen die Spannung des Ausgangssignales von 5V auf 3,3V, so das an TP7 ein 3,3V Rechtecksignal mit einer Frequenz exponential zur Lichteinstrahlung anliegt. Um die Einstrahlung zu bestimmen ist im Mikrocontroller eine Funktion fest einprogrammiert, die anhand der Messreihe aus $Lux~Messurments.ods$ bestimmt wurde. Die Formel hat das Format $f(x)=a \cdot x^b + c$. Um diese Formel zu füllen werden zunächst drei Punkte aus der Messreihe ausgewählt.
+Die Helligkeit wird mit einer Fotodiode vom Typ BPW96 \cite{ds:light} gemessen, die parralel zu R8 im Timingpfad des NE555 eingebaut ist. R11 und 12 teilen die Spannung des Ausgangssignales von 5V auf 3,3V, so das an TP7 ein 3,3V Rechtecksignal mit einer Frequenz exponential zur Lichteinstrahlung anliegt. Um die Einstrahlung zu bestimmen ist im Mikrocontroller eine Funktion fest einprogrammiert, die anhand der Messreihe aus $Lux~Messurments.ods$ bestimmt wurde. Die Formel hat das Format $f(x)=a \cdot x^b + c$. Um diese Formel zu füllen werden zunächst drei Punkte, erster, letzter und mittlerer aus der Messreihe, ausgewählt.
 
 \begin{figure}[h]
 \centering
-\begin{tabular}{c|c}
-	x & y\\
+\begin{tabular}{c|c|c}
+	Nr. & x & y\\
 	\hline
-	1,27 & 0\\
-	3,93 & 442\\
-	6,21 & 1880\\
+	1 & 1,27 & 0\\
+	2 & 3,93 & 442\\
+	3 & 6,21 & 1880\\
 \end{tabular}
 \end{figure}
 
-diese werden in \autoref{eq:lightB} bis \ref{eq:lightC} eingsetzt, um \autoref{} zu erhalten. Die dadurch erreichte Annäherung kann in $Lux~Messurments.ods$ als $l(f)$ gesehen werden.
+Diese werden in \autoref{eq:lightB} bis \ref{eq:lightC} eingsetzt, um \autoref{eq:light} zu erhalten. Die dadurch erreichte Annäherung ist in \autoref{fig:Licht} oder $Lux~Messurments.ods$ zu erkennen.
 
 \begin{align}
+y_3-y_1=\frac{y_2-y_1}{b^{x_2}-b^{x_1}}\cdot(b^{x_3}-b^{x_1}) \iff b \approx 1,65
 \label{eq:lightB}
 \end{align}
 
 \begin{align}
+a=\frac{y_2-y_1}{b^{x_2}-b^{x_1}} = 83,75
 \label{eq:lightA}
 \end{align}
 
 \begin{align}
+c = -a\cdot b^{x_1} + y_1 = -158,26
 \label{eq:lightC}
 \end{align}
+
+\begin{align}
+\label{eq:light}
+f(x) = 83,75 \cdot 1,65^x -158,26
+\end{align}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{pic/Aproximation}
+	\caption{Annäherung Messwerte}
+	\label{fig:Licht}
+\end{figure}
+
+Dieser Werte sind auch in die Entsprechende Funktion in $main.c$ eingesetzt
+\begin{lstlisting}
+unsigned int getLight(void)  //returns iluminace in lux
+{
+	if(lightFnom < 1200)     //Sensor cutoff Frequency
+		return 0;
+	return (unsigned int) ((66.46 * pow(1.732, (lightFnom/1000.0)) ) - 133.5);
+}
+\end{lstlisting}
 
 \section{Anschlüsse Innensensoren}
 \label{sec:Innensensoren}
