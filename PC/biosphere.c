@@ -225,12 +225,7 @@ void storeReadings(bool commenting)
         struct reading in = getReading(buf);
         char tmStr[20];
         struct tm lt;
-        #ifdef __unix
-        (void) gmtime_r(&in.timeRead, &lt);
-        #endif
-        #ifdef _WIN32
         lt = *gmtime(&in.timeRead);
-        #endif
         strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
         printf("%s,%d,%d.%d,%d.%d,%d,%d,%d,%d\n",\
@@ -250,12 +245,7 @@ void printReading(FILE *ofp, struct reading in)
 {
     char tmStr[20];
     struct tm lt;
-    #ifdef __unix
-    (void) gmtime_r(&in.timeRead, &lt);
-    #endif
-    #ifdef _WIN32
     lt = *gmtime(&in.timeRead);
-    #endif
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
     fprintf(ofp, "Current Reading: Time: %s UTC Outside: %dlux %2.1fC Inside: %2.1fC %dhPa",\
