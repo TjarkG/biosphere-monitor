@@ -211,18 +211,12 @@ struct reading getReading(char *buf)
 
 void storeReadings(void)
 {
-    FILE *out;
-    if ((out = fopen(OUTFL, "w")) == NULL) 
-    {
-        fprintf(stderr, "can't open %s\n", OUTFL);
-        exit(1);
-    }
     fprintf(stderr, "Startet Saving Readings...\n");
-    fprintf(out,"UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
+    printf("UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
     unsigned char buf[32];
     printUART("AR\r");
     getUartLine(buf);
-    unsigned int lnCnt = 0;
+    unsigned long lnCnt = 0;
     while(1)
     {
         getUartLine(buf);
@@ -239,7 +233,7 @@ void storeReadings(void)
         #endif
         strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
-        fprintf(out, "%s,%d,\"%d,%d\",\"%d,%d\",%d,%d,%d,%d\n",\
+        printf("%s,%d,%d.%d,%d.%d,%d,%d,%d,%d\n",\
         tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
         if(lnCnt%250 == 0)
         {
@@ -248,8 +242,7 @@ void storeReadings(void)
         }
         lnCnt++;
     }
-    fclose(out);
-    fprintf(stderr, "\nFinished! %u Readings Saved\n",lnCnt);
+    fprintf(stderr, "\nFinished! %lu Readings Saved\n",lnCnt);
 }
 
 void printReading(FILE *ofp, struct reading in)
