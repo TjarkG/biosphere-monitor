@@ -18,7 +18,7 @@
     \addtolength{\topmargin}{-2cm}
     \addtolength{\textheight}{2cm}
 \begin{document}
-\lstset{basicstyle=\footnotesize, language=C, commentstyle=\color{mygreen}, keywordstyle=\color{blue}, stringstyle=\color{mymauve}, tabsize=4}
+\lstset{basicstyle=\footnotesize, language=C, keywordstyle=\color{blue}, stringstyle=\color{mymauve}, tabsize=4}
 
 \pagenumbering{Alph}
 \begin{titlepage}
@@ -206,6 +206,19 @@ unsigned int getLight(void)  //returns iluminace in lux
 
 \section{Bodenfeuchtigkeitssensor}
 \label{sec:Bodenfeuchtigkeitssensor}
+
+\chapter{Software}
+Die Software besteht aus zwei Teilen, dem Code für den Mikrocontroller und dem Ausleseprogramm für den PC. Um die eine installieren und die andere nutzen zu können müssen beide zunächst gecloned und ihre abhängigkeiten installiert werden.
+\section{Instalation}
+Zum clonen muss zunächst $git$ installiert werden.
+\begin{lstlisting}
+$sudo apt-get install git
+\end{lstlisting}
+Dann kann das Repository gecloned werde
+\begin{lstlisting}
+$git clone https://github.com/TjarkG/biosphere-monitor
+\end{lstlisting}
+Um die PC Software benutzen zu können 
 
 \begin{thebibliography}{9}
 \raggedright 
