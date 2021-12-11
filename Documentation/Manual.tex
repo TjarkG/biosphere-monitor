@@ -101,7 +101,7 @@ Alls Mikroncontroller findet ein ATxmega32A4AU\cite{ds:xmega} oder 16A4AU von Mi
 
 \begin{figure}[h]
 	\centering
-\begin{tabular}{c|c}
+\begin{tabular}{c|l}
 	Pins & Funktion\\
 	\hline
 	10, 11 & TWI C, I²C Schnittstelle für den Luftsensoren 
@@ -208,17 +208,38 @@ unsigned int getLight(void)  //returns iluminace in lux
 \label{sec:Bodenfeuchtigkeitssensor}
 
 \chapter{Software}
-Die Software besteht aus zwei Teilen, dem Code für den Mikrocontroller und dem Ausleseprogramm für den PC. Um die eine installieren und die andere nutzen zu können müssen beide zunächst gecloned und ihre abhängigkeiten installiert werden.
+Die Software besteht aus zwei Teilen, dem Code für den Mikrocontroller und dem Ausleseprogramm für den PC. Um die eine installieren und die andere nutzen zu können müssen beide zunächst gecloned und ihre abhängigkeiten installiert werden. Die Befehle können für Debian Linux Varianten einfach kopiert werden, für andere Distributionen oder MacOS ist \lstinline|sudo apt-get| durch das lokale Eqvivallent zu ersetzen
 \section{Instalation}
-Zum clonen muss zunächst $git$ installiert werden.
+Zum Clonen muss zunächst $git$ installiert werden.
 \begin{lstlisting}
-$sudo apt-get install git
+$ sudo apt-get install git
 \end{lstlisting}
-Dann kann das Repository gecloned werde
+Dann kann das Repository gecloned
 \begin{lstlisting}
-$git clone https://github.com/TjarkG/biosphere-monitor
+$ git clone https://github.com/TjarkG/biosphere-monitor
 \end{lstlisting}
-Um die PC Software benutzen zu können 
+Und in den neuen Ortnder gewechselt werden.
+\begin{lstlisting}
+$ cd biosphere-monitor
+\end{lstlisting}
+Um die PC Software compilen zu können ist außerdem GCC als Kompiler notwendig.
+\begin{lstlisting}
+$ sudo apt-get install gcc
+\end{lstlisting}
+Die aktuelle Version kann jetzt jeweils mit
+\begin{lstlisting}
+$ cc PC/biosphere.c -o PC/biosphere; ./PC/biosphere /dev/ttyUSB0 -r
+\end{lstlisting}
+kompilert und ausgeführt werden. 
+
+Um die Mikrocontroller Firmware aktualisieren zu können, werden neben der Hardware (\autoref{sec:Mikrocontroller})  eine ganze Reihe Hilfsprogramme benötigt. Eine Erläuterungen zu ihrer Funktion findet sich unter \cite{UbuntuAVR}
+\begin{lstlisting}
+$ sudo apt-get install avr-libc binutils-avr gcc-avr avrdude make
+\end{lstlisting}
+Das Upload der Firmwareerfolgt mit
+\begin{lstlisting}
+$ make program -C ./Microcontroller
+\end{lstlisting}
 
 \begin{thebibliography}{9}
 \raggedright 
@@ -296,6 +317,13 @@ Um die PC Software benutzen zu können
   \textit{The C Programming Language},
   Prentice Hall PTR, New Jersey,
   2. Auflage, 58. Druck 2018
+  
+\bibitem{UbuntuAVR}
+  Ubuntu Wiki,
+  \textit{AVR},\\
+  \url{https://wiki.ubuntuusers.de/AVR/}\\
+  Ubuntu Deutschland e.V.,
+  Januar 2021
 
 \end{thebibliography}
 
