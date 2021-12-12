@@ -1,6 +1,6 @@
 #!/bin/bash
 packagesNeeded='git gcc avr-libc binutils-avr gcc-avr avrdude make'
-if [ -x "$(command -v apk)" ];       then sudo apk add --no-cache $packagesNeeded
+if [ -x "$(command -v apk)" ];       then apk add --no-cache $packagesNeeded
 elif [ -x "$(command -v apt-get)" ]; then sudo apt-get install $packagesNeeded
 elif [ -x "$(command -v dnf)" ];     then sudo dnf install $packagesNeeded
 elif [ -x "$(command -v zypper)" ];  then sudo zypper install $packagesNeeded
