@@ -1,5 +1,8 @@
 # Getting started with the Biosphere monitor command line tool
 
+Get the repository and all its dependencys by running
+`/bin/bash -c "$(curl -fsSL  https://raw.githubusercontent.com/TjarkG/biosphere-monitor/main/Shell/install.sh)"`
+
 The Command line interface is started with `./biosphere`,
 followed by a Port number (e.g. `/dev/ttyUSB0`) and optinal arguments,
 which can ocure in any order, listed below:
