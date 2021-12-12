@@ -222,7 +222,7 @@ void storeReadings(bool commenting)
     while(1)
     {
         getUartLine(buf);
-        if(buf[0] == 'E')
+        if(buf[0] == 'E')       //detecting EOF with a string comperasions somehow made the whole program slower than the Microcontroller is transmitting
             break;
         struct reading in = getReading(buf);
         char tmStr[20];
