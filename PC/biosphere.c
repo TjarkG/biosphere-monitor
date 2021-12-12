@@ -222,7 +222,7 @@ void storeReadings(bool commenting)
     while(1)
     {
         getUartLine(buf);
-        if(strncmp(buf, "EOF",3) == 0)
+        if(buf[0] == 'E')
             break;
         struct reading in = getReading(buf);
         char tmStr[20];
