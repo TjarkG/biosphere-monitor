@@ -215,7 +215,7 @@ void storeReadings(bool commenting)
     if(commenting)
         fprintf(stderr, "Startet Saving Readings...\n");
     printf("UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
-    unsigned char buf[32];
+    unsigned char buf[64];
     printUART("AR\r");
     getUartLine(buf);
     unsigned long lnCnt = 0;
