@@ -9,6 +9,7 @@ which can ocure in any order, listed below:
 
 * -h    show this help message
 * -r    show current reading in Command line Output
+* -rm   curent output in machine readable formate
 * -s    show all saved readings. use `./PC/biosphere /dev/ttyUSB0 -sc > biosphere.csv` to save them as a file
 * -sc   same as -s, but with progress Updates on the Terminal. Usefull in combination with piping
 * -f    syncronize time

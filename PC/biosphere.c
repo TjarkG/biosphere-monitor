@@ -27,6 +27,7 @@ struct reading getReading(char *buf);
 void printReading(FILE *ofp, struct reading in);
 void printHelp(void);
 void storeReadings(bool commenting);
+void printCsvReading(struct reading in);
 
 int main(int argc, char *argv[])
 {
@@ -52,7 +53,11 @@ int main(int argc, char *argv[])
         {
             setCommand("CR");
             getUartLine(buf);
-            printReading(stdout, getReading(buf));
+            struct reading in = getReading(buf);
+            if(strncmp(argv[i], "-rm", 3) == 0)
+                printCsvReading(in);
+            else
+                printReading(stdout, in);
         }
         else if(strncmp(argv[i], "-s", 2) == 0)
         {
@@ -225,13 +230,8 @@ void storeReadings(bool commenting)
         if(buf[0] == 'E')       //detecting EOF with a string comperasions somehow made the whole program slower than the Microcontroller is transmitting
             break;
         struct reading in = getReading(buf);
-        char tmStr[20];
-        struct tm lt;
-        lt = *gmtime(&in.timeRead);
-        strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
-
-        printf("%s,%d,%d.%d,%d.%d,%d,%d,%d,%d\n",\
-        tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
+        printCsvReading(in);
+        
         if(lnCnt%250 == 0 && commenting)
         {
             putc('#', stderr);
@@ -261,4 +261,15 @@ void printReading(FILE *ofp, struct reading in)
         fprintf(ofp, " %dIAQ", in.iaq);
     
     fprintf(ofp, "\n");
+}
+
+void printCsvReading(struct reading in)
+{
+    char tmStr[20];
+    struct tm lt;
+    lt = *gmtime(&in.timeRead);
+    strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
+
+    printf("%s,%d,%d.%d,%d.%d,%d,%d,%d,%d\n",\
+    tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
 }
