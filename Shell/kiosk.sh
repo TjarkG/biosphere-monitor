@@ -1,14 +1,22 @@
 #!/bin/bash
 #setup
+echo "Drücke irgendeine Taste zum beenden"
 cc ../PC/biosphere.c -o ../PC/biosphere
 ./../PC/biosphere /dev/ttyUSB0 -f
+tput civis
+sleep 2
 #loop
-./../PC/biosphere /dev/ttyUSB0 -rm
-crMess='10.12.2021 15:31:00,2,23.2,23.6,947,26,10,0'
-: 'yad \
---title="Biosphere Display Mode" \
---text-align=center \
---text="<span font='64'>Aktuelle Messwerte:\n""${crMess}""</span>" \
---no-buttons \
---width=3840 \
---height=2160'
+while [[ -z "$IN" ]]; do
+./../PC/biosphere /dev/ttyUSB0 -rm |
+awk -F, \
+'{print "\033cAktuelle Messwerte:\n" \
+$1 " UTC\n" $2 " lux \tHelligkeit\n" \
+$3 "°C \tRaumtemperatur\n\n\
+In der Biosphpäre:\n" \
+$4 "°C\n" \
+$5 "hPa\n" \
+$6 "% \tLuftfeuchtigkeit\n" \
+$7 "% \tBodenfeuchtigkeit"}'
+read -t 1 -N 1 IN
+done
+tput cnorm
