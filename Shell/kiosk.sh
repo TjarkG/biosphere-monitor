@@ -1,6 +1,11 @@
 #!/bin/bash
 #setup
 echo "Drücke irgendeine Taste zum beenden"
+function cleanup() {
+    tput cnorm
+}
+
+trap cleanup EXIT
 cc ../PC/biosphere.c -o ../PC/biosphere
 ./../PC/biosphere /dev/ttyUSB0 -f
 tput civis
