@@ -15,7 +15,7 @@ while [[ -z "$IN" ]]; do
 ./../PC/biosphere /dev/ttyUSB0 -rm |
 awk -F, \
 '{print "\033cAktuelle Messwerte:\n" \
-$1 " UTC\n" $2 " lux \tHelligkeit\n" \
+$1 " UTC\n" $2 " lux\tHelligkeit\n" \
 $3 "°C \tRaumtemperatur\n\n\
 In der Biosphpäre:\n" \
 $4 "°C\n" \
