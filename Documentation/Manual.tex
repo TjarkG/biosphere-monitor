@@ -4,6 +4,8 @@
 \usepackage{mathtools}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{float}
+\sloppy
 \usepackage[citecolor=black, colorlinks=true, urlcolor=blue, linkcolor=black]{hyperref}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
@@ -104,19 +106,18 @@ Alls Mikroncontroller findet ein ATxmega32A4AU\cite{ds:xmega} oder 16A4AU von Mi
 \begin{tabular}{c|l}
 	Pins & Funktion\\
 	\hline
-	10, 11 & TWI C, I²C Schnittstelle für den Luftsensoren 
-	(\autoref{sec:Adapterplatine})\\
+	10, 11 & TWI C zum Luftsensoren (\autoref{sec:Adapterplatine})\\
 	12 (Tx), 13 (Rx)& UART0 zum USB UART Wandler (\autoref{sec:USB-UART Wandler}), \\&in Revision 1.0 vertauscht\\
 	14 - 17 & Flash Spi Schnittstelle\\
 	20, 21 & Flash Kontrollsignale\\
-	25 & Lichtsensor (\autoref{sec:Außensensoren}), bei Steigender Flanke Pin Change Interuppt\\
+	25 & Lichtsensor (\autoref{sec:Außensensoren}), bei Steigender Flanke \\&Pin Change Interuppt\\
 	26, 27 & Reserviert für eingebautes USB\\
 	32, 33 & Q2, 32.768kHz Uhrenquartz für die Realtimeclock\\
 	34, 35 & PDI Programmierschittstelle\\
 	36, 37 & Q1, 4 - 20MHz Hauptquartz, (16MHz Standard)\\
 	40 & 1V Referenzspannung, über R9/10 aus 2,5V\\
-	42 & ADC Eingang Bodenfeuchtigkeitssensor (siehe \autoref{sec:Bodenfeuchtigkeitssensor}) \\
-	43 & ADC Eingang Temperatursensor (siehe \autoref{sec:Außensensoren})\\
+	42 & ADC In Bodenfeuchtigkeitssensor (s. \autoref{sec:Bodenfeuchtigkeitssensor}) \\
+	43 & ADC In Temperatursensor (s. \autoref{sec:Außensensoren})\\
 \end{tabular}
 	\caption{Pinbelegung Mikrocontroller}
 \end{figure}
@@ -181,20 +182,21 @@ c = -a\cdot b^{x_1} + y_1 = -158,26
 f(x) = 83,75 \cdot 1,65^x -158,26
 \end{align}
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{pic/Aproximation}
 	\caption{Annäherung Messwerte}
 	\label{fig:Licht}
 \end{figure}
-
+\pagebreak
 Dieser Werte sind auch in die Entsprechende Funktion in $main.c$\footnote{\url{https://github.com/TjarkG/biosphere-monitor/blob/main/Microcontroller/main.c}} eingesetzt
+Sie sind momentan fest einprogrammiert, auch wenn eine Möglichkeit sie zu konfigurieren sinnvoll wäre.
 \begin{lstlisting}
 unsigned int getLight(void)  //returns iluminace in lux
 {
 	if(lightFnom < 1200)     //Sensor cutoff Frequency
 		return 0;
-	return (unsigned int) ((66.46 * pow(1.732, (lightFnom/1000.0)) ) - 133.5);
+	return ((66.46 * pow(1.732, (lightFnom/1000.0)) ) - 133.5);
 }
 \end{lstlisting}
 
@@ -214,7 +216,8 @@ Die Software besteht aus zwei Teilen, dem Code für den Mikrocontroller und dem 
 Sämtliche benötigte Software kann durch ausführen von
 \begin{lstlisting}
 /bin/bash -c "$(curl -fsSL 
-https://raw.githubusercontent.com/TjarkG/biosphere-monitor/main/Shell/install.sh)"
+https://raw.githubusercontent.com/
+TjarkG/biosphere-monitor/main/Shell/install.sh)"
 \end{lstlisting}
 Installiert werden. Der Script wurde unter Ubuntu und Alpine Linux getestet. Falls dies nicht funktioniert kann die Installation auch manuel durchgeführt werden:
 Zum Clonen muss zunächst $git$ installiert werden.
@@ -235,7 +238,8 @@ $ sudo apt-get install gcc
 \end{lstlisting}
 Die aktuelle Version kann jetzt jeweils mit
 \begin{lstlisting}
-$ cc PC/biosphere.c -o PC/biosphere; ./PC/biosphere /dev/ttyUSB0 -r
+$ cc PC/biosphere.c -o PC/biosphere
+$ ./PC/biosphere /dev/ttyUSB0 -r
 \end{lstlisting}
 kompilert und ausgeführt werden. 
 \pagebreak
@@ -253,7 +257,7 @@ $ make program -C ./Microcontroller
 \section{PC}
 \section{Scripte}
 Im Ordner $Shell$ befinden sich zwei Scripte:
-$install.sh$ ist der installationsscript aus \autoref{sec:Instalation}. 
+$install.sh$ ist der installationsscript der in \autoref{sec:Instalation} verwendet wurde. 
 Dieser führt die selben Schritte aus die auch dort beschrieben sind, 
 ermittelt allerdings von selber den verwendeten Paketmanager.
 
