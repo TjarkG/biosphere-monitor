@@ -94,6 +94,9 @@ include/*
 *.toc
 *.swp
 *.bak
+*.fls
+*.fdb_latexmk
+*.synctex.gz
 
 #Output Files
 biosphere.csv

@@ -210,6 +210,7 @@ unsigned int getLight(void)  //returns iluminace in lux
 \chapter{Software}
 Die Software besteht aus zwei Teilen, dem Code für den Mikrocontroller und dem Ausleseprogramm für den PC. Um die eine installieren und die andere nutzen zu können müssen beide zunächst gecloned und ihre abhängigkeiten installiert werden. Die Befehle können für Debian Linux Varianten einfach kopiert werden, für andere Distributionen oder MacOS ist \lstinline|sudo apt-get| durch das lokale Eqvivallent zu ersetzen
 \section{Instalation}
+\label{sec:Instalation}
 Sämtliche benötigte Software kann durch ausführen von
 \begin{lstlisting}
 /bin/bash -c "$(curl -fsSL 
@@ -243,11 +244,22 @@ Um die Mikrocontroller Firmware aktualisieren zu können, werden neben der Hardw
 \begin{lstlisting}
 $ sudo apt-get install avr-libc binutils-avr gcc-avr avrdude make
 \end{lstlisting}
-Das Upload der Firmwareerfolgt mit
+Das Upload der Firmware erfolgt mit
 \begin{lstlisting}
 $ make program -C ./Microcontroller
 \end{lstlisting}
 
+\section{Mikrocontroller}
+\section{PC}
+\section{Scripte}
+Im Ordner $Shell$ befinden sich zwei Scripte:
+$install.sh$ ist der installationsscript aus \autoref{sec:Instalation}. 
+Dieser führt die selben Schritte aus die auch dort beschrieben sind, 
+ermittelt allerdings von selber den verwendeten Paketmanager.
+
+Des weiteren ist $kiosk.sh$ enthalten.
+Dieser Script hohlt sich einmal pro Sekunde von $biosphere.c$ die aktuellen Messwerte für das Messgerät 
+an $/dev/ttyUSB0$ und zeigt sie auf dem Terminal an.
 \begin{thebibliography}{9}
 \raggedright 
 
