@@ -15,10 +15,9 @@ $0 ~ /^#/ {next}
 	$1 = substr($1, 2, length($1))
 	$3 = substr($3, 1, length($3)-1)
 	nameFile=$2
-	print $1
 	gsub(/\ /,"-" , nameFile)
+
 	filepath=sprintf("~/BioData/biosphere-%s-%s.csv", nameFile, date)
-	print filepath
 
 	if(system("~/biosphere-monitor/PC/biosphere " $1 " -s >" filepath) != 0)
 		message="An Error occured saving Data"
