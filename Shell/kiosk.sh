@@ -1,18 +1,20 @@
 #!/bin/bash
 #setup
 echo "Drücke irgendeine Taste zum beenden"
+path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; cd ..; pwd -P )
+echo $path
 function cleanup() {
     tput cnorm
 }
 
 trap cleanup EXIT
-cc ../PC/biosphere.c -o ../PC/biosphere
-./../PC/biosphere /dev/ttyUSB0 -f
+cc "$path/PC/biosphere.c" -o "$path/PC/biosphere"
+"$path/PC/biosphere" $1 -f
 tput civis
-sleep 2
+sleep 1
 #loop
 while [[ -z "$IN" ]]; do
-./../PC/biosphere /dev/ttyUSB0 -rm |
+"$path/PC/biosphere" $1 -rm |
 awk -F, \
 '{print "\033cAktuelle Messwerte:\n" \
 $1 " UTC\n" $2 " lux\tHelligkeit\n" \
