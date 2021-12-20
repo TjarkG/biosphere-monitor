@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
         }
         else if(strncmp(argv[i], "-gh", 3) == 0)
         {
-            printf("%d", getCommand("GH"));
+            printf("%d\n",(unsigned int) getCommand("GH"));
         }
         else
             fprintf(stderr, "Unknow Argument: %s\n", argv[i]);
