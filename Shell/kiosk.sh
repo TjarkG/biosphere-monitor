@@ -2,7 +2,6 @@
 #setup
 echo "Drücke irgendeine Taste zum beenden"
 path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; cd ..; pwd -P )
-echo $path
 function cleanup() {
     tput cnorm
 }
