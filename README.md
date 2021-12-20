@@ -17,6 +17,7 @@ which can ocure in any order, listed below:
 * -t    run self test
 * -ct   set current ambient Temperature(°C), used for Offset Calibration
 * -delete delete Flash
+* -gh   get current ADC reading of external input
 
 Commands to compile the Current Software after cloning:
 

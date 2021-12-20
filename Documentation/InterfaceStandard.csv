@@ -12,3 +12,4 @@ Temperatur Offset Get,OGT,non,Offset (°C*5+128),
 Delete,DEL,non,non,resets Flash to beginning
 Get ID,ID,non,Chip ID,Reads out the Chip ID of connected BME / BMP Sensor
 Reading Number,RN,non,number of stored readings
+Get Humidity,GH,non,current ADC count at external input

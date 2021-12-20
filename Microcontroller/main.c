@@ -65,7 +65,7 @@ void quicksort(unsigned int *data, unsigned int n);
 unsigned int getMedian(unsigned int *rd, const unsigned int n);
 unsigned char getOutsideTemp(void);
 unsigned int getLight(void);
-unsigned char getSoilHum(void);
+unsigned int getSoilHum(void);
 
 int main(void)
 {
@@ -176,6 +176,8 @@ int main(void)
                 uartWriteIntLine(id);
             else if(strncmp(uartBuf,"RN",2) == 0)
                 uartWriteIntLine(getFlashAdr);
+            else if(strncmp(uartBuf,"GH",2) == 0)
+                uartWriteIntLine(getSoilHum());
             instruct = 0;
         }
     }
@@ -187,7 +189,7 @@ struct reading getReading(void)     //reuturns fresh data
     in.timeRead = timeCounter;
     in.temperaturOut = getOutsideTemp();
     in.light = getLight();
-    in.humiditySoil = getSoilHum();
+    in.humiditySoil = (getSoilHum()/16);
     if(id > 0) //BME installed
     {
         in.temperaturIn = getBmeTemp();
@@ -329,7 +331,7 @@ unsigned int getLight(void)  //returns iluminace in lux
     return (unsigned int) ((66.46 * pow(1.732, (lightFnom/1000.0)) ) - 133.5);
 }
 
-unsigned char getSoilHum(void)  //returns Soil Humidity in %
+unsigned int getSoilHum(void)  //returns Soil Humidity in counts
 {
     ADCA.CTRLA = ADC_ENABLE_bm;
     unsigned int tempArr[ADCN];
@@ -341,7 +343,7 @@ unsigned char getSoilHum(void)  //returns Soil Humidity in %
         tempArr[i] = ADCA.CH2.RES;
 	}
     ADCA.CTRLA &= ~ADC_ENABLE_bm;
-    return (getMedian(tempArr, ADCN)/41);
+    return getMedian(tempArr, ADCN);
 }
 
 ISR(USARTC0_RXC_vect)       //UART ISR

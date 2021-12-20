@@ -126,6 +126,10 @@ int main(int argc, char *argv[])
             //TODO: check for succesful vertification
             printf("Outside Temperatur set:%2.1fC Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn/5.0, offOld-128, off-128, getCommand("OGT")-128);
         }
+        else if(strncmp(argv[i], "-gh", 3) == 0)
+        {
+            printf("%d\n",(unsigned int) getCommand("GH"));
+        }
         else
             fprintf(stderr, "Unknow Argument: %s\n", argv[i]);
         i++;
