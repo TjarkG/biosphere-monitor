@@ -65,7 +65,8 @@ void quicksort(unsigned int *data, unsigned int n);
 unsigned int getMedian(unsigned int *rd, const unsigned int n);
 unsigned char getOutsideTemp(void);
 unsigned int getLight(void);
-unsigned int getSoilHum(void);
+unsigned int getExtCount(void);
+unsigned char getRH(void);
 
 int main(void)
 {
@@ -177,7 +178,7 @@ int main(void)
             else if(strncmp(uartBuf,"RN",2) == 0)
                 uartWriteIntLine(getFlashAdr);
             else if(strncmp(uartBuf,"GH",2) == 0)
-                uartWriteIntLine(getSoilHum());
+                uartWriteIntLine(getExtCount());
             instruct = 0;
         }
     }
@@ -189,7 +190,7 @@ struct reading getReading(void)     //reuturns fresh data
     in.timeRead = timeCounter;
     in.temperaturOut = getOutsideTemp();
     in.light = getLight();
-    in.humiditySoil = (getSoilHum()/16);
+    in.humiditySoil = getRH();
     if(id > 0) //BME installed
     {
         in.temperaturIn = getBmeTemp();
@@ -331,7 +332,13 @@ unsigned int getLight(void)  //returns iluminace in lux
     return (unsigned int) ((66.46 * pow(1.732, (lightFnom/1000.0)) ) - 133.5);
 }
 
-unsigned int getSoilHum(void)  //returns Soil Humidity in counts
+unsigned char getRH(void) //returns relativ humidity from external moisture sensor
+{
+    unsigned char rh = (getExtCount()/5)+288;  //see RH Messurments.ods, f(x) = 0.2x+288
+    return rh > 100 ? 100 : rh;   
+}
+
+unsigned int getExtCount(void)  //returns ADC counts from external Sensor
 {
     ADCA.CTRLA = ADC_ENABLE_bm;
     unsigned int tempArr[ADCN];
