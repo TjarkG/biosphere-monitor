@@ -6,8 +6,6 @@ BEGIN {
 	FS = "\" \""
 	"date +%Y-%m-%d" | getline date;
 	heading="Biosphaeren Daten";
-	system("cc ~/biosphere-monitor/PC/biosphere.c -o ~/biosphere-monitor/PC/biosphere")
-	#system("mkdir ~/BioData")
 }
 # skip comments starting with #
 $0 ~ /^#/ {next}
