@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
     if(strcmp(argv[1], "-h") == 0)
         printHelp();
-    if (argc == 1 || argv[1][0] == '-') /* no args: throw error */
+    if (argc == 1 || argv[1][0] == '-') /* no args or arguments cant be a serial Port: throw error */
     {
         fprintf(stderr, "%s: first argument must be target COM Port\n", prog);
         return -1;
