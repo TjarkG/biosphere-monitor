@@ -59,25 +59,10 @@ fn main()
 			}
 			else if arg.contains("-f")
 			{
-				let rawtime: u64;
-				match SystemTime::now().duration_since(UNIX_EPOCH)
+				//try syncing two times
+				if ((sync_time() as i64 - (get_command("TG") as i64)).abs()) > 3
 				{
-					Ok(n) => rawtime = n.as_secs(),
-					Err(_) => panic!("SystemTime before UNIX EPOCH!"),
-				}
-				set_command(format!("TS{}", rawtime));
-
-				if ((rawtime as i64 - (get_command("TG") as i64)).abs()) > 3
-				{
-					eprintln!("first syncronization atempt faild, trying again");
-					let rawtime: u64;
-					match SystemTime::now().duration_since(UNIX_EPOCH)
-					{
-						Ok(n) => rawtime = n.as_secs(),
-						Err(_) => panic!("SystemTime before UNIX EPOCH!"),
-					}
-					set_command(format!("TS{}", rawtime));
-					if ((rawtime as i64 - (get_command("TG") as i64)).abs()) > 3
+					if ((sync_time() as i64 - (get_command("TG") as i64)).abs()) > 3
 						{ eprintln!("Time Syncronization failed"); }
 					else
 						{ eprintln!("Syncronized System Times on second attempt"); }
@@ -241,4 +226,16 @@ fn print_csv_reading(ip: Reading)
 	println!("{},{},{:.1},{:.1},{},{},{},{}",
 		timestamp_str, ip.light, (ip.temperatur_out as f32/5.0), (ip.temperatur_in as f32/10.0), ip.pressure, ip.humidity_air, ip.humidity_soil, ip.iaq);
 
+}
+
+fn sync_time() -> u64
+{
+	let rawtime: u64;
+	match SystemTime::now().duration_since(UNIX_EPOCH)
+	{
+		Ok(n) => rawtime = n.as_secs(),
+		Err(_) => panic!("SystemTime before UNIX EPOCH!"),
+	}
+	set_command(format!("TS{}", rawtime));
+	return rawtime;
 }
