@@ -101,3 +101,7 @@ include/*
 #Output Files
 biosphere.csv
 PC/biosphere
+
+#Rust
+*/Cargo.lock
+*/target/*
