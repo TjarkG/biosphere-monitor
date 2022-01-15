@@ -1,5 +1,4 @@
-Interface Protocoll for the Biosphere Monitor,,,,
-Name,Instruction,Parameter,returns,
+Name,Instruction,Parameter,returns,Long Description
 All Readings,AR,non,List of all stored readings,
 Current Reading,CR,non,Current Sensor reading,
 Sample intervall get,IG,non,Intervall in s,
@@ -11,5 +10,5 @@ Temperatur Offset Set,OST,Offset (°C*5+128),non,
 Temperatur Offset Get,OGT,non,Offset (°C*5+128),
 Delete,DEL,non,non,resets Flash to beginning
 Get ID,ID,non,Chip ID,Reads out the Chip ID of connected BME / BMP Sensor
-Reading Number,RN,non,number of stored readings
-Get Humidity,GH,non,current ADC count at external input
+Reading Number,RN,non,number of stored readings,
+Get Humidity,GH,non,current ADC count at external input,
