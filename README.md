@@ -24,4 +24,8 @@ Commands to compile the Current Software after cloning:
 * Command Line Tool: `make -C PC; ./PC/biosphere /dev/ttyUSB0 -r`
 * Microcontroller: `make program -C ./Microcontroller`
 
+Check your data for Gaps with
+`awk -f Shell/gaps.awk gap=60 Documentation/Sample_Output.csv`
+(gap is the intervall in s, each following argument is a Path to File to be checkt)
+
 Complete Documentation (in German) can be found in /Documentation/Manual.pdf
