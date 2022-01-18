@@ -6,6 +6,7 @@ BEGIN {
 	FS = "\" \""
 	"date +%Y-%m-%d" | getline date;
 	heading="Biosphaeren Daten";
+	oldPort = ""
 }
 # skip comments starting with #
 $0 ~ /^#/ {next}
@@ -25,5 +26,10 @@ $0 ~ /^#/ {next}
 	MfG, AstroBot\n\n\
 	(Diese Nachricht wurde automatisch versendet)\" | mail -s \"" \
 	heading "\" " $3 " -A " filepath)
+
+	if(oldPort == $1)
+		print "Warning: Multiple Entrys for " $1
+
+	oldPort = $1
 }
 ' ~/Ports.config
