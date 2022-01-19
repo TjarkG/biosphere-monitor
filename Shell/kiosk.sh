@@ -10,7 +10,6 @@ trap cleanup EXIT
 cc "$path/PC/biosphere.c" -o "$path/PC/biosphere"
 "$path/PC/biosphere" $1 -f
 tput civis
-sleep 1
 #loop
 while [[ -z "$IN" ]]; do
 "$path/PC/biosphere" $1 -rm |
