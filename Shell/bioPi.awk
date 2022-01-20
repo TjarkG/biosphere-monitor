@@ -17,7 +17,9 @@ $0 !~ /^#/ {
 	filepath = sprintf("~/BioData/biosphere-%s-%s.csv", nameFile, date)
 
 	if(system("~/biosphere-monitor/PC/biosphere " $1 " -s >" filepath) != 0)
+	{
 		message = "An Error occured saving Data"
+	}
 
 	cmd = "awk -f ~/biosphere-monitor/Shell/gaps.awk gap=600 " filepath
     if (length(message) < 1 && (cmd | getline gaps) != 0)
@@ -33,7 +35,9 @@ $0 !~ /^#/ {
 	heading "\" " $3 " -A " filepath)
 
 	if(oldPort == $1)
+	{
 		print "Warning: Multiple Entrys for " $1
+	}
 
 	oldPort = $1
 }
