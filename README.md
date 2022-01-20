@@ -28,4 +28,7 @@ Check your data for Gaps with
 `awk -f Shell/gaps.awk gap=60 Documentation/Sample_Output.csv`
 (gap is the intervall in s, each following argument is a Path to File to be checkt)
 
+And convert it to an Excel Spredsheet with
+`soffice --convert-to xlsx --outdir ~/Dokumente/VS_Code/biosphere-monitor/Documentation Documentation/Sample_Output.csv --infilter=CSV:44,34,UTF8,true,3/10/4/10`
+
 Complete Documentation (in German) can be found in /Documentation/Manual.pdf
