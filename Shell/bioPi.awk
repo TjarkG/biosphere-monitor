@@ -15,6 +15,7 @@ $0 !~ /^#/ {
 	gsub(/\ /,"-" , nameFile)
 
 	filepath = sprintf("~/BioData/biosphere-%s-%s.csv", nameFile, date)
+	expath 	 = sprintf("~/BioData/biosphere-%s-%s.xlsx", nameFile, date)
 
 	if(system("~/biosphere-monitor/PC/biosphere " $1 " -s >" filepath) != 0)
 	{
@@ -28,11 +29,14 @@ $0 !~ /^#/ {
     }
 	message = message "\n" gaps
 
+	#convert csv to xlsx
+	system("soffice --convert-to xlsx --outdir ~/BioData " filepath " --infilter=CSV:44,34,UTF8,true,3/10/4/10 > /dev/null")
+
 	system("echo \"Hallo \"" $2 "\",\n" message \
 	"im Anhang findest du die neusten Messwerte von deiner Biosphaere.\n\
 	MfG, AstroBot\n\n\
 	(Diese Nachricht wurde automatisch versendet)\" | mail -s \"" \
-	heading "\" " $3 " -A " filepath)
+	heading "\" " $3 " -A " filepath " -A " expath)
 
 	if(oldPort == $1)
 	{
