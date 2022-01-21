@@ -22,7 +22,7 @@ $0 !~ /^#/ {
 		message = "An Error occured saving Data"
 	}
 
-	cmd = "awk -f ~/biosphere-monitor/Shell/gaps.awk gap=600 " filepath
+	cmd = "gawk -f ~/biosphere-monitor/Shell/gaps.awk gap=600 " filepath
     if (length(message) < 1 && (cmd | getline gaps) != 0)
     {
         message = message "\nError Cheking for Gaps: with " cmd

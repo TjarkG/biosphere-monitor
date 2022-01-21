@@ -1,5 +1,5 @@
 #!/bin/bash
-packagesNeeded='git gcc avr-libc binutils-avr gcc-avr avrdude make'
+packagesNeeded='git gcc avr-libc binutils-avr gcc-avr avrdude make gawk'
 if [ -x "$(command -v apk)" ];       then apk add --no-cache $packagesNeeded
 elif [ -x "$(command -v apt-get)" ]; then sudo apt-get install $packagesNeeded
 elif [ -x "$(command -v dnf)" ];     then sudo dnf install $packagesNeeded

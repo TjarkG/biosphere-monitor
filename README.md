@@ -25,7 +25,7 @@ Commands to compile the Current Software after cloning:
 * Microcontroller: `make program -C ./Microcontroller`
 
 Check your data for Gaps with
-`awk -f Shell/gaps.awk gap=60 Documentation/Sample_Output.csv`
+`gawk -f Shell/gaps.awk gap=60 Documentation/Sample_Output.csv`
 (gap is the intervall in s, each following argument is a Path to File to be checkt)
 
 And convert it to an Excel Spredsheet with
