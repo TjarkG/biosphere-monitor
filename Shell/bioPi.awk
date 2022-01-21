@@ -30,7 +30,9 @@ $0 !~ /^#/ {
 	message = message "\n" gaps
 
 	#convert csv to xlsx
-	system("soffice --convert-to xlsx --outdir ~/BioData " filepath " --infilter=CSV:44,34,UTF8,true,3/10/4/10 > /dev/null")
+	#doesn't have its dependencys yet
+	#system("soffice --convert-to xlsx --outdir ~/BioData " filepath " --infilter=CSV:44,34,UTF8,true,3/10/4/10 > /dev/null")
+	touch expath
 
 	system("echo \"Hallo \"" $2 "\",\n" message \
 	"im Anhang findest du die neusten Messwerte von deiner Biosphaere.\n\
@@ -39,9 +41,7 @@ $0 !~ /^#/ {
 	heading "\" " $3 " -A " filepath " -A " expath)
 
 	if(oldPort == $1)
-	{
 		print "Warning: Multiple Entrys for " $1
-	}
 
 	oldPort = $1
 }
