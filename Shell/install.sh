@@ -6,6 +6,7 @@ elif [ -x "$(command -v dnf)" ];     then sudo dnf install $packagesNeeded
 elif [ -x "$(command -v zypper)" ];  then sudo zypper install $packagesNeeded
 else echo "FAILED TO INSTALL PACKAGE: Package manager not found. You must manually install: $packagesNeeded">&2; fi
 git clone https://github.com/TjarkG/biosphere-monitor
+mkdir ~/BioData
 cd biosphere-monitor
 make -C PC
 make all -C ./Microcontroller
