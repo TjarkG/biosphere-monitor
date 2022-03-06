@@ -1,4 +1,5 @@
 //Writen by TjarkG and published under the MIT License
+//functions to communicate with the biosphere
 
 #ifndef biosphere_H_
 #define biosphere_H_

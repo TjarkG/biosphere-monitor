@@ -1,4 +1,5 @@
 //Writen by TjarkG and published under the MIT License
+//communicate via UART on Linux and Windows (half-working)
 
 #include <errno.h>
 #include <stdio.h>

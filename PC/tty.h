@@ -1,27 +1,16 @@
-/*
- * tty.h
- *
- * Header to communicate via UART on Linux
- *
- * Created: 30.08.2021 16:37:17
- *  Author: Tjark Gaudich
- */
+//Writen by TjarkG and published under the MIT License
+//communicate via UART on Linux and Windows (half-working)
 
 #ifndef tty_H_
 #define tty_H_
-
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#ifdef __unix
 
 #ifdef _WIN32
 
 #include <windows.h>
 
 #endif // WIN32
+
+#ifdef __unix
 
 #include <fcntl.h> 
 #include <termios.h>

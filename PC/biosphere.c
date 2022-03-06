@@ -1,11 +1,5 @@
-/*
- * biosphere-monitor\biosphere.c
- *
- * command line tool to interface with the biosphere monitor board
- *
- * Created: 30.08.2021 08:23:42
- * Author : Tjark Gaudich
- */ 
+//Writen by TjarkG and published under the MIT License
+//functions to communicate with the biosphere
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,4 +1,5 @@
 //Writen by TjarkG and published under the MIT License
+//command line tool to interface with the biosphere monitor board
 
 #include <stdio.h>
 #include <stdlib.h>
