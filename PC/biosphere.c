@@ -29,6 +29,8 @@ void printHelp(void);
 void storeReadings(FILE *ofp, bool commenting);
 void printCsvReading(FILE *ofp, struct reading in);
 bool setIntervall(unsigned int iNew);
+bool synctime(void);
+bool setOffset(int tIn);
 
 int main(int argc, char *argv[])
 {
@@ -74,18 +76,10 @@ int main(int argc, char *argv[])
         }
         else if(strcmp(argv[i], "-f") == 0)
         {
-            time_t rawtime;
-            time ( &rawtime );
-            sprintf(buf, "TS%ld",rawtime);
-            setCommand(buf);
-            if(abs(rawtime - getCommand("TG")) > 3)
+            if(synctime())
             {
                 fprintf(stderr, "first syncronization atempt faild, trying again\n");
-                time_t rawtime;
-                time ( &rawtime );
-                sprintf(buf, "TS%ld",rawtime);
-                setCommand(buf);
-                if(abs(rawtime - getCommand("TG")) > 3)
+                if(synctime())
                     fprintf(stderr, "Time Syncronization failed\n");
                 else
                     fprintf(stderr, "Syncronized System Times on second attempt\n");
@@ -120,19 +114,10 @@ int main(int argc, char *argv[])
         }
         else if(strncmp(argv[i], "-ct", 3) == 0)
         {
-            int tIn = atof(argv[i]+3)*5;
-
-            setCommand("CR");
-            getUartLine(buf);
-            struct reading in = getReading(buf);
-
-            int offOld = getCommand("OGT");
-
-            int off = tIn - (in.temperaturOut-offOld+128) + 128;
-            sprintf(buf, "OST%d",off);
-            setCommand(buf);
-            //TODO: check for succesful vertification
-            printf("Outside Temperatur set:%2.1fC Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn/5.0, offOld-128, off-128, getCommand("OGT")-128);
+            if(setOffset(atof(argv[i]+3)*5))
+                fprintf(stderr, "Temperature Offset set\n");
+            else
+                fprintf(stderr, "An Error ocured setting Temperature Offset\n");
         }
         else if(strcmp(argv[i], "-gh") == 0)
         {
@@ -294,4 +279,29 @@ bool setIntervall(unsigned int iNew)
     setCommand(buf);
     unsigned int iVert = getCommand("IG");
     return (iNew == iVert);
+}
+
+bool synctime(void)
+{
+    unsigned char buf[32];
+    time_t rawtime;
+    time ( &rawtime );
+    sprintf(buf, "TS%ld",rawtime);
+    setCommand(buf);
+    return abs(rawtime - getCommand("TG")) > 3;
+}
+
+bool setOffset(int tIn)
+{
+    unsigned char buf[64];
+    setCommand("CR");
+    getUartLine(buf);
+    struct reading in = getReading(buf);
+
+    int offOld = getCommand("OGT");
+
+    int off = tIn - (in.temperaturOut-offOld+128) + 128;
+    sprintf(buf, "OST%d",off);
+    setCommand(buf);
+    return off == getCommand("OGT");
 }
