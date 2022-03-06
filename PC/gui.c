@@ -98,7 +98,7 @@ void initStats(void)
     gtk_label_set_label(GTK_LABEL(labels[8]), buf);
 
     //download data to a buffer
-    struct reading *buffer = malloc(400000UL);
+    struct reading *buffer = malloc((sizeof(struct reading)*262144UL));
     lnCnt = bufferReadings(buffer);
 
     //display first and last timestamp
