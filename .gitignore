@@ -101,3 +101,4 @@ include/*
 #Output Files
 biosphere.csv
 PC/biosphere
+PC/bioGui
