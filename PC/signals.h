@@ -4,11 +4,13 @@
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <errno.h>
+#include <unistd.h>
 #include "biosphere.h"
 
 #define ABOUT "Biosphere Monitor by TjarkG\ngithub.com/tjarkG\nGTK 3\n"
 
 GtkBuilder *builder;
+guint timerId;
 GtkWidget *infoWindow;
 GtkWidget *deleteWindow;
 GtkWidget *intervallWindow;
@@ -55,6 +57,8 @@ void deleteOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused
 
 void delete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
+    if(timerId != 0)
+        g_source_remove(timerId);
     //TODO: delete
     printf("delete\n");
     gtk_widget_hide_on_delete(deleteWindow);
@@ -65,6 +69,7 @@ void delete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) g
 
     gtk_label_set_label(GTK_LABEL(text), "TODO: delete");
     gtk_widget_show_all(infoWindow);
+    initStats();
 }
 
 void deleteAbort(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
@@ -87,6 +92,8 @@ void intervallAbort(__attribute__((unused)) GtkWidget *widget, __attribute__((un
 
 void intervallTransfer(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
+    if(timerId != 0)
+        g_source_remove(timerId);
     GtkWidget *value = GTK_WIDGET(gtk_builder_get_object (builder,"intervallValue"));
     const char* buf = gtk_entry_get_text(GTK_ENTRY(value));
     unsigned int intervall = atoi(buf);
@@ -97,7 +104,10 @@ void intervallTransfer(__attribute__((unused)) GtkWidget *widget, __attribute__(
 
     gtk_widget_hide_on_delete(intervallWindow);
 
+    usleep(50000);
+    printf("test1\n");
     bool sucess = setIntervall(intervall*multiplyer);
+    usleep(50000);
 
     //Show Confirmation/Error
     GtkWidget *text = GTK_WIDGET (gtk_builder_get_object (builder,"infoText"));
@@ -105,4 +115,5 @@ void intervallTransfer(__attribute__((unused)) GtkWidget *widget, __attribute__(
 
     gtk_label_set_label(GTK_LABEL(text), sucess? "Intervall erfolgreich geändert":"Fehler: Intervall konnte nicht gesetzt werden");
     gtk_widget_show_all(infoWindow);
+    initStats();
 }

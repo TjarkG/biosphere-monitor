@@ -157,6 +157,8 @@ void printCsvReading(FILE *ofp, struct reading in)
 
 bool setIntervall(unsigned int iNew)
 {
+    if(iNew >= 65536)
+        return false;
     unsigned char buf[16];
     sprintf(buf, "IS%d",iNew);
     setCommand(buf);

@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include "../reading.h"
 
 long getCommand(const char *cmd);
 int setCommand(const char *cmd);
