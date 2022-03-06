@@ -67,6 +67,7 @@ unsigned char getOutsideTemp(void);
 unsigned int getLight(void);
 unsigned int getExtCount(void);
 unsigned char getRH(void);
+long readingIt(struct reading *v, char i);
 
 int main(void)
 {
@@ -351,6 +352,22 @@ unsigned int getExtCount(void)  //returns ADC counts from external Sensor
 	}
     ADCA.CTRLA &= ~ADC_ENABLE_bm;
     return getMedian(tempArr, ADCN);
+}
+
+long readingIt(struct reading *v, char i) //makes it possible to itterate throuh a reading
+{
+    switch(i) 
+    {
+        case 0: return v->timeRead;
+        case 1: return v->light;
+        case 2: return v->temperaturOut;
+        case 3: return v->temperaturIn;
+        case 4: return v->pressure;
+        case 5: return v->humidityAir;
+        case 6: return v->humiditySoil;
+        case 7: return v->iaq;
+    }
+    return 0;
 }
 
 ISR(USARTC0_RXC_vect)       //UART ISR
