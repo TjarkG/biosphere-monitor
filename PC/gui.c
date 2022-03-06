@@ -9,12 +9,15 @@
 #include "../reading.h"
 
 #define memb(a) (sizeof(a)/sizeof(a[0]))
+#define INTV    2   //time between refreshes
 
 GtkBuilder *builder;
 const char *labelNames[] = {"outTime","outLight","outITemp","outOTemp","outPress","outAir","outSoil","outBegin","outInv","outLast","outSum","outStorage"};
 char labelContent[memb(labelNames)][16];
 GtkWidget *labels[memb(labelNames)];
 guint timerId = 0;
+unsigned int lnCnt = 0;
+unsigned int intervall = 0;
 
 void initStats(void);
 
@@ -43,6 +46,18 @@ gboolean timerTick(__attribute__((unused)) gpointer userData)
     lt = *gmtime(&in.timeRead);
     strftime(buf, sizeof(buf), "%d.%m.%Y %H:%M:%S UTC", &lt);
     gtk_label_set_label(GTK_LABEL(labels[0]), buf);
+    if(in.timeRead % intervall < INTV)
+    {
+        time_t lastMessurment = (in.timeRead - (in.timeRead % intervall));
+        lt = *gmtime(&lastMessurment);
+        strftime(buf, sizeof(buf), "%d.%m.%Y %H:%M:%S UTC", &lt);
+
+        gtk_label_set_label(GTK_LABEL(labels[9]), buf);
+        sprintf(buf,"%d", ++lnCnt);
+        gtk_label_set_label(GTK_LABEL(labels[10]), buf);
+        sprintf(buf,"%d/4096kb", lnCnt/(1024/16));      //1024 byte per Kb and 16 byte per Messurment
+        gtk_label_set_label(GTK_LABEL(labels[11]), buf);
+    }
 
     sprintf(buf,"%d lux", in.light);
     gtk_label_set_label(GTK_LABEL(labels[1]), buf);
@@ -73,7 +88,7 @@ void initStats(void)
         gtk_label_set_label(GTK_LABEL(labels[i]), "n/A");
 
     //get Intervall
-    int intervall = getCommand("IG");
+    intervall = getCommand("IG");
     if(intervall % 3600 == 0)
         sprintf(buf,"%d h", intervall/3600);
     else if(intervall % 60 == 0)
@@ -82,9 +97,35 @@ void initStats(void)
         sprintf(buf,"%ds", intervall);
     gtk_label_set_label(GTK_LABEL(labels[8]), buf);
 
+    //download data to a buffer
+    struct reading *buffer = malloc(400000UL);
+    lnCnt = bufferReadings(buffer);
 
-    timerId = g_timeout_add(2000,timerTick,NULL);
+    //display first and last timestamp
+    if(lnCnt > 0)
+    {
+        struct tm lt;
+        lt = *gmtime(&buffer[0].timeRead);
+        strftime(buf, sizeof(buf), "%d.%m.%Y %H:%M:%S UTC", &lt);
+        gtk_label_set_label(GTK_LABEL(labels[7]), buf);
+
+        lt = *gmtime(&buffer[lnCnt].timeRead);
+        strftime(buf, sizeof(buf), "%d.%m.%Y %H:%M:%S UTC", &lt);
+        gtk_label_set_label(GTK_LABEL(labels[9]), buf);
+    }
+
+    //display number of readings
+    sprintf(buf,"%d", lnCnt);
+    gtk_label_set_label(GTK_LABEL(labels[10]), buf);
+
+    //calculate storage usage
+    sprintf(buf,"%d/4096kb", lnCnt/(1024/16));      //1024 byte per Kb and 16 byte per Messurment
+    gtk_label_set_label(GTK_LABEL(labels[11]), buf);
+
+    //start timer
+    timerId = g_timeout_add(INTV*1000,timerTick,NULL);
     timerTick(NULL);
+    free(buffer);
 }
 
 int main(int argc,char **argv) 

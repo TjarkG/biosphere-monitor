@@ -96,11 +96,11 @@ struct reading getReading(char *buf)
     return in;
 }
 
-void storeReadings(FILE *ofp, bool commenting)
+unsigned int storeReadings(FILE *ofp, bool commenting)
 {
     if(commenting)
         fprintf(stderr, "Startet Saving Readings...\n");
-    printf("UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
+    fprintf(ofp, "UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
     unsigned char buf[64];
     printUART("AR\r");
     getUartLine(buf);
@@ -122,6 +122,23 @@ void storeReadings(FILE *ofp, bool commenting)
     }
     if(commenting)
         fprintf(stderr, "\nFinished! %lu Readings Saved\n",lnCnt);
+    return lnCnt;
+}
+
+unsigned int bufferReadings(struct reading *buffer) //this assumes buffer is bigger than required
+{
+    unsigned char buf[64];
+    printUART("AR\r");
+    getUartLine(buf);
+    unsigned long lnCnt = 0;
+    while(1)
+    {
+        getUartLine(buf);
+        if(buf[0] == 'E')       //detecting EOF with a string comperasions somehow made the whole program slower than the Microcontroller is transmitting
+            break;
+        buffer[lnCnt++] = getReading(buf);
+    }
+    return lnCnt-1;
 }
 
 void printReading(FILE *ofp, struct reading in)

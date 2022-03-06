@@ -14,6 +14,7 @@ guint timerId;
 GtkWidget *infoWindow;
 GtkWidget *deleteWindow;
 GtkWidget *intervallWindow;
+unsigned int intervall;
 
 gboolean windowDelete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) GdkEvent  *event, __attribute__((unused)) gpointer   data)
 {
@@ -59,8 +60,8 @@ void delete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) g
 {
     if(timerId != 0)
         g_source_remove(timerId);
-    //TODO: delete
-    printf("delete\n");
+    usleep(50000);
+    //setCommand("DEL");
     gtk_widget_hide_on_delete(deleteWindow);
 
     //Show Confirmation/Error
@@ -96,17 +97,16 @@ void intervallTransfer(__attribute__((unused)) GtkWidget *widget, __attribute__(
         g_source_remove(timerId);
     GtkWidget *value = GTK_WIDGET(gtk_builder_get_object (builder,"intervallValue"));
     const char* buf = gtk_entry_get_text(GTK_ENTRY(value));
-    unsigned int intervall = atoi(buf);
+    intervall = atoi(buf);
 
     GtkWidget *unit = GTK_WIDGET(gtk_builder_get_object (builder,"intervallUnit"));
     buf = gtk_combo_box_get_active_id(GTK_COMBO_BOX(unit));
-    int multiplyer = atoi(buf);
+    intervall *= atoi(buf);
 
     gtk_widget_hide_on_delete(intervallWindow);
 
     usleep(50000);
-    printf("test1\n");
-    bool sucess = setIntervall(intervall*multiplyer);
+    bool sucess = setIntervall(intervall);
     usleep(50000);
 
     //Show Confirmation/Error
