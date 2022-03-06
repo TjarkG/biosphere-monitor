@@ -75,7 +75,7 @@ void deleteAbort(__attribute__((unused)) GtkWidget *widget, __attribute__((unuse
 //Intervall Setter
 void intervallOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
-    intervallWindow = GTK_WIDGET (gtk_builder_get_object (builder,"intervallWindow"));
+    intervallWindow = GTK_WIDGET(gtk_builder_get_object (builder,"intervallWindow"));
 
     gtk_widget_show_all(intervallWindow);
 }
@@ -87,5 +87,22 @@ void intervallAbort(__attribute__((unused)) GtkWidget *widget, __attribute__((un
 
 void intervallTransfer(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
+    GtkWidget *value = GTK_WIDGET(gtk_builder_get_object (builder,"intervallValue"));
+    const char* buf = gtk_entry_get_text(GTK_ENTRY(value));
+    unsigned int intervall = atoi(buf);
+
+    GtkWidget *unit = GTK_WIDGET(gtk_builder_get_object (builder,"intervallUnit"));
+    buf = gtk_combo_box_get_active_id(GTK_COMBO_BOX(unit));
+    int multiplyer = atoi(buf);
+
     gtk_widget_hide_on_delete(intervallWindow);
+
+    bool sucess = setIntervall(intervall*multiplyer);
+
+    //Show Confirmation/Error
+    GtkWidget *text = GTK_WIDGET (gtk_builder_get_object (builder,"infoText"));
+    infoWindow = GTK_WIDGET (gtk_builder_get_object (builder,"infoWindow"));
+
+    gtk_label_set_label(GTK_LABEL(text), sucess? "Intervall erfolgreich geändert":"Fehler: Intervall konnte nicht gesetzt werden");
+    gtk_widget_show_all(infoWindow);
 }
