@@ -10,7 +10,7 @@
 #include "tty.h"
 #include "biosphere.h"
 
-static char *errCodes[] = {"UART Transmittion", "AVCC", "RTC running", "RTC initialized", "Flash Signatur", "Flash erase", "Flash read/write", "UART Tx level",
+static char *errCodes[] = {"UART Transmission", "AVCC", "RTC running", "RTC initialized", "Flash Signatur", "Flash erase", "Flash read/write", "UART Tx level",
 "UART Rx level", "Outside Temperatur", "Light Sensor", "Intervall set", "Temperatur offset set", "BME connected", "BME Readings in range"};
 
 int main(int argc, char *argv[])

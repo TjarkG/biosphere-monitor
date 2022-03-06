@@ -13,7 +13,6 @@ GtkBuilder *builder;
 guint timerId;
 GtkWidget *infoWindow;
 GtkWidget *deleteWindow;
-GtkWidget *intervallWindow;
 unsigned int intervall;
 
 gboolean windowDelete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) GdkEvent  *event, __attribute__((unused)) gpointer   data)
@@ -79,6 +78,8 @@ void deleteAbort(__attribute__((unused)) GtkWidget *widget, __attribute__((unuse
 }
 
 //Intervall Setter
+GtkWidget *intervallWindow;
+
 void intervallOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
     intervallWindow = GTK_WIDGET(gtk_builder_get_object (builder,"intervallWindow"));
@@ -116,4 +117,38 @@ void intervallTransfer(__attribute__((unused)) GtkWidget *widget, __attribute__(
     gtk_label_set_label(GTK_LABEL(text), sucess? "Intervall erfolgreich geändert":"Fehler: Intervall konnte nicht gesetzt werden");
     gtk_widget_show_all(infoWindow);
     initStats();
+}
+
+//selftest
+GtkWidget *selftestWindow;
+
+void selftest(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    unsigned int results = getCommand("DR");
+    selftestWindow = GTK_WIDGET(gtk_builder_get_object (builder,"selftestWindow"));
+
+    for (int i = 0; i < 15; i++)
+    {
+        char buf[8];
+        sprintf(buf, "out%d", i+1);
+
+        GtkWidget *text = GTK_WIDGET (gtk_builder_get_object (builder,buf));
+        gtk_label_set_label(GTK_LABEL(text), results & (1UL << i)? "Fehler":"Ok");
+    }
+
+    GtkWidget *text = GTK_WIDGET (gtk_builder_get_object (builder,"selftestOut"));
+    gtk_label_set_label(GTK_LABEL(text), results? "Es wurden Fehler gefunden":"Selbsttest bestanden");
+    
+    gtk_widget_show_all(selftestWindow);
+}
+
+void selftestAbort(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    gtk_widget_hide_on_delete(selftestWindow);
+}
+
+void selftestRetry(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    selftestAbort(NULL, NULL);
+    selftest(NULL, NULL);
 }
