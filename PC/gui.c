@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <errno.h>
+#include "biosphere.h"
+#include "tty.h"
 
 #define memb(a) (sizeof(a)/sizeof(a[0]))
 
@@ -33,7 +35,16 @@ void setLabels(const char **in)
 
 int main(int argc,char **argv) 
 {
-    gtk_init (&argc , &argv);    
+    if (argc == 1 || argv[1][0] == '-') /* no args or arguments cant be a serial Port: throw error */
+    {
+        fprintf(stderr, "%s: first argument must be target COM Port\n", argv[0]);
+        return -1;
+    }
+    argc--;
+    startUART(argv[1]);
+
+
+    gtk_init (&argc , &argv);  
     builder = gtk_builder_new(); 
     if(errno = gtk_builder_add_from_file(builder,"PC/bioGui.glade" , NULL) == 0)
     {

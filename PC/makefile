@@ -1,8 +1,8 @@
 cli: cli.o biosphere.o tty.o
 	gcc cli.o biosphere.o tty.o -o biosphere
 
-gui: gui.o guiArgs.aux
-	gcc -o bioGui gui.o @guiArgs.aux
+gui: gui.o biosphere.o guiArgs.aux tty.o
+	gcc -o bioGui gui.o biosphere.o tty.o @guiArgs.aux
 	rm guiArgs.aux
 
 biosphere.o: biosphere.c tty.h biosphere.h

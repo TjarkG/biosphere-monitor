@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <errno.h>
+#include "biosphere.h"
 
 #define ABOUT "Biosphere Monitor by TjarkG\ngithub.com/tjarkG\nGTK 3\n"
 
@@ -33,7 +34,13 @@ void closeWindow(__attribute__((unused)) GtkWidget *widget, __attribute__((unuse
 
 void syncTime(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
-    printf("sync time\n");
+    bool synced = synctime();
+
+    GtkWidget *text = GTK_WIDGET (gtk_builder_get_object (builder,"infoText"));
+    infoWindow = GTK_WIDGET (gtk_builder_get_object (builder,"infoWindow"));
+
+    gtk_label_set_label(GTK_LABEL(text), synced? "Fehler: Übertragung fehlgeschlagen":"Zeit erfolgreich übertragen");
+    gtk_widget_show_all(infoWindow);
 }
 
 void deleteOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
