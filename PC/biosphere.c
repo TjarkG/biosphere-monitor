@@ -26,8 +26,9 @@ int setCommand(const char *cmd);
 struct reading getReading(char *buf);
 void printReading(FILE *ofp, struct reading in);
 void printHelp(void);
-void storeReadings(bool commenting);
-void printCsvReading(struct reading in);
+void storeReadings(FILE *ofp, bool commenting);
+void printCsvReading(FILE *ofp, struct reading in);
+bool setIntervall(unsigned int iNew);
 
 int main(int argc, char *argv[])
 {
@@ -55,13 +56,13 @@ int main(int argc, char *argv[])
             getUartLine(buf);
             struct reading in = getReading(buf);
             if(strncmp(argv[i], "-rm", 3) == 0)
-                printCsvReading(in);
+                printCsvReading(stdout, in);
             else
                 printReading(stdout, in);
         }
         else if(strncmp(argv[i], "-s", 2) == 0)
         {
-            storeReadings(strncmp(argv[i], "-sc", 3) == 0);
+            storeReadings(stdout, strncmp(argv[i], "-sc", 3) == 0);
         }
         else if(strncmp(argv[i], "-f", 2) == 0)
         {
@@ -86,10 +87,10 @@ int main(int argc, char *argv[])
             printf("Messurment intervall: %li\n",getCommand("IG"));
         else if(strncmp(argv[i], "-i", 2) == 0)
         {
-            sprintf(buf, "IS%s",argv[i]+2);
-            setCommand(buf);
-            //TODO: check for succesful vertification
-            printf("Intervall set:%s Intervall vertified:%ld\n",argv[i]+2,getCommand("IG"));
+            if(setIntervall(atoi(argv[i]+2)))
+                fprintf(stderr, "Intervall sucessfuly set\n");
+            else
+                fprintf(stderr, "an Error ocured setting intervall\n");
         }
         else if(strncmp(argv[i], "-t", 2) == 0)
         {
@@ -144,6 +145,7 @@ long getCommand(const char *cmd)       //send get command and return response
     getUartLine(buf);
     return atoi(buf);
 }
+
 int setCommand(const char *cmd)       //send set command
 {
     unsigned char buf[16];
@@ -219,7 +221,7 @@ struct reading getReading(char *buf)
     return in;
 }
 
-void storeReadings(bool commenting)
+void storeReadings(FILE *ofp, bool commenting)
 {
     if(commenting)
         fprintf(stderr, "Startet Saving Readings...\n");
@@ -234,7 +236,7 @@ void storeReadings(bool commenting)
         if(buf[0] == 'E')       //detecting EOF with a string comperasions somehow made the whole program slower than the Microcontroller is transmitting
             break;
         struct reading in = getReading(buf);
-        printCsvReading(in);
+        printCsvReading(ofp, in);
         
         if(lnCnt%250 == 0 && commenting)
         {
@@ -267,13 +269,22 @@ void printReading(FILE *ofp, struct reading in)
     fprintf(ofp, "\n");
 }
 
-void printCsvReading(struct reading in)
+void printCsvReading(FILE *ofp, struct reading in)
 {
     char tmStr[20];
     struct tm lt;
     lt = *gmtime(&in.timeRead);
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
-    printf("%s,%d,%d.%d,%d.%d,%d,%d,%d,%d\n",\
+    fprintf(ofp,"%s,%d,%d.%d,%d.%d,%d,%d,%d,%d\n",\
     tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
+}
+
+bool setIntervall(unsigned int iNew)
+{
+    unsigned char buf[16];
+    sprintf(buf, "IS%d",iNew);
+    setCommand(buf);
+    unsigned int iVert = getCommand("IG");
+    return (iNew == iVert);
 }
