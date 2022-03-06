@@ -102,3 +102,6 @@ include/*
 biosphere.csv
 PC/biosphere
 PC/bioGui
+
+#glade
+*.glade~

@@ -8,8 +8,10 @@
 
 #define ABOUT "Biosphere Monitor by TjarkG\ngithub.com/tjarkG\nGTK 3\n"
 
+GtkBuilder *builder;
 GtkWidget *infoWindow;
-GtkWidget *delete_window;
+GtkWidget *deleteWindow;
+GtkWidget *intervallWindow;
 
 gboolean windowDelete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) GdkEvent  *event, __attribute__((unused)) gpointer   data)
 {
@@ -43,18 +45,19 @@ void syncTime(__attribute__((unused)) GtkWidget *widget, __attribute__((unused))
     gtk_widget_show_all(infoWindow);
 }
 
+//Delete local Data
 void deleteOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
-    delete_window = GTK_WIDGET (gtk_builder_get_object (builder,"deleteWindow"));
+    deleteWindow = GTK_WIDGET (gtk_builder_get_object (builder,"deleteWindow"));
 
-    gtk_widget_show_all(delete_window);
+    gtk_widget_show_all(deleteWindow);
 }
 
 void delete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
     //TODO: delete
     printf("delete\n");
-    gtk_widget_hide_on_delete(delete_window);
+    gtk_widget_hide_on_delete(deleteWindow);
 
     //Show Confirmation/Error
     GtkWidget *text = GTK_WIDGET (gtk_builder_get_object (builder,"infoText"));
@@ -66,5 +69,23 @@ void delete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) g
 
 void deleteAbort(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
-    gtk_widget_hide_on_delete(delete_window);
+    gtk_widget_hide_on_delete(deleteWindow);
+}
+
+//Intervall Setter
+void intervallOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    intervallWindow = GTK_WIDGET (gtk_builder_get_object (builder,"intervallWindow"));
+
+    gtk_widget_show_all(intervallWindow);
+}
+
+void intervallAbort(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    gtk_widget_hide_on_delete(intervallWindow);
+}
+
+void intervallTransfer(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    gtk_widget_hide_on_delete(intervallWindow);
 }
