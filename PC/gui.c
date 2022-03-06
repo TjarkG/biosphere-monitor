@@ -55,7 +55,7 @@ gboolean timerTick(__attribute__((unused)) gpointer userData)
         gtk_label_set_label(GTK_LABEL(labels[9]), buf);
         sprintf(buf,"%d", ++lnCnt);
         gtk_label_set_label(GTK_LABEL(labels[10]), buf);
-        sprintf(buf,"%d/4096kb", lnCnt/(1024/16));      //1024 byte per Kb and 16 byte per Messurment
+        sprintf(buf,"%.1f/4096kb", lnCnt/(1024.0/16.0));      //1024 byte per Kb and 16 byte per Messurment
         gtk_label_set_label(GTK_LABEL(labels[11]), buf);
     }
 
@@ -109,7 +109,7 @@ void initStats(void)
         strftime(buf, sizeof(buf), "%d.%m.%Y %H:%M:%S UTC", &lt);
         gtk_label_set_label(GTK_LABEL(labels[7]), buf);
 
-        lt = *gmtime(&buffer[lnCnt].timeRead);
+        lt = *gmtime(&buffer[lnCnt-1].timeRead);
         strftime(buf, sizeof(buf), "%d.%m.%Y %H:%M:%S UTC", &lt);
         gtk_label_set_label(GTK_LABEL(labels[9]), buf);
     }
@@ -119,7 +119,7 @@ void initStats(void)
     gtk_label_set_label(GTK_LABEL(labels[10]), buf);
 
     //calculate storage usage
-    sprintf(buf,"%d/4096kb", lnCnt/(1024/16));      //1024 byte per Kb and 16 byte per Messurment
+    sprintf(buf,"%.1f/4096kb", lnCnt/(1024.0/16.0));      //1024 byte per Kb and 16 byte per Messurment
     gtk_label_set_label(GTK_LABEL(labels[11]), buf);
 
     //start timer

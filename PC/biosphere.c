@@ -138,7 +138,7 @@ unsigned int bufferReadings(struct reading *buffer) //this assumes buffer is big
             break;
         buffer[lnCnt++] = getReading(buf);
     }
-    return lnCnt-1;
+    return lnCnt;
 }
 
 void printReading(FILE *ofp, struct reading in)
