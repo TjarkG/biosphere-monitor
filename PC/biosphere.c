@@ -48,23 +48,31 @@ int main(int argc, char *argv[])
     while (--argc > 0)
     {
         unsigned char buf[128];
-        if(strncmp(argv[i], "-h", 2) == 0)
+        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "-help") == 0)
             printHelp();
-        else if(strncmp(argv[i], "-r", 2) == 0)
+        else if(strcmp(argv[i], "-r") == 0)
         {
             setCommand("CR");
             getUartLine(buf);
             struct reading in = getReading(buf);
-            if(strncmp(argv[i], "-rm", 3) == 0)
-                printCsvReading(stdout, in);
-            else
-                printReading(stdout, in);
+            printReading(stdout, in);
         }
-        else if(strncmp(argv[i], "-s", 2) == 0)
+        else if(strcmp(argv[i], "-rm") == 0)
         {
-            storeReadings(stdout, strncmp(argv[i], "-sc", 3) == 0);
+            setCommand("CR");
+            getUartLine(buf);
+            struct reading in = getReading(buf);
+            printCsvReading(stdout, in);
         }
-        else if(strncmp(argv[i], "-f", 2) == 0)
+        else if(strcmp(argv[i], "-s") == 0)
+        {
+            storeReadings(stdout, false);
+        }
+        else if(strcmp(argv[i], "-sc") == 0)
+        {
+            storeReadings(stdout, true);
+        }
+        else if(strcmp(argv[i], "-f") == 0)
         {
             time_t rawtime;
             time ( &rawtime );
@@ -83,7 +91,7 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "Syncronized System Times on second attempt\n");
             }
         }
-        else if(strncmp(argv[i], "-i?", 3) == 0)
+        else if(strcmp(argv[i], "-i?") == 0)
             printf("Messurment intervall: %li\n",getCommand("IG"));
         else if(strncmp(argv[i], "-i", 2) == 0)
         {
@@ -92,7 +100,7 @@ int main(int argc, char *argv[])
             else
                 fprintf(stderr, "an Error ocured setting intervall\n");
         }
-        else if(strncmp(argv[i], "-t", 2) == 0)
+        else if(strcmp(argv[i], "-t") == 0)
         {
             int error = getCommand("DR");
 
@@ -106,10 +114,9 @@ int main(int argc, char *argv[])
             else
                 printf("\nError detected, Code %d\n",error);
         }
-        else if(strncmp(argv[i], "-delete", 8) == 0)
+        else if(strcmp(argv[i], "-delete") == 0)
         {
-            sprintf(buf, "DEL");
-            setCommand(buf);
+            setCommand("DEL");
         }
         else if(strncmp(argv[i], "-ct", 3) == 0)
         {
@@ -127,7 +134,7 @@ int main(int argc, char *argv[])
             //TODO: check for succesful vertification
             printf("Outside Temperatur set:%2.1fC Old Offset: %d New Offset:%d Offset Vertified: %ld\n",tIn/5.0, offOld-128, off-128, getCommand("OGT")-128);
         }
-        else if(strncmp(argv[i], "-gh", 3) == 0)
+        else if(strcmp(argv[i], "-gh") == 0)
         {
             printf("%d\n",(unsigned int) getCommand("GH"));
         }
