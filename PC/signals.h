@@ -14,6 +14,7 @@ guint timerId;
 GtkWidget *infoWindow;
 GtkWidget *deleteWindow;
 unsigned int intervall;
+bool isConnected;
 
 gboolean windowDelete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) GdkEvent  *event, __attribute__((unused)) gpointer   data)
 {
@@ -38,7 +39,11 @@ void closeWindow(__attribute__((unused)) GtkWidget *widget, __attribute__((unuse
 
 void syncTime(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
-    bool synced = synctime();
+    bool synced;
+    if(isConnected)
+        synced = synctime();
+    else
+        synced = true;
 
     GtkWidget *text = GTK_WIDGET (gtk_builder_get_object (builder,"infoText"));
     infoWindow = GTK_WIDGET (gtk_builder_get_object (builder,"infoWindow"));
@@ -60,7 +65,8 @@ void delete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) g
     if(timerId != 0)
         g_source_remove(timerId);
     usleep(50000);
-    //setCommand("DEL");
+    if(isConnected)
+        setCommand("DEL");
     gtk_widget_hide_on_delete(deleteWindow);
 
     //Show Confirmation/Error
@@ -107,14 +113,18 @@ void intervallTransfer(__attribute__((unused)) GtkWidget *widget, __attribute__(
     gtk_widget_hide_on_delete(intervallWindow);
 
     usleep(50000);
-    bool sucess = setIntervall(intervall);
+    bool success;
+    if(isConnected)
+        success = setIntervall(intervall);
+    else
+        success = false;
     usleep(50000);
 
     //Show Confirmation/Error
     GtkWidget *text = GTK_WIDGET (gtk_builder_get_object (builder,"infoText"));
     infoWindow = GTK_WIDGET (gtk_builder_get_object (builder,"infoWindow"));
 
-    gtk_label_set_label(GTK_LABEL(text), sucess? "Intervall erfolgreich geändert":"Fehler: Intervall konnte nicht gesetzt werden");
+    gtk_label_set_label(GTK_LABEL(text), success? "Intervall erfolgreich geändert":"Fehler: Intervall konnte nicht gesetzt werden");
     gtk_widget_show_all(infoWindow);
     initStats();
 }
@@ -124,7 +134,11 @@ GtkWidget *selftestWindow;
 
 void selftest(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
-    unsigned int results = getCommand("DR");
+    unsigned int results;
+    if(isConnected)
+        results = getCommand("DR");
+    else
+        results = ~0U;
     selftestWindow = GTK_WIDGET(gtk_builder_get_object (builder,"selftestWindow"));
 
     for (int i = 0; i < 15; i++)

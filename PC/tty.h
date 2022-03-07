@@ -18,7 +18,7 @@
 
 #endif //unix
 
-void startUART(char *portname);                 //opens UART portname
+char startUART(char *portname);                 //opens UART portname
 void stopUART(void);                            //not needed for unix
 void printUART(const char *in);                 //prints in to UART
 void getUartLine(char *buf);                    //puts on line of UART input in buf

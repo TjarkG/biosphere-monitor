@@ -57,16 +57,14 @@ int set_interface_attribs(int fd, int speed)
     return 0;
 }
 
-void startUART(char *portname)      //opens UART portname
+char startUART(char *portname)      //opens UART portname
 {
     fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0)
-    {
-        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
-        exit(2);
-    }
+        return 2;
     //baudrate 115200, 8 bits, no parity, 1 stop bit
     set_interface_attribs(fd, B115200);
+    return 0;
 }
 
 void stopUART(void){}                 //not needed for unix

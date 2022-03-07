@@ -18,6 +18,8 @@ GtkWidget *labels[memb(labelNames)];
 guint timerId = 0;
 unsigned int lnCnt = 0;
 unsigned int intervall = 0;
+bool isConnected = false;
+char *portname;
 
 void initStats(void);
 
@@ -82,6 +84,13 @@ gboolean timerTick(__attribute__((unused)) gpointer userData)
 
 void initStats(void)
 {
+    if(startUART(portname) != 0)
+    {
+        isConnected = false;
+        return;
+    }
+    isConnected = true;
+
     char buf[64];
     //reset Labels
     for (unsigned int i = 0; i < memb(labelNames); i++)
@@ -136,8 +145,6 @@ int main(int argc,char **argv)
         return -1;
     }
     argc--;
-    startUART(argv[1]);
-
 
     gtk_init (&argc , &argv);  
     builder = gtk_builder_new(); 
@@ -155,7 +162,10 @@ int main(int argc,char **argv)
     gtk_builder_connect_signals(builder,NULL);
     gtk_widget_show_all (window);
     selectableLabels(true);
+
+    portname = argv[1];
     initStats();
+    
     gtk_main();
     return 0;
 }
