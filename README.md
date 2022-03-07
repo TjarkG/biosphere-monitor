@@ -22,7 +22,7 @@ which can ocure in any order, listed below:
 Commands to compile the Current Software after cloning:
 
 * Command Line Tool: `make -C PC cli && ./PC/biosphere /dev/ttyUSB0 -r`
-* Graphical Configurator: `make -C PC gui && ./PC/bioGui /dev/ttyUSB0 -r`
+* Graphical Configurator: `make -C PC gui && ./PC/bioGui`
 * Microcontroller: `make program -C ./Microcontroller`
 
 Check your data for Gaps with

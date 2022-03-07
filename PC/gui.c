@@ -139,13 +139,6 @@ void initStats(void)
 
 int main(int argc,char **argv) 
 {
-    if (argc == 1 || argv[1][0] == '-') /* no args or arguments cant be a serial Port: throw error */
-    {
-        fprintf(stderr, "%s: first argument must be target COM Port\n", argv[0]);
-        return -1;
-    }
-    argc--;
-
     gtk_init (&argc , &argv);  
     builder = gtk_builder_new(); 
     if(errno = gtk_builder_add_from_file(builder,"PC/bioGui.glade" , NULL) == 0)
@@ -163,7 +156,7 @@ int main(int argc,char **argv)
     gtk_widget_show_all (window);
     selectableLabels(true);
 
-    portname = argv[1];
+    portname = "/dev/ttyUSB0";
     initStats();
     
     gtk_main();

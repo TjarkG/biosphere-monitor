@@ -5,6 +5,8 @@
 #include <gtk/gtk.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include "biosphere.h"
 
 #define ABOUT "Biosphere Monitor by TjarkG\ngithub.com/tjarkG\nGTK 3\n"
@@ -165,4 +167,59 @@ void selftestRetry(__attribute__((unused)) GtkWidget *widget, __attribute__((unu
 {
     selftestAbort(NULL, NULL);
     selftest(NULL, NULL);
+}
+
+//select source
+GtkWidget *sourceWindow;
+GtkWidget *portSelect;
+void sourceOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    sourceWindow = GTK_WIDGET(gtk_builder_get_object (builder,"sourceWindow"));
+    portSelect = GTK_WIDGET(gtk_builder_get_object (builder,"portSelect"));
+    gtk_combo_box_text_remove_all(GTK_COMBO_BOX_TEXT(portSelect));
+
+    //get possible Ports (tyyUSB and ttyBio)
+    char *ports[32];
+    unsigned int portn = 0;
+    DIR *dp;
+    struct dirent *ep;     
+    dp = opendir ("/dev");
+
+    if (dp != NULL)
+    {
+        while ((ep = readdir(dp)))
+        {
+            if(strncmp("ttyUSB",ep->d_name, 6) == 0 || strncmp("ttyBio",ep->d_name, 6) == 0)
+            {
+                ports[portn++] = ep->d_name;
+            }
+        }
+
+        closedir(dp);
+    }
+    else
+        fprintf(stderr, "Error: Couldn't open directory /dev");
+
+    //put these Ports into the ComboBox
+    for (unsigned int i = 0; i < portn; i++)
+    {
+        char buf[255];
+        sprintf(buf, "/dev/%s", ports[i]);
+        gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(portSelect), "", buf);
+    }
+
+    gtk_widget_show_all(sourceWindow);
+}
+
+void sourceAbort(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    gtk_widget_hide_on_delete(sourceWindow);
+}
+
+void sourceSelect(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    portname = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(portSelect));
+    initStats();
+
+    gtk_widget_hide_on_delete(sourceWindow);
 }
