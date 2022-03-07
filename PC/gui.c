@@ -141,7 +141,7 @@ int main(int argc,char **argv)
 {
     gtk_init (&argc , &argv);  
     builder = gtk_builder_new(); 
-    if(errno = gtk_builder_add_from_file(builder,"PC/bioGui.glade" , NULL) == 0)
+    if(errno = gtk_builder_add_from_file(builder,"/usr/local/src/bioGui.glade" , NULL) == 0)
     {
         printf("gtk_builder_add_from_file failed: %s\n", strerror(errno));
         return(errno);

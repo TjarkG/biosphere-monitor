@@ -1,7 +1,7 @@
 cli: cli.o biosphere.o tty.o
 	gcc cli.o biosphere.o tty.o -o biosphere
 
-gui: gui.o biosphere.o guiArgs.aux tty.o
+gui: gui.o biosphere.o guiArgs.aux tty.o glade
 	gcc -o bioGui gui.o biosphere.o tty.o @guiArgs.aux
 	rm guiArgs.aux
 
@@ -18,5 +18,11 @@ guiArgs.aux:
 	pkg-config gtk+-3.0 --cflags --libs > guiArgs.aux
 	echo "-rdynamic -Wall -Wextra" >> guiArgs.aux
 
+glade: bioGui.glade
+	sudo cp bioGui.glade /usr/local/src
+
 %.o: %.c
 	gcc -c $<
+
+install: gui
+	sudo cp bioGui /usr/local/bin
