@@ -19,10 +19,13 @@ guiArgs.aux:
 	echo "-rdynamic -Wall -Wextra" >> guiArgs.aux
 
 glade: bioGui.glade
-	sudo cp bioGui.glade /usr/local/src
+	cp bioGui.glade /usr/local/src
+
+desktop: bioGui.desktop
+	cp bioGui.desktop ~/.local/share/applications
 
 %.o: %.c
 	gcc -c $<
 
-install: gui
+install: gui desktop
 	sudo cp bioGui /usr/local/bin

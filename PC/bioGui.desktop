@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=BioGui
+Name[de_DE]=BioGui
+Exec=/usr/local/bin/bioGui
+Icon=/usr/share/icons/HighContrast/256x256/categories/applications-science.png
+Categories=Science;
+Terminal=false
