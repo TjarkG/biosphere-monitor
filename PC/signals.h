@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include "biosphere.h"
 
 #define ABOUT "Biosphere Monitor by TjarkG\ngithub.com/tjarkG\nGTK 3\n"
@@ -222,4 +224,43 @@ void sourceSelect(__attribute__((unused)) GtkWidget *widget, __attribute__((unus
     initStats();
 
     gtk_widget_hide_on_delete(sourceWindow);
+}
+
+//save Messurments as a file
+GtkWidget *saveWindow;
+
+void saveAsOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    saveWindow = GTK_WIDGET(gtk_builder_get_object (builder,"saveDialog"));
+
+    gtk_widget_show_all(saveWindow);
+}
+
+//save Messurments as a csv in the default folder
+void saveOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    //get username for Path
+    struct passwd *p = getpwuid(getuid());
+
+    //get date for Filname
+    time_t rawtime;
+    time ( &rawtime );
+    char tmStr[20];
+    struct tm lt;
+    lt = *gmtime(&rawtime);
+    strftime(tmStr, sizeof(tmStr), "%d-%m-%Y", &lt);
+
+    //open file and save to it
+    FILE *opf;
+    char filepath[255];
+    sprintf(filepath, "/home/%s/BioData/biosphere-%s-%s.csv", p->pw_name, p->pw_name, tmStr);
+    puts(filepath);
+
+    if ((opf = fopen(filepath, "w")) == NULL) 
+    {
+        fprintf(stderr, "Error: can't open file %s\n", filepath);
+        return;
+    }
+    storeReadings(opf,false);
+    fclose(opf);
 }
