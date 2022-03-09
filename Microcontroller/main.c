@@ -335,8 +335,8 @@ unsigned int getLight(void)  //returns iluminace in lux
 
 unsigned char getRH(void) //returns relativ humidity from external moisture sensor
 {
-    unsigned char rh = (getExtCount()/5)+288;  //see RH Messurments.ods, f(x) = 0.2x+288
-    return rh > 100 ? 100 : rh;   
+    signed int rh = 208 - (getExtCount()/7);  //see RH Messurments.ods, f(x) = -1/7x+208
+    return (rh > 100 || rh < 0) ? 100 : rh;
 }
 
 unsigned int getExtCount(void)  //returns ADC counts from external Sensor
