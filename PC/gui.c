@@ -17,7 +17,7 @@ char labelContent[memb(labelNames)][16];
 GtkWidget *labels[memb(labelNames)];
 guint timerId = 0;
 unsigned int lnCnt = 0;
-unsigned int intervall = 0;
+int intervall = 0;
 bool isConnected = false;
 char *portname;
 
@@ -98,6 +98,9 @@ void initStats(void)
 
     //get Intervall
     intervall = getCommand("IG");
+    if(intervall < 0)       //connection timed out
+        return;
+    
     if(intervall % 3600 == 0)
         sprintf(buf,"%d h", intervall/3600);
     else if(intervall % 60 == 0)

@@ -16,9 +16,13 @@
 long getCommand(const char *cmd)       //send get command and return response
 {
     unsigned char buf[16];
-    setCommand(cmd);
-    getUartLine(buf);
-    return atoi(buf);
+    if (setCommand(cmd) == 0)
+    {
+        getUartLine(buf);
+        return atoi(buf);
+    }
+    else
+        return -1;
 }
 
 int setCommand(const char *cmd)       //send set command
@@ -26,10 +30,10 @@ int setCommand(const char *cmd)       //send set command
     unsigned char buf[16];
     printUART(cmd);
     printUART("\r");
-    getUartLine(buf);
-    if(strncmp(buf, cmd,strlen(cmd)))
+    char err = getUartLine(buf);
+    if(strncmp(buf, cmd,strlen(cmd)) || err)
     {
-        fprintf(stderr, "Error tranmitting UART Command %s: recieved %s\n", cmd, buf);
+        fprintf(stderr, "Error tranmitting UART Command \"%s\": recieved \"%s\"\n", cmd, buf);
         return -1;
     }
     return 0;
@@ -68,7 +72,7 @@ void printHelp(void)
 
 struct reading getReading(char *buf)
 {
-    struct reading in;
+    struct reading in = {0};
     int i, count;
     for (i=0, count=0; buf[i]; i++)     //count number of ocurences of ',' in input String to prevent memory acces errors
         count += (buf[i] == ',');

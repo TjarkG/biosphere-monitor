@@ -39,14 +39,16 @@ int main(int argc, char *argv[])
             printHelp();
         else if(strcmp(argv[i], "-r") == 0)
         {
-            setCommand("CR");
+            if(setCommand("CR") < 0)
+                exit(2);
             getUartLine(buf);
             struct reading in = getReading(buf);
             printReading(stdout, in);
         }
         else if(strcmp(argv[i], "-rm") == 0)
         {
-            setCommand("CR");
+            if(setCommand("CR") < 0)
+                exit(2);
             getUartLine(buf);
             struct reading in = getReading(buf);
             printCsvReading(stdout, in);

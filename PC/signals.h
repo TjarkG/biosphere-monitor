@@ -17,7 +17,7 @@ GtkBuilder *builder;
 guint timerId;
 GtkWidget *infoWindow;
 GtkWidget *deleteWindow;
-unsigned int intervall;
+int intervall;
 bool isConnected;
 
 gboolean windowDelete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) GdkEvent  *event, __attribute__((unused)) gpointer   data)

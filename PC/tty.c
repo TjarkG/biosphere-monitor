@@ -15,7 +15,7 @@
 int fd;
 int wlen;
 
-int set_interface_attribs(int fd, int speed)
+int set_interface_attribs(int fd, unsigned int speed)
 {
     struct termios tty;
 
@@ -35,7 +35,7 @@ int set_interface_attribs(int fd, int speed)
     tty.c_cflag &= ~CSTOPB;     // only need 1 stop bit
     tty.c_cflag &= ~CRTSCTS;    // no hardware flowcontrol
 
-    tty.c_lflag |= ICANON | ISIG;  // canonical input
+    tty.c_lflag |= ISIG;
     tty.c_lflag &= ~(ECHO | ECHOE | ECHONL | IEXTEN);
 
     tty.c_iflag &= ~IGNCR;  // preserve carriage return 
@@ -48,6 +48,9 @@ int set_interface_attribs(int fd, int speed)
     tty.c_cc[VEOL] = 0;
     tty.c_cc[VEOL2] = 0;
     tty.c_cc[VEOF] = 0x04;
+
+    tty.c_cc[VTIME] = 20;   /* Set timeout of 2 seconds */
+    tty.c_cc[VMIN] = 0;
 
     if (tcsetattr(fd, TCSANOW, &tty) != 0)
     {
@@ -78,7 +81,7 @@ void printUART(const char *in)        //prints in to UART
     tcdrain(fd);    // delay for output
 }
 
-void getUartLine(char *buf)     //puts on line of UART input in buf
+char getUartLine(char *buf)     //puts on line of UART input in buf
 {
     unsigned char *p;
     int rdlen;
@@ -88,11 +91,16 @@ void getUartLine(char *buf)     //puts on line of UART input in buf
         buf[rdlen] = 0;
     else if (rdlen < 0)
         fprintf(stderr,"Error from read: %d: %s\n", rdlen, strerror(errno));
-    else  // rdlen == 0
-        fprintf(stderr,"Nothing read. EOF?\n");
+    else  //timeout
+    {
+        buf[0] = '\0';
+        return -1;
+    }
 
     if(buf[0] == '\n')  //repeat read when only newline is found
         getUartLine(buf);
+
+    return 0;
 }
 
 #endif //unix
