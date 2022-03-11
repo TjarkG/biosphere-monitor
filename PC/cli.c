@@ -25,7 +25,11 @@ int main(int argc, char *argv[])
         return -1;
     }
     argc--;
-    startUART(argv[1]);
+    if(startUART(argv[1]) != 0)
+    {
+        fprintf(stderr, "Can't open Port %s, exiting\n", argv[1]);
+        return -2;
+    }
 
     char i = 2;
     while (--argc > 0)
