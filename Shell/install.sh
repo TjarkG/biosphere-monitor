@@ -1,5 +1,5 @@
 #!/bin/bash
-packagesNeeded='git gcc avr-libc binutils-avr gcc-avr avrdude make gawk libreoffice libreoffice-calc default-jre libreoffice-java-common mailutils'
+packagesNeeded='git gcc avr-libc binutils-avr gcc-avr avrdude make gawk libreoffice libreoffice-calc default-jre libreoffice-java-common mailutils ssmtp'
 if [ -x "$(command -v apk)" ];       then apk add --no-cache $packagesNeeded
 elif [ -x "$(command -v apt-get)" ]; then sudo apt-get install $packagesNeeded
 elif [ -x "$(command -v dnf)" ];     then sudo dnf install $packagesNeeded
