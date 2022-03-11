@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <errno.h>
-#include "biosphere.h"
-#include "tty.h"
+#include "../PC/biosphere.h"
+#include "../PC/tty.h"
 #include "../reading.h"
 
 #define memb(a) (sizeof(a)/sizeof(a[0]))

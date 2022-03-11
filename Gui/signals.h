@@ -9,7 +9,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include <pwd.h>
-#include "biosphere.h"
+#include "../PC/biosphere.h"
 
 #define ABOUT "Biosphere Monitor by TjarkG\ngithub.com/tjarkG\nGTK 3\n"
 
