@@ -115,8 +115,6 @@ int main(void)
             byteWrite(in.pressure >> 0,     adrTmp + 10);
             byteWrite(in.humidityAir >> 0,  adrTmp + 11);
             byteWrite(in.humiditySoil >> 0, adrTmp + 12);
-            byteWrite(in.iaq >> 8,          adrTmp + 13);
-            byteWrite(in.iaq >> 0,          adrTmp + 14);
         }
         else if(instruct)
         {
@@ -148,8 +146,6 @@ int main(void)
                         in.pressure         |= tmp[10];
                         in.humidityAir      = tmp[11];
                         in.humiditySoil     = tmp[12];
-                        in.iaq              = (int) tmp[13] << 8;
-                        in.iaq              |= tmp[14];
 
                         printReading(in);
                     }
@@ -184,7 +180,7 @@ int main(void)
 
 struct reading getReading(void)     //reuturns fresh data
 {
-    struct reading in = {0,0,0,0,0,0,0,0};
+    struct reading in = {0};
     in.timeRead = timeCounter;
     in.temperaturOut = getOutsideTemp();
     in.light = getLight();
@@ -196,8 +192,6 @@ struct reading getReading(void)     //reuturns fresh data
     }
     if(id >=0x60)
         in.humidityAir = getBmeHumidity();
-    if(id == 0x61)
-        in.iaq = getBmeIaq();
     return in;
 }
 
@@ -362,7 +356,6 @@ long readingIt(struct reading *v, char i) //makes it possible to itterate throuh
         case 4: return v->pressure;
         case 5: return v->humidityAir;
         case 6: return v->humiditySoil;
-        case 7: return v->iaq;
     }
     return 0;
 }

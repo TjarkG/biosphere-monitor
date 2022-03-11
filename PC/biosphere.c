@@ -91,8 +91,6 @@ struct reading getReading(char *buf)
     in.humidityAir = atoi(ptr);
     ptr = strtok(NULL, ",\n");
     in.humiditySoil = atoi(ptr);
-    ptr = strtok(NULL, ",\n");
-    in.iaq = atoi(ptr);
     return in;
 }
 
@@ -155,8 +153,6 @@ void printReading(FILE *ofp, struct reading in)
         fprintf(ofp, ", Air: %d%%RH", in.humidityAir);
     if(in.humiditySoil != 0)
         fprintf(ofp, " Soil: %d%%RH", in.humiditySoil);
-    if(in.iaq != 0)
-        fprintf(ofp, " %dIAQ", in.iaq);
     
     fprintf(ofp, "\n");
 }
@@ -168,8 +164,8 @@ void printCsvReading(FILE *ofp, struct reading in)
     lt = *gmtime(&in.timeRead);
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
-    fprintf(ofp,"%s,%d,%d.%d,%d.%d,%d,%d,%d,%d\n",\
-    tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil, in.iaq);
+    fprintf(ofp,"%s,%d,%d.%d,%d.%d,%d,%d,%d\n",\
+    tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil);
 }
 
 bool setIntervall(unsigned int iNew)

@@ -12,6 +12,5 @@ char bmeInit(void);
 unsigned int getBmeTemp(void);
 unsigned int getBmePress(void);
 unsigned char getBmeHumidity(void);
-int getBmeIaq(void);
 
 #endif //bme_H_
