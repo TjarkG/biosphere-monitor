@@ -15,7 +15,7 @@
 #define __AVR_ATxmega32A4U__
 #endif
 
-#define F_CPU 16000000UL
+#define F_CPU   16000000UL
 #define BSCALE  -5        //Baudrate: 115200
 #define BSEL    246
 #define ADCN    512       //Number of ADC readings taken per Messurment

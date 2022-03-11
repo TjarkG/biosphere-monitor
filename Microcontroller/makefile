@@ -16,7 +16,7 @@ AVRDUDE_PORT = usb    # programmer connected to serial device
 
 #Boilerplate
 FORMAT = ihex
-SRC = $(TARGET).c
+SRC = $(TARGET).c bme.c
 ASRC = 
 OPT = s
 DEBUG = dwarf-2
