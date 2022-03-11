@@ -10,8 +10,8 @@
 #ifndef SPI_FLASH_H_
 #define SPI_FLASH_H_
 
-#ifndef __AVR_ATxmega16A4U__
-#define __AVR_ATxmega16A4U__
+#ifndef __AVR_ATxmega32A4U__
+#define __AVR_ATxmega32A4U__
 #endif
 
 #include <avr/io.h>
