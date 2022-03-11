@@ -84,23 +84,21 @@ gboolean timerTick(__attribute__((unused)) gpointer userData)
 
 void initStats(void)
 {
+    isConnected = false;
     if(startUART(portname) != 0)
-    {
-        isConnected = false;
         return;
-    }
-    isConnected = true;
 
     char buf[64];
     //reset Labels
     for (unsigned int i = 0; i < memb(labelNames); i++)
         gtk_label_set_label(GTK_LABEL(labels[i]), "n/A");
 
-    //get Intervall
     intervall = getCommand("IG");
     if(intervall < 0)       //connection timed out
         return;
+    isConnected = true;
     
+    //get Intervall
     if(intervall % 3600 == 0)
         sprintf(buf,"%d h", intervall/3600);
     else if(intervall % 60 == 0)
