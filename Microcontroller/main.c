@@ -30,7 +30,6 @@
 #include <avr/eeprom.h> 
 #include <avr/pgmspace.h>
 #include <stddef.h>
-#include <avr/sleep.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -84,10 +83,8 @@ int main(void)
     UART0INIT;
     bmeInit();
     sei();
-    set_sleep_mode(SLEEP_MODE_EXT_STANDBY);
     Flash_init();
     _delay_ms(10);
-    sleep_enable();
 
     while (1)
     {
@@ -390,14 +387,11 @@ ISR(USARTC0_RXC_vect)       //UART ISR
 
 ISR(RTC_OVF_vect)          //RTC ISR
 {
-    sleep_disable();
     timeCounter++;
     lightFnom = lightF;
     lightF = 0;
     if(!(timeCounter % getIntervall))
         takeMessurment = true;
-    else
-        sleep_cpu();
 }
 
 //ISR for Frequency Counter

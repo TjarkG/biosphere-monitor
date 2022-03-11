@@ -10,6 +10,8 @@
 #ifndef reading_H_
 #define reading_H_
 
+#include <time.h>
+
 struct reading
 {
     time_t timeRead;                //UNIX Timestamp of reading beginning
