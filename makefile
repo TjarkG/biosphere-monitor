@@ -29,3 +29,9 @@ desktop: Gui/bioGui.desktop
 
 install: gui desktop
 	sudo cp bioGui /usr/local/bin
+
+all: 
+	make -C Microcontroller all
+
+program: 
+	make -C Microcontroller program

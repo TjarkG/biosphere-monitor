@@ -9,4 +9,4 @@ git clone https://github.com/TjarkG/biosphere-monitor
 mkdir ~/BioData
 cd biosphere-monitor
 make PC cli
-make all -C ./Microcontroller
+make all

@@ -23,7 +23,7 @@ Commands to compile the Current Software after cloning:
 
 * Command Line Tool: `make cli && ./PC/biosphere /dev/ttyUSB0 -r`
 * Graphical Configurator: `make gui && ./PC/bioGui`
-* Microcontroller: `make program -C ./Microcontroller`
+* Microcontroller: `make program`
 
 Check your data for Gaps with
 `gawk -f Shell/gaps.awk gap=60 Documentation/Sample_Output.csv`
