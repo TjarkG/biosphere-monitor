@@ -5,7 +5,9 @@ BEGIN {
 	FS = "\" \""
 	"date +%Y-%m-%d" | getline date;
 	heading = "Biosphaeren Daten";
-	oldPort = ""
+	oldPort = "";
+	"locate biosphere-monitor/Shell/gaps.awk -l 1" | getline gappath;
+	"locate biosphere-monitor/PC/biosphere -l 1" | getline biopath;
 }
 # skip comments starting with #
 $0 !~ /^#/ {
@@ -17,12 +19,12 @@ $0 !~ /^#/ {
 	filepath = sprintf("~/BioData/biosphere-%s-%s.csv", nameFile, date)
 	expath 	 = sprintf("~/BioData/biosphere-%s-%s.xlsx", nameFile, date)
 
-	if(system("~/biosphere-monitor/PC/biosphere " $1 " -s >" filepath) != 0)
+	if(system(biopath " " $1 " -s >" filepath) != 0)
 	{
 		message = "An Error occured saving Data"
 	}
 
-	cmd = "gawk -f ~/biosphere-monitor/Shell/gaps.awk gap=600 " filepath
+	cmd = "gawk -f " gappath " gap=600 " filepath
     cmd | getline gaps
 	message = message "\n" gaps "\n"
 
