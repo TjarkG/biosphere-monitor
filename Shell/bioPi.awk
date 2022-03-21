@@ -28,11 +28,7 @@ $0 !~ /^#/ {
     cmd | getline gaps
 	message = message "\n" gaps "\n"
 
-	system("echo \"Hallo \"" $2 "\",\n" message \
-	"im Anhang findest du die neusten Messwerte von deiner Biosphaere.\n\
-	MfG, AstroBot\n\n\
-	(Diese Nachricht wurde automatisch versendet)\" | mail -s \"" \
-	heading "\" " $3 " -A " filepath )
+	system("echo \"Hallo \"" $2 "\",\n" message "im Anhang findest du die neusten Messwerte von deiner Biosphaere.\nMfG, AstroBot\n\n(Diese Nachricht wurde automatisch versendet)\" | mutt -s \"" heading "\" " $3 " -a " filepath )
 
 	if(oldPort == $1)
 		print "Warning: Multiple Entrys for " $1
