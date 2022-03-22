@@ -19,6 +19,7 @@ $0 !~ /^#/ {
 	filepath = sprintf("~/BioData/biosphere-%s-%s.csv", nameFile, date)
 	expath 	 = sprintf("~/BioData/biosphere-%s-%s.xlsx", nameFile, date)
 
+	#comment next paragraph out when transmitting already saved data
 	if(system(biopath " " $1 " -s >" filepath) != 0)
 	{
 		message = "An Error occured saving Data"
