@@ -1,5 +1,5 @@
 cli: cli.o biosphere.o tty.o
-	gcc PC/cli.o PC/biosphere.o PC/tty.o -o biosphere
+	gcc cli.o biosphere.o tty.o -o biosphere
 
 gui: gui.o biosphere.o guiArgs.aux tty.o glade
 	gcc -o bioGui gui.o biosphere.o tty.o @Gui/guiArgs.aux
