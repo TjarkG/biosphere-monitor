@@ -8,5 +8,5 @@ else echo "FAILED TO INSTALL PACKAGE: Package manager not found. You must manual
 git clone https://github.com/TjarkG/biosphere-monitor
 mkdir ~/BioData
 cd biosphere-monitor
-make PC cli
+make cli
 make all
