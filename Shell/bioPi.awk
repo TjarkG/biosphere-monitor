@@ -30,7 +30,7 @@ $0 !~ /^#/ {
 
 	cmd = "gawk -f " gappath " gap=600 " filepath
     cmd | getline gaps
-	message = message "\n" gaps "\n"
+	message = message "\n"
 
 	system("echo \"Hallo \"" $2 "\",\n" message "im Anhang findest du die neusten Messwerte von deiner Biosphaere.\nMfG, AstroBot\n\n(Diese Nachricht wurde automatisch versendet)\" | mutt -s \"" heading "\" " $3 " -a " filepath " -a " expath)
 

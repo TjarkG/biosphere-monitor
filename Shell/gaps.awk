@@ -29,7 +29,7 @@ $3 ~ /^[2-9]/ {
     date = $1 "." $2 "." $3 " " $4 ":" $5 ":" $6
     if (timeOld != 0 && time-timeOld != gap)
     {
-        print "Gap betwen " dateOld " and " date " (" time-timeOld "s)"
+        print "Gap between " dateOld " and " date " (" time-timeOld "s)"
         gaps ++;
     }
     timeOld = time
