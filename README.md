@@ -21,8 +21,8 @@ which can ocure in any order, listed below:
 
 Commands to compile the Current Software after cloning:
 
-* Command Line Tool: `make cli && ./PC/biosphere /dev/ttyUSB0 -r`
-* Graphical Configurator: `make gui && ./PC/bioGui`
+* Command Line Tool: `make biosphere && ./biosphere /dev/ttyUSB0 -r`
+* Graphical Configurator: `make runGui`
 * Microcontroller: `make program`
 
 Check your data for Gaps with
