@@ -4,7 +4,7 @@ biosphere: cli.o biosphere.o tty.o
 runGui: bioGui
 	./bioGui
 
-bioGui: gui.o biosphere.o Gui/guiArgs.aux tty.o /usr/local/src
+bioGui: gui.o biosphere.o Gui/guiArgs.aux tty.o /usr/local/src/bioGui.glade
 	gcc -o bioGui gui.o biosphere.o tty.o @Gui/guiArgs.aux
 
 biosphere.o: PC/biosphere.c PC/tty.h PC/biosphere.h
@@ -20,8 +20,8 @@ Gui/guiArgs.aux:
 	pkg-config gtk+-3.0 --cflags --libs > Gui/guiArgs.aux
 	echo "-rdynamic -Wall -Wextra" >> Gui/guiArgs.aux
 
-/usr/local/src: Gui/bioGui.glade
-	cp Gui/bioGui.glade /usr/local/src
+/usr/local/src/bioGui.glade: Gui/bioGui.glade
+	sudo cp Gui/bioGui.glade /usr/local/src
 
 ~/.local/share/applications: Gui/bioGui.desktop
 	cp Gui/bioGui.desktop ~/.local/share/applications

@@ -9,10 +9,10 @@
 #include "../reading.h"
 
 #define memb(a) (sizeof(a)/sizeof(a[0]))
-#define INTV    2   //time between refreshes
+#define INTV    1   //time between refreshes
 
 GtkBuilder *builder;
-const char *labelNames[] = {"outTime","outLight","outITemp","outOTemp","outPress","outAir","outSoil","outBegin","outInv","outLast","outSum","outStorage"};
+const char *labelNames[] = {"outTime","outLight","outOTemp","outITemp","outPress","outAir","outSoil","outBegin","outInv","outLast","outSum","outStorage"};
 char labelContent[memb(labelNames)][16];
 GtkWidget *labels[memb(labelNames)];
 guint timerId = 0;

@@ -5,13 +5,13 @@
 #include <gtk/gtk.h>
 #include <errno.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <dirent.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <pwd.h>
 #include "../PC/biosphere.h"
 
-#define ABOUT "Biosphere Monitor by TjarkG\ngithub.com/tjarkG\nGTK 3\n"
+#define ABOUT "Biosphere Monitor by TjarkG\ngithub.com/tjarkG\nGTK 3.24\n"
 
 GtkBuilder *builder;
 guint timerId;
@@ -252,15 +252,32 @@ void saveOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused))
 
     //open file and save to it
     FILE *opf;
-    char filepath[255];
-    sprintf(filepath, "/home/%s/BioData/biosphere-%s-%s.csv", p->pw_name, p->pw_name, tmStr);
-    puts(filepath);
+    char filePath[255];
+    char fileDir[255];
+    sprintf(filePath, "/home/%s/BioData/biosphere-%s-%s.csv", p->pw_name, p->pw_name, tmStr);
+    sprintf(fileDir, "/home/%s/BioData", p->pw_name);
 
-    if ((opf = fopen(filepath, "w")) == NULL) 
+    struct stat st = {0};
+    if (stat(fileDir, &st) == -1) {
+        mkdir(fileDir, 0700);
+    }
+
+    char message[512];
+    if ((opf = fopen(filePath, "w")) == NULL) 
     {
-        fprintf(stderr, "Error: can't open file %s\n", filepath);
+        sprintf(message, "Fehler: Datei %s oder kann nicht geöffnet werden\n", filePath);
         return;
     }
-    storeReadings(opf,false);
-    fclose(opf);
+    else
+    {
+        sprintf(message, "Messdaten als\n%s\ngespeichert\n", filePath);
+        storeReadings(opf,false);
+        fclose(opf);
+    }
+
+    GtkWidget *text = GTK_WIDGET (gtk_builder_get_object (builder,"infoText"));
+    infoWindow = GTK_WIDGET (gtk_builder_get_object (builder,"infoWindow"));
+
+    gtk_label_set_label(GTK_LABEL(text), message);
+    gtk_widget_show_all(infoWindow);
 }
