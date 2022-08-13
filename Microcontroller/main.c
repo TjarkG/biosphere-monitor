@@ -178,7 +178,7 @@ int main(void)
     }
 }
 
-struct reading getReading(void)     //reuturns fresh data
+struct reading getReading(void)     //returns fresh data
 {
     struct reading in = {0};
     in.timeRead = timeCounter;

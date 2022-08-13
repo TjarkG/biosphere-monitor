@@ -10,8 +10,12 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-static long t_fine;    //Fine Temperatur for Pressur Compensation
-char id;        //Sensor ID
+#define BMP280 0x58
+#define BME280 0x60
+#define BME680 0x61
+
+static long t_fine;     //Fine Temperatur for Pressur Compensation
+char id;                //Sensor ID
 
 static struct cal    //compensation Values
 {
@@ -82,13 +86,7 @@ char bmeInit(void)
     id = TWIC.MASTER.DATA;
     TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
 
-    /*Sensor IDs
-    * 0x58 BMP280
-    * 0x60 BME280
-    * 0x61 BME680
-    */
-
-    if(id == 0x58 || id == 0x60)
+    if(id == BMP280 || id == BME280)
     {
         dig.T1 = bmeReadRegister(0x88);
         dig.T1 |= bmeReadRegister(0x89)<<8;
@@ -116,7 +114,7 @@ char bmeInit(void)
         dig.P9 = bmeReadRegister(0x9E);
         dig.P9 |= bmeReadRegister(0x9F)<<8;
 
-        if(id == 0x60)
+        if(id == BME280)
         {
             dig.HE1 = bmeReadRegister(0xA1);
             dig.HE2 = bmeReadRegister(0xE1);
@@ -129,7 +127,7 @@ char bmeInit(void)
             dig.HE6 = bmeReadRegister(0xE7);
         }
     }
-    else if(id == 0x61)
+    else if(id == BME680)
     {
         dig.T1 = bmeReadRegister(0xE9);
         dig.T1 |= bmeReadRegister(0xEA)<<8;
@@ -229,7 +227,7 @@ void bmeSelectReg(const char reg)
 unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
 {
     long data = 0;
-    if(id == 0x58 || id == 0x60)
+    if(id == BMP280 || id == BME280)
     {
         bmeWriteRegister(0xF4, (0x01 | (0b0011 << 2) | (0b0001 << 5)));
         _delay_ms(15);
@@ -240,7 +238,7 @@ unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
         var2  = (((((data>>4) - ((long)dig.T1)) * ((data>>4) - ((long)dig.T1))) >> 12) * ((long)dig.T3)) >> 14;
         t_fine = var1 + var2;
     }
-    else if(id == 0x61)
+    else if(id == BME680)
     {
         bmeWriteRegister(0x74, (0x01 | (0b010 << 2) | (0b010 << 5)));
         _delay_ms(25);
@@ -261,7 +259,7 @@ unsigned int getBmePress(void)  //returns BME Pressure in hPa
     unsigned long p = 0;
     //No initialization needed, reading out data from Temperatur Messurment
     data = bmeRead20Bite(0xF7);
-    if(id == 0x58 || id == 0x60)
+    if(id == BMP280 || id == BME280)
     {
         long var1, var2;
         var1 = (((long)t_fine)>>1) - (long)64000;
@@ -281,7 +279,7 @@ unsigned int getBmePress(void)  //returns BME Pressure in hPa
         var2 = (((long)(p>>2)) * ((long)dig.P8))>>13;
         p = (unsigned long)((long)p + ((var1 + var2 + dig.P7) >> 4));
     }
-    if(id == 0x61)
+    else if(id == BME680)
     {
         long var1, var2, var3;
         var1 = ((long)t_fine >> 1) - 64000;  
@@ -308,7 +306,7 @@ unsigned int getBmePress(void)  //returns BME Pressure in hPa
 unsigned char getBmeHumidity(void)
 {
     int data = 0;
-    if(id == 0x60)
+    if(id == BME280)
     {
         bmeWriteRegister(0xF2, 0b011);
         bmeWriteRegister(0xF4, (0x01 | (0b0011 << 2) | (0b0001 << 5)));
@@ -328,7 +326,7 @@ unsigned char getBmeHumidity(void)
             var = 0.0;
         return var;
     }
-    else if(id == 0x61)
+    else if(id == BME680)
     {
         bmeWriteRegister(0x72, 0b011);
         _delay_ms(25);
