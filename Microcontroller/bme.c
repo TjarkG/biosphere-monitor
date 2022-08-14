@@ -5,10 +5,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdbool.h>
+#include <string.h>
 #include "bme.h"
-
-#define WaitRx while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm))
-#define WaitTx while(!(TWIC.MASTER.STATUS & TWI_MASTER_WIF_bm))
 
 enum Type id;      //Sensor ID
 
@@ -16,20 +14,9 @@ static long t_fine;     //Fine Temperatur for Pressur Compensation
 
 static struct cal    //compensation Values
 {
-    unsigned short T1;
-    signed short T2;
-    signed short T3;
-
-    unsigned short P1;
-    signed short P2;
-    signed short P3;
-    signed short P4;
-    signed short P5;
-    signed short P6;
-    signed short P7;
-    signed short P8;
-    signed short P9;
-
+    short T[3];
+    
+    short P[9];
     unsigned char P10;
 
     unsigned short H1;
@@ -40,40 +27,17 @@ static struct cal    //compensation Values
     unsigned char H6;
     signed char H7;
 
-    unsigned char HE1;
-    signed short HE2;
-    unsigned char HE3;
-    signed short HE4;
-    signed short HE5;
-    signed char HE6;
+    char H[8];
 
     signed char GH1;
     signed short GH2;
     signed char GH3;
 } dig;
 
-uint8_t bmeReadChar(const uint8_t reg);     //read reg
-bool bmeRead(const uint8_t reg, uint8_t *buf, const uint8_t n);
-uint16_t bmeReadWord(const uint8_t reg);    //read reg and reg+1 as one Word
-uint32_t bmeRead20Bite(const uint8_t reg);
-void bmeWriteRegister(const uint8_t reg, const uint8_t data);
-void bmeSelectReg(const uint8_t reg);
-
-uint8_t bmeReadChar(const uint8_t reg)
-{
-    uint8_t data = 0;
-    bmeSelectReg(reg);
-    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
-
-    TWIC.MASTER.ADDR = (0x76 << 1) | 0x01;
-    WaitRx;
-
-    WaitRx;
-    data = TWIC.MASTER.DATA;
-
-    TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
-    return data;
-}
+bool waitRx(void);
+bool read(const uint8_t reg, uint8_t *buf, const uint8_t n);
+uint32_t readADC(const uint8_t reg);
+void write(const uint8_t reg, const uint8_t data);
 
 bool waitRx(void)
 {
@@ -87,12 +51,19 @@ bool waitRx(void)
     return false;
 }
 
+#define WaitTx while(!(TWIC.MASTER.STATUS & TWI_MASTER_WIF_bm))
+
 //read n bytes after reg into buf
-bool bmeRead(const uint8_t reg, uint8_t *buf, const uint8_t n)
+bool read(const uint8_t reg, uint8_t *buf, const uint8_t n)
 {
-    bmeSelectReg(reg);
+    //Select Register
+    TWIC.MASTER.ADDR = 0x76 << 1;
+    WaitTx;
+    TWIC.MASTER.DATA = reg;
+    WaitTx;
     TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
 
+    //read
     TWIC.MASTER.ADDR = (0x76 << 1) | 0x01;
     if(!waitRx())
         return false;
@@ -110,61 +81,26 @@ bool bmeRead(const uint8_t reg, uint8_t *buf, const uint8_t n)
     return true;
 }
 
-uint16_t bmeReadWord(const uint8_t reg)
+uint32_t readADC(const uint8_t reg)
 {
-    uint16_t data = 0;
-    bmeSelectReg(reg);
-    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
+    uint8_t buf[3];
+    read(reg, buf, sizeof buf);
 
-    TWIC.MASTER.ADDR = (0x76 << 1) | 0x01;
-    WaitRx;
-
-    WaitRx;
-    data = TWIC.MASTER.DATA;
-    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
-    WaitRx;
-    data |= TWIC.MASTER.DATA << 8;
-
-    TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
-    return data;
+    return (((uint32_t) buf[0] << 12) & 0xFF000) | (((uint32_t) buf[1] << 4) & 0x00FF0) | ((uint32_t) buf[2] >> 4);
 }
 
-uint32_t bmeRead20Bite(const uint8_t reg)
+void write(const uint8_t reg, const uint8_t data)
 {
-    uint32_t data = 0;
-    bmeSelectReg(reg);
-    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
-
-    TWIC.MASTER.ADDR = (0x76 << 1) | 0x01;
-    WaitRx;
-
-    WaitRx;
-    data |= ((uint32_t) TWIC.MASTER.DATA << 12) & 0xFF000;
-    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
-    WaitRx;
-    data |= ((uint32_t) TWIC.MASTER.DATA << 4) & 0x00FF0;
-    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
-    WaitRx;
-    data |= ((uint32_t) TWIC.MASTER.DATA >> 4) & 0x0000F;
-
-    TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
-    return data;
-}
-
-void bmeWriteRegister(const uint8_t reg, const uint8_t data)
-{
-    bmeSelectReg(reg);
-    TWIC.MASTER.DATA = data;
-    WaitTx;
-    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
-}
-
-void bmeSelectReg(const uint8_t reg)
-{
+    //Select Register
     TWIC.MASTER.ADDR = 0x76 << 1;
     WaitTx;
     TWIC.MASTER.DATA = reg;
     WaitTx;
+
+    //write data
+    TWIC.MASTER.DATA = data;
+    WaitTx;
+    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
 }
 
 void bmeInit(void)
@@ -175,113 +111,91 @@ void bmeInit(void)
     TWIC.MASTER.STATUS |= TWI_MASTER_BUSSTATE_IDLE_gc;
 
     //Read Device ID with timeout (incase nothing is connected)
-    bmeSelectReg(0xD0);         //Get Device ID
-    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
-    TWIC.MASTER.ADDR = (0x76 << 1) | 0x01;
-    int i = 0;
-    while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm))
-    {
-        _delay_us(1);
-        i++;
-        if(i > 1000)
-            return;
-    }
-    WaitRx;
-    id = TWIC.MASTER.DATA;
-    TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
+    if(!read(0xD0, &id, 1))
+        return;
 
     if(id == BMP280 || id == BME280)
     {
         /*see 
-        * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf p. 21 and
-        * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf p. 24 for reference
-        */
-        dig.T1 = bmeReadWord(0x88);
-        dig.T2 = (short) bmeReadWord(0x8A);
-        dig.T3 = (short) bmeReadWord(0x8C);
+         * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf p. 21 and
+         * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf p. 24 for reference
+         */
 
-        dig.P1 = bmeReadWord(0x8E);
-        dig.P2 = (short) bmeReadWord(0x90);
-        dig.P3 = (short) bmeReadWord(0x92);
-        dig.P4 = (short) bmeReadWord(0x94);
-        dig.P5 = (short) bmeReadWord(0x96);
-        dig.P6 = (short) bmeReadWord(0x98);
-        dig.P7 = (short) bmeReadWord(0x9A);
-        dig.P8 = (short) bmeReadWord(0x9C);
-        dig.P9 = (short) bmeReadWord(0x9E);
+        uint16_t buf[13];
+        read(0x88, (uint8_t *) buf, sizeof buf);
+
+        memcpy(dig.T, buf, 6);
+        memcpy(dig.P, buf+3, 18);
 
         if(id == BME280)
         {
-            dig.HE1 = bmeReadChar(0xA1);
-            dig.HE2 = (short) bmeReadWord(0xE1);
-            dig.HE3 = bmeReadChar(0xE3);
-            dig.HE4 = bmeReadChar(0xE4)<<4;
-            dig.HE4 |= (bmeReadChar(0xE5) & 0x0F);
-            dig.HE5 = (bmeReadChar(0xE5) & 0xF0) >> 4;
-            dig.HE5 |= bmeReadChar(0xE6)<<4;
-            dig.HE6 = (char) bmeReadChar(0xE7);
+            uint8_t bufH[7];
+            read(0xE1, bufH, sizeof bufH);
+
+            dig.H[0] = ((uint8_t *) buf)[25]; 
+            memcpy(dig.H+1, bufH, sizeof bufH);
         }
     }
     else if(id == BME680)
     {
         /*see 
-        * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme680-ds001.pdf p. 18ff for reference
-        */
-        dig.T1 = bmeReadWord(0xE9);
-        dig.T2 = (short) bmeReadWord(0x8A);
-        dig.T3 = bmeReadChar(0x8C);
+         * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme680-ds001.pdf p. 18ff for reference
+         */
 
-        dig.P1 = bmeReadWord(0x8E);
-        dig.P2 = (short) bmeReadWord(0x90);
-        dig.P3 = bmeReadChar(0x92);
-        dig.P4 = (short) bmeReadWord(0x94);
-        dig.P5 = (short) bmeReadWord(0x96);
-        dig.P6 = bmeReadChar(0x99);
-        dig.P7 = bmeReadChar(0x98);     
-        dig.P8 = (short) bmeReadWord(0x9C);
-        dig.P9 = (short) bmeReadWord(0x9E);
-        dig.P10 = bmeReadChar(0xA0);
+        uint8_t bufE[16];
+        read(0xE1, bufE, sizeof bufE);
 
-        dig.H1 = (bmeReadChar(0xE2) & 0xF);
-        dig.H1 |= bmeReadChar(0xE3)<<4;
-        dig.H2 = (bmeReadChar(0xE2)>>4 & 0xF);
-        dig.H2 |= bmeReadChar(0xE1)<<4;
-        dig.H3 = (char) bmeReadChar(0xE4);
-        dig.H4 = (char) bmeReadChar(0xE5);
-        dig.H5 = (char) bmeReadChar(0xE6);
-        dig.H6 = bmeReadChar(0xE7);
-        dig.H7 = (char) bmeReadChar(0xE8);
+        uint16_t buf8[12];
+        read(0x8A, (uint8_t *)  buf8, sizeof buf8);
 
-        dig.GH1 = bmeReadChar(0xED);
-        dig.GH2 = (short) bmeReadWord(0xEB);
-        dig.GH3 = bmeReadChar(0xEE);
+        dig.T[0] = bufE[8] | (bufE[9] << 8);
+        dig.T[1] = buf8[0];
+        dig.T[2] = ((uint8_t *) buf8)[2];
+
+        memcpy(dig.P, buf8+2, 18);
+        dig.P[5] = ((uint8_t *) buf8)[15];
+        dig.P[6] = ((uint8_t *) buf8)[14];    
+        dig.P10 = ((uint8_t *) buf8)[22];
+
+        dig.H1 = (bufE[1] & 0xF);
+        dig.H1 |= bufE[2]<<4;
+        dig.H2 = (bufE[1]>>4 & 0xF);
+        dig.H2 |= bufE[0]<<4;
+        dig.H3 = bufE[3];
+        dig.H4 = bufE[4];
+        dig.H5 = bufE[5];
+        dig.H6 = bufE[6];
+        dig.H7 = bufE[7];
+
+        dig.GH1 = bufE[12];
+        dig.GH2 = bufE[10] | (bufE[11] << 8);
+        dig.GH3 = bufE[13];
     }
 }
 
 unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
 {
-    long data = 0;
     if(id == BMP280 || id == BME280)
     {
-        bmeWriteRegister(0xF4, (0x01 | (0b0011 << 2) | (0b0001 << 5)));
+        write(0xF4, (0x01 | (0b0011 << 2) | (0b0001 << 5)));
         _delay_ms(15);
-        data = bmeRead20Bite(0xFA);
+        const int32_t data = readADC(0xFA);
 
         long var1, var2;
-        var1  = ((((data>>3) - ((long)dig.T1<<1))) * ((long)dig.T2)) >> 11;
-        var2  = (((((data>>4) - ((long)dig.T1)) * ((data>>4) - ((long)dig.T1))) >> 12) * ((long)dig.T3)) >> 14;
+        var1  = ((((data>>3) - ((uint16_t) dig.T[0]<<1))) * ((long)dig.T[1])) >> 11;
+        var2  = (((((data>>4) - ((uint16_t) dig.T[0])) * ((data>>4) - ((uint16_t) dig.T[0]))) >> 12) * ((long)dig.T[2])) >> 14;
         t_fine = var1 + var2;
     }
     else if(id == BME680)
     {
-        bmeWriteRegister(0x74, (0x01 | (0b010 << 2) | (0b010 << 5)));
+        write(0x74, (0x01 | (0b010 << 2) | (0b010 << 5)));
         _delay_ms(25);
-        data = bmeRead20Bite(0xFA);
+        const int32_t data = readADC(0xFA);
 
         long var1, var2, var3;
-        var1 = ((long)data >> 3) - ((long)dig.T1 << 1); 
-        var2 = (var1 * (long)dig.T2) >> 11; 
-        var3 = ((((var1 >> 1) * (var1 >> 1)) >> 12) * ((long)dig.T3 << 4)) >> 14; 
+        var1 = ((long)data >> 3) - ((long)dig.T[0] << 1); 
+        var2 = (var1 * (long)dig.T[1]) >> 11; 
+        var3 = ((((var1 >> 1) * (var1 >> 1)) >> 12) * ((long)dig.T[2] << 4)) >> 14; 
         t_fine = var2 + var3 - 3072;
     }
     return (t_fine/512);
@@ -289,19 +203,19 @@ unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
 
 unsigned int getBmePress(void)  //returns BME Pressure in hPa
 {
-    long data = 0;
     unsigned long p = 0;
     //No initialization needed, reading out data from Temperatur Messurment
-    data = bmeRead20Bite(0xF7);
+    const int32_t data = readADC(0xF7);
+
     if(id == BMP280 || id == BME280)
     {
         long var1, var2;
         var1 = (((long)t_fine)>>1) - (long)64000;
-        var2 = (((var1>>2) * (var1>>2)) >> 11 ) * ((long)dig.P6);
-        var2 = var2 + ((var1*((long)dig.P5))<<1);
-        var2 = (var2>>2)+(((long)dig.P4)<<16);
-        var1 = (((dig.P3 * (((var1>>2) * (var1>>2)) >> 13 )) >> 3) + ((((long)dig.P2) * var1)>>1))>>18;
-        var1 =((((32768+var1))*((long)dig.P1))>>15);
+        var2 = (((var1>>2) * (var1>>2)) >> 11 ) * ((long)dig.P[5]);
+        var2 = var2 + ((var1*((long)dig.P[4]))<<1);
+        var2 = (var2>>2)+(((long)dig.P[3])<<16);
+        var1 = (((dig.P[2] * (((var1>>2) * (var1>>2)) >> 13 )) >> 3) + ((((long)dig.P[1]) * var1)>>1))>>18;
+        var1 =((((32768+var1))*((unsigned short)dig.P[0]))>>15);
         if (var1 == 0)
            return 0; // avoid exception caused by division by zero
         p = (((unsigned long)(((long)1048576)-data)-(var2>>12)))*3125;
@@ -309,50 +223,51 @@ unsigned int getBmePress(void)  //returns BME Pressure in hPa
             p = (p << 1) / ((unsigned long)var1);
         else
             p = (p / (unsigned long)var1) * 2;
-        var1 = (((long)dig.P9) * ((long)(((p>>3) * (p>>3))>>13)))>>12;
-        var2 = (((long)(p>>2)) * ((long)dig.P8))>>13;
-        p = (unsigned long)((long)p + ((var1 + var2 + dig.P7) >> 4));
+        var1 = (((long)dig.P[8]) * ((long)(((p>>3) * (p>>3))>>13)))>>12;
+        var2 = (((long)(p>>2)) * ((long)dig.P[7]))>>13;
+        p = (unsigned long)((long)p + ((var1 + var2 + dig.P[6]) >> 4));
     }
     else if(id == BME680)
     {
         long var1, var2, var3;
         var1 = ((long)t_fine >> 1) - 64000;  
-        var2 = ((((var1 >> 2) * (var1 >> 2)) >> 11) * (long)dig.P6) >> 2;  
-        var2 = var2 + ((var1 * (long)dig.P5) << 1);   
-        var2 = (var2 >> 2) + ((long)dig.P4 << 16);  
-        var1 = (((((var1 >> 2) * (var1 >> 2)) >> 13) *((long)dig.P3 << 5)) >> 3) + (((long)dig.P2 * var1) >> 1); 
+        var2 = ((((var1 >> 2) * (var1 >> 2)) >> 11) * (long)dig.P[5]) >> 2;  
+        var2 = var2 + ((var1 * (long)dig.P[4]) << 1);   
+        var2 = (var2 >> 2) + ((long)dig.P[3] << 16);  
+        var1 = (((((var1 >> 2) * (var1 >> 2)) >> 13) *((long)dig.P[2] << 5)) >> 3) + (((long)dig.P[1] * var1) >> 1); 
         var1 = var1 >> 18;  
-        var1 = ((32768 + var1) * (long)dig.P1) >> 15;  
+        var1 = ((32768 + var1) * (unsigned short)dig.P[0]) >> 15;  
         p = 1048576 - data;  
         p = (unsigned long)((p - (var2 >> 12)) * ((unsigned long)3125));  
         if (p >= (1UL << 30))  
             p = ((p / (unsigned long)var1) << 1);  
         else  
             p = ((p << 1) / (unsigned long)var1);  
-        var1 = ((long)dig.P9 * (long)(((p >> 3) * (p >> 3)) >> 13)) >> 12;  
-        var2 = ((long)(p >> 2) * (long)dig.P8) >> 13;  
+        var1 = ((long)dig.P[8] * (long)(((p >> 3) * (p >> 3)) >> 13)) >> 12;  
+        var2 = ((long)(p >> 2) * (long)dig.P[7]) >> 13;  
         var3 = ((long)(p >> 8) * (long)(p >> 8) * (long)(p >> 8) * (long)dig.P10) >> 17;  
-        p = (long)(p) + ((var1 + var2 + var3 + ((long)dig.P7 << 7)) >> 4); 
+        p = (long)(p) + ((var1 + var2 + var3 + ((long)dig.P[6] << 7)) >> 4); 
     }
     return p/100;
 }
 
 unsigned char getBmeHumidity(void)
 {
-    int data = 0;
     if(id == BME280)
     {
-        bmeWriteRegister(0xF2, 0b011);
-        bmeWriteRegister(0xF4, (0x01 | (0b0011 << 2) | (0b0001 << 5)));
+        write(0xF2, 0b011);
+        write(0xF4, (0x01 | (0b0011 << 2) | (0b0001 << 5)));
         _delay_ms(25);
-        data = ((unsigned int)bmeReadChar(0xFD) << 8);
-        data |= bmeReadChar(0xFE);
+
+        uint8_t buf[2];
+        read(0xFD, buf, sizeof buf);
+        const int16_t data = ((uint16_t) buf[0] << 8) | buf[1];
 
         double var; 
         var = (((double)t_fine) - 76800.0); 
-        var = (data - (((double)dig.HE4) * 64.0 + ((double)dig.HE5) / 16384.0 * var)) * (((double)dig.HE2) / 65536.0 * (1.0 + ((double)dig.HE6) /
-        67108864.0 * var * (1.0 + ((double)dig.HE3) / 67108864.0 * var))); 
-        var = var * (1.0 - ((double)dig.HE1) * var / 524288.0); 
+        var = (data - (((double)((dig.H[5] & 0x0F) | ((uint16_t) dig.H[4]<<4))) * 64.0 + ((double)((dig.H[5] >> 4) | ((uint16_t) dig.H[6]<<4))) / 16384.0 * var)) *
+        (((double)(((uint16_t) dig.H[2] << 8) | dig.H[1])) / 65536.0 * (1.0 + ((double)dig.H[7]) / 67108864.0 * var * (1.0 + ((double)dig.H[3]) / 67108864.0 * var))); 
+        var = var * (1.0 - ((double)dig.H[0]) * var / 524288.0);
         
         if (var > 100.0) 
             var = 100.0; 
@@ -362,10 +277,12 @@ unsigned char getBmeHumidity(void)
     }
     else if(id == BME680)
     {
-        bmeWriteRegister(0x72, 0b011);
+        write(0x72, 0b011);
         _delay_ms(25);
-        data = ((unsigned int)bmeReadChar(0x25) << 8);
-        data |= bmeReadChar(0x26);
+
+        uint8_t buf[2];
+        read(0x25, buf, sizeof buf);
+        const int16_t data = ((uint16_t) buf[0] << 8) | buf[1];
 
         long var1, var2, var3, var4, var5, var6;
         long temp_scaled = ((t_fine * 5) + 128) >> 8; 

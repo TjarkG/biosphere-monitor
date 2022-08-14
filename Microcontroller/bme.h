@@ -3,7 +3,7 @@
 #ifndef bme_H_
 #define bme_H_
 
-extern enum Type {BMP280 = 0x58, BME280 = 0x60, BME680 = 0x61} id;      //Sensor ID
+extern enum Type {BMP280 = 0x58, BME280 = 0x60, BME680 = 0x61}  __attribute__ ((__packed__)) id;      //Sensor ID
 
 void bmeInit(void);
 unsigned int getBmeTemp(void);

@@ -1,7 +1,7 @@
 /*
  * Spi_Flash.h
  *
- * Header to communicate with a SST25VF049 Spi Flash on SPIC in Spi Mode 0
+ * Header to communicate with a SST25VF040 Spi Flash on SPIC in Spi Mode 0
  *
  * Created: 25.09.2021 14:47:36
  *  Author: Tjark Gaudich
