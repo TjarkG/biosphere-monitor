@@ -3,12 +3,9 @@
 #ifndef bme_H_
 #define bme_H_
 
-#include <avr/io.h>
-#include <util/delay.h>
+extern enum Type {BMP280 = 0x58, BME280 = 0x60, BME680 = 0x61} id;      //Sensor ID
 
-char id;        //Sensor ID
-
-char bmeInit(void);
+void bmeInit(void);
 unsigned int getBmeTemp(void);
 unsigned int getBmePress(void);
 unsigned char getBmeHumidity(void);
