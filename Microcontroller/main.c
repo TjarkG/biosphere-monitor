@@ -11,10 +11,6 @@
  * cc PC/biosphere.c -o PC/biosphere; ./PC/biosphere /dev/ttyUSB0 -delete -f -ct23 -i60 -t -r
  */ 
 
-#ifndef __AVR_ATxmega32A4U__
-#define __AVR_ATxmega32A4U__
-#endif
-
 #define F_CPU   16000000UL
 #define BSCALE  -5        //Baudrate: 115200
 #define BSEL    246
