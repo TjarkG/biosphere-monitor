@@ -4,6 +4,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdbool.h>
 #include "bme.h"
 
 #define WaitRx while(!(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm))
@@ -52,6 +53,7 @@ static struct cal    //compensation Values
 } dig;
 
 uint8_t bmeReadChar(const uint8_t reg);     //read reg
+bool bmeRead(const uint8_t reg, uint8_t *buf, const uint8_t n);
 uint16_t bmeReadWord(const uint8_t reg);    //read reg and reg+1 as one Word
 uint32_t bmeRead20Bite(const uint8_t reg);
 void bmeWriteRegister(const uint8_t reg, const uint8_t data);
@@ -71,6 +73,41 @@ uint8_t bmeReadChar(const uint8_t reg)
 
     TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
     return data;
+}
+
+bool waitRx(void)
+{
+    for (uint16_t i = 0; i < 1000; i++)
+    {
+        if(TWIC.MASTER.STATUS & TWI_MASTER_RIF_bm)
+            return true;
+        _delay_us(1);
+    }
+
+    return false;
+}
+
+//read n bytes after reg into buf
+bool bmeRead(const uint8_t reg, uint8_t *buf, const uint8_t n)
+{
+    bmeSelectReg(reg);
+    TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
+
+    TWIC.MASTER.ADDR = (0x76 << 1) | 0x01;
+    if(!waitRx())
+        return false;
+
+    for (uint8_t i = 0; i < n; i++)
+    {
+        if(!waitRx())
+            return false;
+        buf[i] = TWIC.MASTER.DATA;
+        if(n - i != 0)
+            TWIC.MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
+    }
+    
+    TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
+    return true;
 }
 
 uint16_t bmeReadWord(const uint8_t reg)
@@ -132,10 +169,12 @@ void bmeSelectReg(const uint8_t reg)
 
 void bmeInit(void)
 {
+    //TWI Setup
     TWIC.MASTER.BAUD = 155;
     TWIC.MASTER.CTRLA = TWI_MASTER_ENABLE_bm;
     TWIC.MASTER.STATUS |= TWI_MASTER_BUSSTATE_IDLE_gc;
 
+    //Read Device ID with timeout (incase nothing is connected)
     bmeSelectReg(0xD0);         //Get Device ID
     TWIC.MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
     TWIC.MASTER.ADDR = (0x76 << 1) | 0x01;
