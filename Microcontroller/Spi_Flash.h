@@ -22,7 +22,7 @@ void Flash_init(void);
 unsigned char SPI_SendData(unsigned char Data);
 unsigned char RDSR (void);
 unsigned long JEDEC_ID (void);
-void READ (unsigned char *out, unsigned char n, unsigned long adress);
+void flashRead (unsigned char *out, unsigned char n, unsigned long adress);
 void WREN (void);
 void WRSR (void);
 void byteWrite (unsigned char in, unsigned long adress);
@@ -70,7 +70,7 @@ unsigned long JEDEC_ID (void)    //Read JEDEC-ID
     return out;
 }
 
-void READ (unsigned char *out, unsigned char n, unsigned long adress)   //Read n Bytes from adress onwards
+void flashRead (unsigned char *out, unsigned char n, unsigned long adress)   //Read n Bytes from adress onwards
 {
     CE_LOW;
     SPI_SendData(0x03);
@@ -99,7 +99,7 @@ void WRSR (void)        //Write Status Register
     CE_HIGH;
 }
 
-void byteWrite (unsigned char in, unsigned long adress)   //Write in to adress
+void byteWrite (unsigned char in, const unsigned long adress)   //Write in to adress
 {
     WREN();
     CE_LOW;
@@ -110,6 +110,14 @@ void byteWrite (unsigned char in, unsigned long adress)   //Write in to adress
     SPI_SendData(in);
     CE_HIGH;
     _delay_us(TBP);
+}
+
+void FlashWrite (uint8_t *in, const uint8_t size, const uint32_t adr)
+{
+    for (uint8_t i = 0; i < size; i++)
+    {
+        byteWrite(in[i], adr+i);
+    }
 }
 
 void chipErase(void)

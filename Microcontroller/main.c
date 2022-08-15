@@ -98,19 +98,7 @@ int main(void)
             if (adrTmp % 4096 == 0)                 //Erase Sector if a new Sector is entert
                 sectorErase4kB(adrTmp);
 
-            byteWrite(in.timeRead >> 24,    adrTmp + 0);
-            byteWrite(in.timeRead >> 16,    adrTmp + 1);
-            byteWrite(in.timeRead >> 8,     adrTmp + 2);
-            byteWrite(in.timeRead >> 0,     adrTmp + 3);
-            byteWrite(in.light >> 8,        adrTmp + 4);
-            byteWrite(in.light >> 0,        adrTmp + 5);
-            byteWrite(in.temperaturOut >> 0,adrTmp + 6);
-            byteWrite(in.temperaturIn >> 8, adrTmp + 7);
-            byteWrite(in.temperaturIn >> 0, adrTmp + 8);
-            byteWrite(in.pressure >> 8,     adrTmp + 9);
-            byteWrite(in.pressure >> 0,     adrTmp + 10);
-            byteWrite(in.humidityAir >> 0,  adrTmp + 11);
-            byteWrite(in.humiditySoil >> 0, adrTmp + 12);
+            FlashWrite((uint8_t *) &in, sizeof in, adrTmp);
         }
         else if(instruct)
         {
@@ -126,22 +114,7 @@ int main(void)
                     for(unsigned long i = 0; i <= adr; i += REDSIZE)
                     {
                         struct reading in;
-                        unsigned char tmp[REDSIZE];
-                        READ(tmp, sizeof(tmp), i);
-
-                        in.timeRead         = (long) tmp[0] << 24;
-                        in.timeRead         |= (long) tmp[1] << 16;
-                        in.timeRead         |= (long) tmp[2] << 8;
-                        in.timeRead         |= (long) tmp[3] << 0;
-                        in.light            = (int) tmp[4] << 8;
-                        in.light            |= tmp[5];
-                        in.temperaturOut    = tmp[6];
-                        in.temperaturIn     = (int) tmp[7] << 8;
-                        in.temperaturIn     |= tmp[8];
-                        in.pressure         = (int) tmp[9] << 8;
-                        in.pressure         |= tmp[10];
-                        in.humidityAir      = tmp[11];
-                        in.humiditySoil     = tmp[12];
+                        flashRead((uint8_t *) &in, sizeof in, i);
 
                         printReading(in);
                     }
@@ -233,7 +206,7 @@ long selfDiagnosse(void)     //returns self diagnosis errorcode
         sectorErase4kB(ADRMAX-4096);
         byteWrite(0xAA, ADRMAX-4096);
         unsigned char test[1];
-        READ(test, 1, ADRMAX-4096);
+        flashRead(test, 1, ADRMAX-4096);
         if(test[0] == 0xFF)                            //Not Erased properly
             errCode |= (1 << 5);
         if(test[0] != 0xAA)                            //Read or Write went wrong
