@@ -12,26 +12,12 @@ enum Type id;      //Sensor ID
 
 static long t_fine;     //Fine Temperatur for Pressur Compensation
 
-static struct cal    //compensation Values
+static struct Calibration    //compensation Values
 {
     short T[3];
-    
-    short P[9];
-    unsigned char P10;
-
-    unsigned short H1;
-    unsigned short H2;
-    signed char H3;
-    signed char H4;
-    signed char H5;
-    unsigned char H6;
-    signed char H7;
-
+    short P[10];
     char H[8];
-
-    signed char GH1;
-    signed short GH2;
-    signed char GH3;
+    char GH[4];
 } dig;
 
 bool waitRx(void);
@@ -152,24 +138,15 @@ void bmeInit(void)
         dig.T[1] = buf8[0];
         dig.T[2] = ((uint8_t *) buf8)[2];
 
-        memcpy(dig.P, buf8+2, 18);
-        dig.P[5] = ((uint8_t *) buf8)[15];
-        dig.P[6] = ((uint8_t *) buf8)[14];    
-        dig.P10 = ((uint8_t *) buf8)[22];
+        memcpy(dig.P, buf8+2, 18); 
+        dig.P[9] = ((uint8_t *) buf8)[22];
 
-        dig.H1 = (bufE[1] & 0xF);
-        dig.H1 |= bufE[2]<<4;
-        dig.H2 = (bufE[1]>>4 & 0xF);
-        dig.H2 |= bufE[0]<<4;
-        dig.H3 = bufE[3];
-        dig.H4 = bufE[4];
-        dig.H5 = bufE[5];
-        dig.H6 = bufE[6];
-        dig.H7 = bufE[7];
+        memcpy(dig.H, bufE, 7);
 
-        dig.GH1 = bufE[12];
-        dig.GH2 = bufE[10] | (bufE[11] << 8);
-        dig.GH3 = bufE[13];
+        memcpy(dig.GH, bufE+10, 4);
+        //GH1: dig.GH[2]
+        //GH2: dig.GH[0] | dig.GH[1]
+        //GH3: dig.GH[3]
     }
 }
 
@@ -203,50 +180,51 @@ unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
 
 unsigned int getBmePress(void)  //returns BME Pressure in hPa
 {
-    unsigned long p = 0;
+    uint32_t p = 0;
     //No initialization needed, reading out data from Temperatur Messurment
-    const int32_t data = readADC(0xF7);
-
     if(id == BMP280 || id == BME280)
     {
-        long var1, var2;
-        var1 = (((long)t_fine)>>1) - (long)64000;
-        var2 = (((var1>>2) * (var1>>2)) >> 11 ) * ((long)dig.P[5]);
-        var2 = var2 + ((var1*((long)dig.P[4]))<<1);
-        var2 = (var2>>2)+(((long)dig.P[3])<<16);
-        var1 = (((dig.P[2] * (((var1>>2) * (var1>>2)) >> 13 )) >> 3) + ((((long)dig.P[1]) * var1)>>1))>>18;
-        var1 =((((32768+var1))*((unsigned short)dig.P[0]))>>15);
+        const int32_t data = readADC(0xF7);
+
+        int32_t var1, var2;
+        var1 = (((int32_t)t_fine)>>1) - (int32_t)64000;
+        var2 = (((var1>>2) * (var1>>2)) >> 11 ) * ((int32_t)dig.P[5]);
+        var2 = var2 + ((var1*((int32_t)dig.P[4]))<<1);
+        var2 = (var2>>2)+(((int32_t)dig.P[3])<<16);
+        var1 = ((((int32_t)dig.P[2] * (((var1>>2) * (var1>>2)) >> 13 )) >> 3) + ((((int32_t)dig.P[1]) * var1)>>1))>>18;
+        var1 =((((32768+var1))*(int32_t)((uint16_t)dig.P[0]))>>15);
         if (var1 == 0)
-           return 0; // avoid exception caused by division by zero
-        p = (((unsigned long)(((long)1048576)-data)-(var2>>12)))*3125;
+            return 0; // avoid exception caused by division by zero
+        p = (((uint32_t)(((int32_t)1048576)-data)-(var2>>12)))*3125;
         if (p < 0x80000000)
-            p = (p << 1) / ((unsigned long)var1);
+            p = (p << 1) / ((uint32_t)var1);
         else
-            p = (p / (unsigned long)var1) * 2;
-        var1 = (((long)dig.P[8]) * ((long)(((p>>3) * (p>>3))>>13)))>>12;
-        var2 = (((long)(p>>2)) * ((long)dig.P[7]))>>13;
-        p = (unsigned long)((long)p + ((var1 + var2 + dig.P[6]) >> 4));
+            p = (p / (uint32_t)var1) * 2;
+        var1 = (((int32_t)dig.P[8]) * ((int32_t)(((p>>3) * (p>>3))>>13)))>>12;
+        var2 = (((int32_t)(p>>2)) * ((int32_t)dig.P[7]))>>13;
+        p = (uint32_t)((int32_t)p + ((var1 + var2 + (int32_t)dig.P[6]) >> 4));
     }
     else if(id == BME680)
     {
+        const int32_t data = readADC(0x1F);
         long var1, var2, var3;
         var1 = ((long)t_fine >> 1) - 64000;  
-        var2 = ((((var1 >> 2) * (var1 >> 2)) >> 11) * (long)dig.P[5]) >> 2;  
+        var2 = ((((var1 >> 2) * (var1 >> 2)) >> 11) * (long)(dig.P[5] && 0xFF)) >> 2;  
         var2 = var2 + ((var1 * (long)dig.P[4]) << 1);   
         var2 = (var2 >> 2) + ((long)dig.P[3] << 16);  
-        var1 = (((((var1 >> 2) * (var1 >> 2)) >> 13) *((long)dig.P[2] << 5)) >> 3) + (((long)dig.P[1] * var1) >> 1); 
+        var1 = (((((var1 >> 2) * (var1 >> 2)) >> 13) *((long)(dig.P[2] && 0xFF) << 5)) >> 3) + (((long)dig.P[1] * var1) >> 1); 
         var1 = var1 >> 18;  
         var1 = ((32768 + var1) * (unsigned short)dig.P[0]) >> 15;  
         p = 1048576 - data;  
         p = (unsigned long)((p - (var2 >> 12)) * ((unsigned long)3125));  
-        if (p >= (1UL << 30))  
+        if (p >= (1UL << 30))
             p = ((p / (unsigned long)var1) << 1);  
         else  
             p = ((p << 1) / (unsigned long)var1);  
         var1 = ((long)dig.P[8] * (long)(((p >> 3) * (p >> 3)) >> 13)) >> 12;  
         var2 = ((long)(p >> 2) * (long)dig.P[7]) >> 13;  
-        var3 = ((long)(p >> 8) * (long)(p >> 8) * (long)(p >> 8) * (long)dig.P10) >> 17;  
-        p = (long)(p) + ((var1 + var2 + var3 + ((long)dig.P[6] << 7)) >> 4); 
+        var3 = ((long)(p >> 8) * (long)(p >> 8) * (long)(p >> 8) * (long)((unsigned char)dig.P[9])) >> 17;  
+        p = (long)(p) + ((var1 + var2 + var3 + ((long)(dig.P[5] >> 8) << 7)) >> 4); 
     }
     return p/100;
 }
@@ -286,10 +264,11 @@ unsigned char getBmeHumidity(void)
 
         long var1, var2, var3, var4, var5, var6;
         long temp_scaled = ((t_fine * 5) + 128) >> 8; 
-        var1 = (long)data - (long)((long)dig.H1 << 4) - (((temp_scaled * (long)dig.H3) / ((long)100)) >> 1); 
-        var2 = ((long)dig.H2 * (((temp_scaled * (long)dig.H4) / ((long)100)) + (((temp_scaled * ((temp_scaled * (long)dig.H5) / ((long)100))) >> 6) / ((long)100)) + ((long)(1 << 14)))) >> 10; 
+        var1 = (long)data - (long)((long)((((dig.H[1]>>4 & 0xF) | dig.H[0]<<4) & 0xF) | dig.H[2]<<4) << 4) - 
+        (((temp_scaled * (long)dig.H[2]) / ((long)100)) >> 1); 
+        var2 = ((long)((dig.H[1]>>4 & 0xF) | dig.H[0]<<4) * (((temp_scaled * (long)dig.H[3]) / ((long)100)) + (((temp_scaled * ((temp_scaled * (long)dig.H[4]) / ((long)100))) >> 6) / ((long)100)) + ((long)(1 << 14)))) >> 10; 
         var3 = var1 * var2; 
-        var4 = (((long)dig.H6 << 7) + ((temp_scaled * (long)dig.H7) / ((long)100))) >> 4; 
+        var4 = (((long)dig.H[5] << 7) + ((temp_scaled * (long)dig.H[6]) / ((long)100))) >> 4; 
         var5 = ((var3 >> 14) * (var3 >> 14)) >> 10; 
         var6 = (var4 * var5) >> 1;
         return ((((var3 + var6) >> 10) * ((long) 1000)) >> 12) / 1000; 
