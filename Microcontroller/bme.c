@@ -154,7 +154,7 @@ unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
 {
     if(id == BMP280 || id == BME280)
     {
-        write(0xF4, (0x01 | (0b0011 << 2) | (0b0001 << 5)));
+        write(0xF4, (0x01 | (0b0100 << 2) | (0b0100 << 5)));
         _delay_ms(15);
         const int32_t data = readADC(0xFA);
 
@@ -165,7 +165,7 @@ unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
     }
     else if(id == BME680)
     {
-        write(0x74, (0x01 | (0b010 << 2) | (0b010 << 5)));
+        write(0x74, (0x01 | (0b0100 << 2) | (0b0100 << 5)));
         _delay_ms(25);
         const int32_t data = readADC(0xFA);
 
@@ -233,8 +233,7 @@ unsigned char getBmeHumidity(void)
 {
     if(id == BME280)
     {
-        write(0xF2, 0b011);
-        write(0xF4, (0x01 | (0b0011 << 2) | (0b0001 << 5)));
+        write(0xF2, 0b0100);
         _delay_ms(25);
 
         uint8_t buf[2];
@@ -255,7 +254,7 @@ unsigned char getBmeHumidity(void)
     }
     else if(id == BME680)
     {
-        write(0x72, 0b011);
+        write(0x72, 0b0100);
         _delay_ms(25);
 
         uint8_t buf[2];
