@@ -226,7 +226,7 @@ unsigned int getBmePress(void)  //returns BME Pressure in hPa
         var3 = ((long)(p >> 8) * (long)(p >> 8) * (long)(p >> 8) * (long)((unsigned char)dig.P[9])) >> 17;  
         p = (long)(p) + ((var1 + var2 + var3 + ((long)(dig.P[5] >> 8) << 7)) >> 4); 
     }
-    return p/100;
+    return p/10;
 }
 
 unsigned char getBmeHumidity(void)

@@ -150,8 +150,8 @@ void printReading(FILE *ofp, struct reading in)
     lt = *gmtime(&in.timeRead);
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
-    fprintf(ofp, "Current Reading: Time: %s UTC Outside: %dlux %2.1fC Inside: %2.1fC %dhPa",\
-    tmStr, in.light, (in.temperaturOut/5.0), (in.temperaturIn/10.0), in.pressure);
+    fprintf(ofp, "Current Reading: Time: %s UTC Outside: %dlux %2.1fC Inside: %2.1fC %2.1fhPa",\
+    tmStr, in.light, in.temperaturOut/(double) SCALE_TOut, in.temperaturIn/(double) SCALE_TIn, in.pressure/(double) SCALE_Pres);
 
     if(in.humidityAir != 0)
         fprintf(ofp, ", Air: %d%%RH", in.humidityAir);
@@ -168,8 +168,8 @@ void printCsvReading(FILE *ofp, struct reading in)
     lt = *gmtime(&in.timeRead);
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
-    fprintf(ofp,"%s,%d,%d.%d,%d.%d,%d,%d,%d\n",\
-    tmStr, in.light, in.temperaturOut/5, 2*(in.temperaturOut%5), in.temperaturIn/10, in.temperaturIn%10, in.pressure, in.humidityAir, in.humiditySoil);
+    fprintf(ofp,"%s,%d,%2.1f,%2.1f,%2.1f,%d,%d\n",\
+    tmStr, in.light, in.temperaturOut/(double) SCALE_TOut, in.temperaturIn/(double) SCALE_TIn, in.pressure/(double) SCALE_Pres, in.humidityAir, in.humiditySoil);
 }
 
 bool setIntervall(unsigned int iNew)

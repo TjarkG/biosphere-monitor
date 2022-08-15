@@ -63,13 +63,13 @@ gboolean timerTick(__attribute__((unused)) gpointer userData)
 
     sprintf(buf,"%d lux", in.light);
     gtk_label_set_label(GTK_LABEL(labels[1]), buf);
-    sprintf(buf,"%2.1f°C", (in.temperaturOut/5.0));
+    sprintf(buf,"%2.1f°C", in.temperaturOut/(double) SCALE_TOut);
     gtk_label_set_label(GTK_LABEL(labels[2]), buf);
-    sprintf(buf,"%2.1f°C", (in.temperaturIn/10.0));
+    sprintf(buf,"%2.1f°C", in.temperaturIn/(double) SCALE_TIn);
     gtk_label_set_label(GTK_LABEL(labels[3]), buf);
     if(in.pressure != 0)
     {
-    sprintf(buf,"%dhPA", in.pressure);
+    sprintf(buf,"%2.1fhPA", in.pressure/(double) SCALE_Pres);
     gtk_label_set_label(GTK_LABEL(labels[4]), buf);
     }
     if(in.humidityAir != 0)
