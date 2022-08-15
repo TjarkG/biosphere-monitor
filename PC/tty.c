@@ -65,8 +65,8 @@ char startUART(char *portname)      //opens UART portname
     fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0)
         return 2;
-    //baudrate 115200, 8 bits, no parity, 1 stop bit
-    set_interface_attribs(fd, B115200);
+    //baudrate 1000000, 8 bits, no parity, 1 stop bit
+    set_interface_attribs(fd, B1000000);
     return 0;
 }
 

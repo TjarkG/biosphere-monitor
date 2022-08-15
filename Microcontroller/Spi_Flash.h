@@ -33,7 +33,7 @@ void Flash_init(void)
     PORTC.DIRSET = (1 << 4) | (1 << 5) | (1 << 7);
     PORTC.DIRCLR = (1 << 6);
 
-    SPIC.CTRL |= (SPI_ENABLE_bm | SPI_MASTER_bm | SPI_MODE_0_gc | SPI_PRESCALER_DIV64_gc);
+    SPIC.CTRL |= (SPI_ENABLE_bm | SPI_MASTER_bm | SPI_MODE_0_gc | SPI_PRESCALER_DIV4_gc | SPI_CLK2X_bm);
 
     PORTD.OUTSET = (1 << 0) | (1 << 1);
     CE_HIGH;

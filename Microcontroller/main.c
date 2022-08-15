@@ -8,12 +8,12 @@
  * avrdude -c avrispmkII -p atxmega32a4u -U fuse1:w:0x00:m -U fuse2:w:0xdf:m -U fuse4:w:0xfe:m -U fuse5:w:0xff:m
  * 
  * Initialazation of a new Unit:
- * cc PC/biosphere.c -o PC/biosphere; ./PC/biosphere /dev/ttyUSB0 -delete -f -ct23 -i60 -t -r
+ * make biosphere && ./PC/biosphere /dev/ttyUSB0 -delete -f -ct23 -i60 -t -r
  */ 
 
 #define F_CPU   16000000UL
-#define BSCALE  -5        //Baudrate: 115200
-#define BSEL    246
+#define BSCALE  0        //Baudrate: 1000000
+#define BSEL    0
 #define ADCN    512       //Number of ADC readings taken per Messurment
 #define ADRMAX  0x3FFFFF  //Highest Flash Adress
 #define REDSIZE 16        //Size of a Reading in Flash

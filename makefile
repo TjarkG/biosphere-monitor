@@ -13,6 +13,9 @@ biosphere.o: PC/biosphere.c PC/tty.h PC/biosphere.h
 cli.o: PC/cli.c PC/biosphere.h PC/tty.h
 	gcc -c PC/cli.c
 
+tty.o: PC/tty.c PC/tty.h
+	gcc -c PC/tty.c
+
 gui.o: Gui/gui.c Gui/signals.h Gui/guiArgs.aux
 	gcc -c Gui/gui.c @Gui/guiArgs.aux
 
