@@ -178,7 +178,7 @@ unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
     return (t_fine/512);
 }
 
-unsigned int getBmePress(void)  //returns BME Pressure in hPa
+unsigned int getBmePress(void)  //returns BME Pressure in hPa*10
 {
     uint32_t p = 0;
     //No initialization needed, reading out data from Temperatur Messurment
