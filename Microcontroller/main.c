@@ -16,22 +16,16 @@
 #define BSEL    0
 #define ADCN    512       //Number of ADC readings taken per Messurment
 #define ADRMAX  0x3FFFFF  //Highest Flash Adress
-#define REDSIZE 16        //Size of a Reading in Flash
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/eeprom.h>
 #include <util/delay.h>
-#include <time.h>
 #include <stdbool.h>
-#include <avr/eeprom.h> 
-#include <avr/pgmspace.h>
-#include <stddef.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
+
+#include "../reading.h"
 #include "ATxmegaAux.h"
 #include "itoa.h"
-#include "../reading.h"
 #include "bme.h"
 #include "Spi_Flash.h"
 
@@ -66,21 +60,20 @@ long readingIt(struct reading *v, char i);
 
 int main(void)
 {
-    SET_CLK_EXTERN;
+    clockExtern();
     PORTC.DIRSET = 0x08;
     RTC.PER = 3;
-    RTC_INIT;
+    rtc_init();
 
     PORTD.PIN5CTRL |= PORT_ISC_FALLING_gc;  //Frequency Counter initialization
     PORTD.INT0MASK |= (1 << 5);
     PORTD.INTCTRL = PORT_INT0LVL_LO_gc;
 
-    ADC0_INIT;
-    UART0INIT;
+    ADCA_init();
+    UART0_init();
     bmeInit();
     sei();
     Flash_init();
-    _delay_ms(10);
 
     while (1)
     {
@@ -90,8 +83,8 @@ int main(void)
             struct reading in = getReading();
 
             unsigned long adrTmp = getFlashAdr;     //Jump to Adress of the new Reading
-            adrTmp += REDSIZE;
-            if (adrTmp > ADRMAX - REDSIZE)
+            adrTmp += sizeof in;
+            if (adrTmp > ADRMAX - sizeof in)
                 adrTmp = 0;
             setFlashAdr(adrTmp);
 
@@ -110,12 +103,11 @@ int main(void)
             else if(strncmp(uartBuf,"AR",2) == 0)
             {
                 unsigned long adr = getFlashAdr;
+                struct reading in;
                 if(adr < ADRMAX)
-                    for(unsigned long i = 0; i <= adr; i += REDSIZE)
+                    for(unsigned long i = 0; i <= adr; i += sizeof in)
                     {
-                        struct reading in;
                         flashRead((uint8_t *) &in, sizeof in, i);
-
                         printReading(in);
                     }
                 uartWriteString("EOF\r\n");
@@ -195,7 +187,7 @@ long selfDiagnosse(void)     //returns self diagnosis errorcode
     if(timeCounter - timeTmp < 1)
         errCode |= (1 << 2);
 
-    if(timeCounter < 1577833200)                    //is the RTC initialized (time after 2020)?
+    if(timeCounter < 1577833200)                    //is the RTC initialized (year after 2020)?
         errCode |= (1 << 3);
 
     if(JEDEC_ID() != 0xBF258D)                      //Flash Signature as expected?
