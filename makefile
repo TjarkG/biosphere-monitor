@@ -26,13 +26,10 @@ Gui/guiArgs.aux:
 /usr/local/src/bioGui.glade: Gui/bioGui.glade
 	sudo cp Gui/bioGui.glade /usr/local/src
 
-~/.local/share/applications: Gui/bioGui.desktop
+~/.local/share/applications/bioGui.desktop: Gui/bioGui.desktop
 	cp Gui/bioGui.desktop ~/.local/share/applications
 
-%.o: %.c
-	gcc -c $<
-
-install: gui ~/.local/share/applications
+install: bioGui ~/.local/share/applications/bioGui.desktop
 	sudo cp bioGui /usr/local/bin
 
 all: 

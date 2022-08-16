@@ -21,6 +21,7 @@
 #include <avr/interrupt.h>
 #include <avr/eeprom.h>
 #include <util/delay.h>
+#include <string.h>
 #include <stdbool.h>
 
 #include "../reading.h"
