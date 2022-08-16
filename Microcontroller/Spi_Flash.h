@@ -2,6 +2,7 @@
  * Spi_Flash.h
  *
  * Header to communicate with a SST25VF040 Spi Flash on SPIC in Spi Mode 0
+ * https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST25VF040B-4-Mbit-SPI-Serial-Flash-Data-Sheet-20005051F.pdf
  *
  * Created: 25.09.2021 14:47:36
  *  Author: Tjark Gaudich
