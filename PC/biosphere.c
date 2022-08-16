@@ -179,6 +179,7 @@ bool setIntervall(unsigned int iNew)
     unsigned char buf[16];
     sprintf(buf, "IS%d",iNew);
     setCommand(buf);
+    usleep(50000);
     unsigned int iVert = getCommand("IG");
     return (iNew == iVert);
 }
