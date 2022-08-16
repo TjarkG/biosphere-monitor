@@ -228,7 +228,7 @@ long selfDiagnosse(void)     //returns self diagnosis errorcode
         errCode |= (1 << 13);
     else                                            //BME Readings in range?
     {
-        if(getBmeTemp() == 0 || getBmeTemp()  > 850 || getBmePress() < 300 || getBmePress()  > 1100)
+        if(getBmeTemp() == 0 || getBmeTemp()  > 850 || getBmePress() < 3000 || getBmePress()  > 11000)
             errCode |= (1 << 14);
     }
     return errCode;
