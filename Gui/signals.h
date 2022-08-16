@@ -117,11 +117,9 @@ void intervallTransfer(__attribute__((unused)) GtkWidget *widget, __attribute__(
     gtk_widget_hide_on_delete(intervallWindow);
 
     usleep(50000);
-    bool success;
+    bool success = false;
     if(isConnected)
         success = setIntervall(intervall);
-    else
-        success = false;
     usleep(50000);
 
     //Show Confirmation/Error
@@ -236,6 +234,42 @@ void saveAsOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused
     gtk_widget_show_all(saveWindow);
 }
 
+void saveAbbort(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    gtk_widget_hide_on_delete(saveWindow);
+}
+
+void saveAs(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+{
+    GtkComboBox *typeChooser = GTK_COMBO_BOX(gtk_builder_get_object (builder,"filetypeChooser"));
+
+    const gchar *fileDir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(saveWindow));
+    const gchar *fileName = gtk_file_chooser_get_current_name(GTK_FILE_CHOOSER(saveWindow));
+    const gchar *fileType = gtk_combo_box_get_active_id(typeChooser);
+
+    char filePath[255];
+    sprintf(filePath, "%s/%s.%s", fileDir, fileName, fileType);
+    gtk_widget_hide_on_delete(saveWindow);
+
+    FILE *opf;
+    char message[512];
+    if ((opf = fopen(filePath, "w")) == NULL) 
+    {
+        GtkWidget *text = GTK_WIDGET (gtk_builder_get_object (builder,"infoText"));
+        infoWindow = GTK_WIDGET (gtk_builder_get_object (builder,"infoWindow"));
+
+        sprintf(message, "Fehler: Datei %s kann nicht geöffnet werden\n", filePath);
+        gtk_label_set_label(GTK_LABEL(text), message);
+        gtk_widget_show_all(infoWindow);
+        return;
+    }
+    else
+    {
+        storeReadings(opf,false);
+        fclose(opf);
+    }
+}
+
 //save Messurments as a csv in the default folder
 void saveOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
@@ -258,16 +292,12 @@ void saveOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused))
     sprintf(fileDir, "/home/%s/BioData", p->pw_name);
 
     struct stat st = {0};
-    if (stat(fileDir, &st) == -1) {
+    if (stat(fileDir, &st) == -1)
         mkdir(fileDir, 0700);
-    }
 
     char message[512];
     if ((opf = fopen(filePath, "w")) == NULL) 
-    {
-        sprintf(message, "Fehler: Datei %s oder kann nicht geöffnet werden\n", filePath);
-        return;
-    }
+        sprintf(message, "Fehler: Datei %s kann nicht geöffnet werden\n", filePath);
     else
     {
         sprintf(message, "Messdaten als\n%s\ngespeichert\n", filePath);
