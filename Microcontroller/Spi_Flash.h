@@ -26,15 +26,15 @@ enum FlashInstruction
     ERASE_CHIP = 0x60, EBSY = 0x70, DBSY = 0x80, RDID = 0x90, JEDEC_ID = 0x9F, PROG_WORD = 0xAD
 } __attribute__ ((__packed__));
 
-void flashInit(void);
+inline void flashInit(void);
 uint8_t flashSpi(uint8_t Data);
-void flashSelectAddres(uint8_t cmd, const uint32_t adress);
+void flashSelectAddress(uint8_t cmd, uint32_t adress);
 uint8_t flashStatus(void);
 inline uint32_t flashID(void);
 void flashRead(uint8_t *out, uint8_t n, uint32_t adress);
 void byteWrite(uint8_t in, uint32_t adress);
 
-void flashInit(void)
+inline void flashInit(void)
 {
     PORTD.DIRSET = (1 << 0) | (1 << 1);
     PORTC.DIRSET = (1 << 4);
@@ -50,13 +50,11 @@ uint8_t flashSpi(uint8_t Data)
     return SPIC.DATA;
 }
 
-void flashSelectAddres(uint8_t cmd, const uint32_t adress)
+inline void flashSelectAddress(uint8_t cmd, uint32_t adress)
 {
-    flashSpi(READ);
-    flashSpi(adress >> 16);
-    flashSpi(adress >> 8);
-    flashSpi(adress >> 0);
-    
+    adress |= ((uint32_t) cmd << 24);
+    for(uint8_t i = 3; i >= 0 ; i--)
+        flashSpi(adress << (8*i));
 }
 
 uint8_t flashStatus(void)    //Read Status Register
@@ -84,7 +82,7 @@ inline uint32_t flashID(void)    //Read JEDEC-ID
 void flashRead(uint8_t *out, uint8_t n, uint32_t adress)   //Read n Bytes from adress onwards
 {
     CE_LOW;
-    flashSelectAddres(READ, adress);
+    flashSelectAddress(READ, adress);
     for(uint8_t i = 0; i < n ; i++)
     {
         out[i] = flashSpi(0);
@@ -96,7 +94,7 @@ void byteWrite(uint8_t in, const uint32_t adress)   //Write in to adress
 {
     CE_LOW;
     flashSpi(WREN);
-    flashSelectAddres(PROG_BYTE, adress);
+    flashSelectAddress(PROG_BYTE, adress);
     flashSpi(in);
     CE_HIGH;
     _delay_us(TBP);
@@ -114,7 +112,7 @@ void sectorErase4kB(uint32_t adress)   //Erases Sektor in which adress is locate
 {
     CE_LOW;
     flashSpi(WREN);
-    flashSelectAddres(ERASE_4Kb, adress);
+    flashSelectAddress(ERASE_4Kb, adress);
     CE_HIGH;
     _delay_ms(TSE);
 }
