@@ -74,7 +74,7 @@ int main(void)
     UART0_init();
     bmeInit();
     sei();
-    Flash_init();
+    flashInit();
 
     while (1)
     {
@@ -191,7 +191,7 @@ long selfDiagnosse(void)     //returns self diagnosis errorcode
     if(timeCounter < 1577833200)                    //is the RTC initialized (year after 2020)?
         errCode |= (1 << 3);
 
-    if(JEDEC_ID() != 0xBF258D)                      //Flash Signature as expected?
+    if(flashID() != 0xBF258D)                      //Flash Signature as expected?
         errCode |= (1 << 4);
 
     if(flashAdr < (ADRMAX-4096))                    //Flash read/write check only if last sector isn't allready used

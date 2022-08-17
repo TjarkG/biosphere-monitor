@@ -19,101 +19,90 @@
 #define TBP 12                                     //Wait Time after Write, in us
 #define TSE 27                                     //Wait Time after Sector Erase, in ms
 
-void Flash_init(void);
-unsigned char SPI_SendData(unsigned char Data);
-unsigned char RDSR (void);
-unsigned long JEDEC_ID (void);
-void flashRead (unsigned char *out, unsigned char n, unsigned long adress);
-void WREN (void);
-void WRSR (void);
-void byteWrite (unsigned char in, unsigned long adress);
+enum FlashInstruction
+{
+    WRSR = 0x01, PROG_BYTE, READ, WRDI, RDSR, WREN, 
+    HS_READ = 0x0B, ERASE_4Kb = 0x20, EWSR = 0x50, ERASE_32Kb = 0x52, ERASE_64Kb = 0xD8,
+    ERASE_CHIP = 0x60, EBSY = 0x70, DBSY = 0x80, RDID = 0x90, JEDEC_ID = 0x9F, PROG_WORD = 0xAD
+} __attribute__ ((__packed__));
 
-void Flash_init(void)
+void flashInit(void);
+uint8_t flashSpi(uint8_t Data);
+void flashSelectAddres(uint8_t cmd, const uint32_t adress);
+uint8_t flashStatus(void);
+inline uint32_t flashID(void);
+void flashRead(uint8_t *out, uint8_t n, uint32_t adress);
+void byteWrite(uint8_t in, uint32_t adress);
+
+void flashInit(void)
 {
     PORTD.DIRSET = (1 << 0) | (1 << 1);
-    PORTC.DIRSET = (1 << 4) | (1 << 5) | (1 << 7);
-    PORTC.DIRCLR = (1 << 6);
+    PORTC.DIRSET = (1 << 4);
+    CE_HIGH;
 
     SPIC.CTRL |= (SPI_ENABLE_bm | SPI_MASTER_bm | SPI_MODE_0_gc | SPI_PRESCALER_DIV4_gc | SPI_CLK2X_bm);
-
-    PORTD.OUTSET = (1 << 0) | (1 << 1);
-    CE_HIGH;
-    _delay_us(TBP);
-    WREN();
-    _delay_us(TBP);
-    WRSR();
 }
 
-unsigned char SPI_SendData(unsigned char Data)
+uint8_t flashSpi(uint8_t Data)
 {
     SPIC.DATA = Data;
     while(!(SPIC.STATUS & SPI_IF_bm));
     return SPIC.DATA;
 }
 
-unsigned char RDSR (void)    //Read Status Register
+void flashSelectAddres(uint8_t cmd, const uint32_t adress)
+{
+    flashSpi(READ);
+    flashSpi(adress >> 16);
+    flashSpi(adress >> 8);
+    flashSpi(adress >> 0);
+    
+}
+
+uint8_t flashStatus(void)    //Read Status Register
 {
     CE_LOW;
-    SPI_SendData(0x05);
-    unsigned char out = SPI_SendData(0);
+    flashSpi(RDSR);
+    uint8_t out = flashSpi(0);
     CE_HIGH;
     return out;
 }
 
-unsigned long JEDEC_ID (void)    //Read JEDEC-ID 
+inline uint32_t flashID(void)    //Read JEDEC-ID 
 {
     CE_LOW;
-    SPI_SendData(0x9F);
-    unsigned long out = (long) SPI_SendData(0) << 16;
-    out |= SPI_SendData(0) << 8;
-    out |= SPI_SendData(0);
-    CE_HIGH;
-    return out;
-}
-
-void flashRead (unsigned char *out, unsigned char n, unsigned long adress)   //Read n Bytes from adress onwards
-{
-    CE_LOW;
-    SPI_SendData(0x03);
-    SPI_SendData(adress >> 16);
-    SPI_SendData(adress >> 8);
-    SPI_SendData(adress >> 0);
-    for(unsigned char i = 0; i < n ; i++)
+    flashSpi(JEDEC_ID);
+    uint32_t out;
+    for(uint8_t i = 2; i >= 0 ; i--)
     {
-        out[i] = SPI_SendData(0);
+        out |= (uint32_t) flashSpi(0) << (8*i);
+    }
+    CE_HIGH;
+    return out;
+}
+
+void flashRead(uint8_t *out, uint8_t n, uint32_t adress)   //Read n Bytes from adress onwards
+{
+    CE_LOW;
+    flashSelectAddres(READ, adress);
+    for(uint8_t i = 0; i < n ; i++)
+    {
+        out[i] = flashSpi(0);
     }
     CE_HIGH;
 }
 
-void WREN (void)        //Write Enable
+void byteWrite(uint8_t in, const uint32_t adress)   //Write in to adress
 {
     CE_LOW;
-    SPI_SendData(0x06);
-    CE_HIGH;
-}
-
-void WRSR (void)        //Write Status Register
-{
-    CE_LOW;
-    SPI_SendData(0x01);
-    SPI_SendData(0x00);
-    CE_HIGH;
-}
-
-void byteWrite (unsigned char in, const unsigned long adress)   //Write in to adress
-{
-    WREN();
-    CE_LOW;
-    SPI_SendData(0x02);
-    SPI_SendData(adress >> 16);
-    SPI_SendData(adress >> 8);
-    SPI_SendData(adress >> 0);
-    SPI_SendData(in);
+    flashSpi(WREN);
+    flashSelectAddres(PROG_BYTE, adress);
+    flashSpi(in);
     CE_HIGH;
     _delay_us(TBP);
 }
 
-void FlashWrite (uint8_t *in, const uint8_t size, const uint32_t adr)
+void FlashWrite(uint8_t *in, const uint8_t size, const uint32_t adr)
 {
     for (uint8_t i = 0; i < size; i++)
     {
@@ -121,22 +110,11 @@ void FlashWrite (uint8_t *in, const uint8_t size, const uint32_t adr)
     }
 }
 
-void chipErase(void)
+void sectorErase4kB(uint32_t adress)   //Erases Sektor in which adress is located
 {
-    WREN();
     CE_LOW;
-    SPI_SendData(0x60);
-    CE_HIGH;
-}
-
-void sectorErase4kB(unsigned long adress)   //Erases Sektor in whitch adress is lokated
-{
-    WREN();
-    CE_LOW;
-    SPI_SendData(0x20);
-    SPI_SendData(adress >> 16);
-    SPI_SendData(adress >> 8);
-    SPI_SendData(adress >> 0);
+    flashSpi(WREN);
+    flashSelectAddres(ERASE_4Kb, adress);
     CE_HIGH;
     _delay_ms(TSE);
 }
