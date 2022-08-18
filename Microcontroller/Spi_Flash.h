@@ -19,6 +19,8 @@
 #define TBP 12                                     //Wait Time after Write, in us
 #define TSE 27                                     //Wait Time after Sector Erase, in ms
 
+#define ADRMAX  0x3FFFFF                           //Highest Flash Adress
+
 enum FlashInstruction
 {
     WRSR = 0x01, PROG_BYTE, READ, WRDI, RDSR, WREN, 

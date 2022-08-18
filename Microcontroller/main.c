@@ -15,7 +15,6 @@
 #define BSCALE  0        //Baudrate: 1000000
 #define BSEL    0
 #define ADCN    512       //Number of ADC readings taken per Messurment
-#define ADRMAX  0x3FFFFF  //Highest Flash Adress
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -30,34 +29,34 @@
 #include "bme.h"
 #include "Spi_Flash.h"
 
-uint32_t timeCounter = 0;
+time_t timeCounter = 0;
 volatile bool takeMessurment = false;
 volatile bool instruct = false;
 char uartBuf[16];
-unsigned long lightF = 0;
-unsigned long lightFnom= 0;              //Frequency Counter Frequenc in Hz
+uint16_t lightF = 0;
+uint16_t lightFnom= 0;                   //Frequency Counter Frequenc in Hz
 
-unsigned int  EEMEM intervall = 600;     //sampling intervall in Seconds
-unsigned char EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
-unsigned long EEMEM flashAdr = 0;        //Adress of the start of the last reading in the SPI Flash
+uint16_t EEMEM intervall = 600;     //sampling intervall in Seconds
+uint8_t  EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
+uint32_t EEMEM flashAdr = 0;        //Adress of the start of the last reading in the SPI Flash
 
 #define setIntervall(new)   eeprom_update_word(&intervall, new)
 #define getIntervall        eeprom_read_word(&intervall)
 #define settOutOff(new)     eeprom_update_byte(&tOutOff, new)
-#define gettOutOff          (eeprom_read_byte(&tOutOff))
+#define gettOutOff          eeprom_read_byte(&tOutOff)
 #define setFlashAdr(new)    eeprom_update_dword(&flashAdr, new)
-#define getFlashAdr         (eeprom_read_dword(&flashAdr))
+#define getFlashAdr         eeprom_read_dword(&flashAdr)
 
 struct reading getReading(void);
 void printReading(struct reading in);
 long selfDiagnosse(void);
-void quicksort(unsigned int *data, unsigned int n);
-unsigned int getMedian(unsigned int *rd, const unsigned int n);
-unsigned char getOutsideTemp(void);
-unsigned int getLight(void);
-unsigned int getExtCount(void);
-unsigned char getRH(void);
-long readingIt(struct reading *v, char i);
+void quicksort(uint16_t *data, uint16_t n);
+uint16_t getMedian(uint16_t *rd, const uint16_t n);
+uint8_t getOutsideTemp(void);
+uint16_t getLight(void);
+uint16_t getExtCount(void);
+uint8_t getRH(void);
+uint32_t readingIt(struct reading *v, uint8_t i);
 
 int main(void)
 {
@@ -160,7 +159,7 @@ struct reading getReading(void)     //returns fresh data
 void printReading(struct reading in)    //prints in to UART
 {
     char str[16];
-    for (char i = 0; i < 8; i++)
+    for (uint8_t i = 0; i < 8; i++)
     {
         _itoa(readingIt(&in,i), str);
         uartWriteString(str);
@@ -235,7 +234,7 @@ long selfDiagnosse(void)     //returns self diagnosis errorcode
     return errCode;
 }
 
-void quicksort(unsigned int *data, unsigned int n)       //sorts data till n ascending
+void quicksort(uint16_t *data, uint16_t n)       //sorts data till n ascending
 {
   if (n < 2) return;
  
@@ -258,17 +257,17 @@ void quicksort(unsigned int *data, unsigned int n)       //sorts data till n asc
   quicksort(data + i, n - i);
 }
 
-unsigned int getMedian(unsigned int *rd, const unsigned int n)   //returns Median of the Values in rd to rd[n]
+uint16_t getMedian(uint16_t *rd, const uint16_t n)   //returns Median of the Values in rd to rd[n]
 {
     quicksort(rd, n);
 	return n % 2 ? rd[n / 2] : (rd[n / 2 - 1] + rd[n / 2]) / 2;
 }
 
-unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*5
+uint8_t getOutsideTemp(void)  //returns Outside Temperatur in °C*5
 {
     ADCA.CTRLA = ADC_ENABLE_bm;
-    unsigned int tempArr[ADCN];
-    for(int i = 0; i<ADCN; i++)
+    uint16_t tempArr[ADCN];
+    for(uint16_t i = 0; i<ADCN; i++)
 	{
 		ADCA.CH0.CTRL |= ADC_CH_START_bm;
         while(!(ADCA.CH0.INTFLAGS & ADC_CH_CHIF_bm));
@@ -279,24 +278,24 @@ unsigned char getOutsideTemp(void)  //returns Outside Temperatur in °C*5
     return (getMedian(tempArr, ADCN)/8)+gettOutOff-128;
 }
 
-unsigned int getLight(void)  //returns iluminace in lux
+uint16_t getLight(void)                         //returns iluminace in lux
 {
-    if(lightFnom < 1200)     //Sensor cutoff Frequency
+    if(lightFnom < 1200)                        //Sensor cutoff Frequency
         return 0;
     return (unsigned int) ((66.46 * pow(1.732, (lightFnom/1000.0)) ) - 133.5);
 }
 
-unsigned char getRH(void) //returns relativ humidity from external moisture sensor
+uint8_t getRH(void)                             //returns relativ humidity from external moisture sensor
 {
-    signed int rh = 208 - (getExtCount()/7);  //see RH Messurments.ods, f(x) = -1/7x+208
+    int16_t rh = 208 - (getExtCount()/7);       //see RH Messurments.ods, f(x) = -1/7x+208
     return (rh > 100 || rh < 0) ? 0 : rh;
 }
 
-unsigned int getExtCount(void)  //returns ADC counts from external Sensor
+uint16_t getExtCount(void)  //returns ADC counts from external Sensor
 {
     ADCA.CTRLA = ADC_ENABLE_bm;
-    unsigned int tempArr[ADCN];
-    for(int i = 0; i<ADCN; i++)
+    uint16_t tempArr[ADCN];
+    for(uint16_t i = 0; i<ADCN; i++)
 	{
 		ADCA.CH2.CTRL |= ADC_CH_START_bm;
         while(!(ADCA.CH2.INTFLAGS & ADC_CH_CHIF_bm));
@@ -307,7 +306,7 @@ unsigned int getExtCount(void)  //returns ADC counts from external Sensor
     return getMedian(tempArr, ADCN);
 }
 
-long readingIt(struct reading *v, char i) //makes it possible to itterate throuh a reading
+uint32_t readingIt(struct reading *v, uint8_t i) //makes it possible to itterate throuh a reading
 {
     switch(i) 
     {
@@ -345,7 +344,7 @@ ISR(RTC_OVF_vect)          //RTC ISR
     timeCounter++;
     lightFnom = lightF;
     lightF = 0;
-    if(!(timeCounter % getIntervall))
+    if((timeCounter % getIntervall) == 0)
         takeMessurment = true;
 }
 
