@@ -7,7 +7,7 @@ BEGIN {
 	heading = "Biosphaeren Daten";
 	oldPort = "";
 	"locate biosphere-monitor/Shell/gaps.awk -l 1" | getline gappath;
-	"locate biosphere-monitor/PC/biosphere -l 1" | getline biopath;
+	"locate biosphere-monitor/biosphere -l 1" | getline biopath;
 }
 # skip comments starting with #
 $0 !~ /^#/ {
@@ -25,14 +25,10 @@ $0 !~ /^#/ {
 		message = "An Error occured saving Data"
 	}
 
-	#convert csv to xlsx
-	system("soffice --convert-to xlsx --outdir ~/BioData " filepath " --infilter=CSV:44,34,UTF8,true,3/10/4/10 > /dev/null")
-
 	cmd = "gawk -f " gappath " gap=600 " filepath
     cmd | getline gaps
-	message = message "\n"
 
-	system("echo \"Hallo \"" $2 "\",\n" message "im Anhang findest du die neusten Messwerte von deiner Biosphaere.\nMfG, AstroBot\n\n(Diese Nachricht wurde automatisch versendet)\" | mutt -s \"" heading "\" " $3 " -a " filepath " -a " expath)
+	system("echo \"Hallo \"" $2 "\",\n" message "Im Anhang findest du die neusten Messwerte von deiner Biosphaere.\nMfG, AstroBot\n\n(Diese Nachricht wurde automatisch versendet)\" | mutt -s \"" heading "\" " $3 " -a " filepath)
 
 	if(oldPort == $1)
 		print "Warning: Multiple Entrys for " $1
