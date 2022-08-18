@@ -28,35 +28,50 @@ enum FlashInstruction
     ERASE_CHIP = 0x60, EBSY = 0x70, DBSY = 0x80, RDID = 0x90, JEDEC_ID = 0x9F, PROG_WORD = 0xAD
 } __attribute__ ((__packed__));
 
-inline void flashInit(void);
-uint8_t flashSpi(uint8_t Data);
-void flashSelectAddress(uint8_t cmd, uint32_t adress);
+void flashInit(void);
+uint8_t flashSpi(const uint8_t Data);
+void flashSelectAddress(const uint8_t cmd, const uint32_t adress);
 uint8_t flashStatus(void);
 inline uint32_t flashID(void);
-void flashRead(uint8_t *out, uint8_t n, uint32_t adress);
-void byteWrite(uint8_t in, uint32_t adress);
+void flashRead(uint8_t *out, const uint8_t n, const uint32_t adress);
+void byteWrite(const uint8_t in, const uint32_t adress);
+void flashWrite(uint8_t *in, const uint8_t size, const uint32_t adr);
+void sectorErase4kB(const uint32_t adress);
 
-inline void flashInit(void)
+void flashInit(void)
 {
     PORTD.DIRSET = (1 << 0) | (1 << 1);
-    PORTC.DIRSET = (1 << 4);
-    CE_HIGH;
+    PORTC.DIRSET = (1 << 4) | (1 << 5) | (1 << 7);
+    PORTC.DIRCLR = (1 << 6);
 
     SPIC.CTRL |= (SPI_ENABLE_bm | SPI_MASTER_bm | SPI_MODE_0_gc | SPI_PRESCALER_DIV4_gc | SPI_CLK2X_bm);
+
+    PORTD.OUTSET = (1 << 0) | (1 << 1);
+    CE_HIGH;
+    _delay_us(TBP);
+    CE_LOW;
+    flashSpi(WREN);
+    CE_HIGH;
+    _delay_us(TBP);
+    CE_LOW;
+    flashSpi(WRSR);
+    flashSpi(0);
+    CE_HIGH;
 }
 
-uint8_t flashSpi(uint8_t Data)
+uint8_t flashSpi(const uint8_t Data)
 {
     SPIC.DATA = Data;
     while(!(SPIC.STATUS & SPI_IF_bm));
     return SPIC.DATA;
 }
 
-inline void flashSelectAddress(uint8_t cmd, uint32_t adress)
+void flashSelectAddress(const uint8_t cmd, const uint32_t adress)
 {
-    adress |= ((uint32_t) cmd << 24);
-    for(uint8_t i = 3; i >= 0 ; i--)
-        flashSpi(adress << (8*i));
+    flashSpi(cmd);
+    flashSpi(adress >> 16);
+    flashSpi(adress >> 8);
+    flashSpi(adress >> 0);
 }
 
 uint8_t flashStatus(void)    //Read Status Register
@@ -81,7 +96,7 @@ inline uint32_t flashID(void)    //Read JEDEC-ID
     return out;
 }
 
-void flashRead(uint8_t *out, uint8_t n, uint32_t adress)   //Read n Bytes from adress onwards
+void flashRead(uint8_t *out, const uint8_t n, const uint32_t adress)   //Read n Bytes from adress onwards
 {
     CE_LOW;
     flashSelectAddress(READ, adress);
@@ -96,13 +111,15 @@ void byteWrite(uint8_t in, const uint32_t adress)   //Write in to adress
 {
     CE_LOW;
     flashSpi(WREN);
+    CE_HIGH;
+    CE_LOW;
     flashSelectAddress(PROG_BYTE, adress);
     flashSpi(in);
     CE_HIGH;
     _delay_us(TBP);
 }
 
-void FlashWrite(uint8_t *in, const uint8_t size, const uint32_t adr)
+void flashWrite(uint8_t *in, const uint8_t size, const uint32_t adr)
 {
     for (uint8_t i = 0; i < size; i++)
     {
@@ -110,10 +127,12 @@ void FlashWrite(uint8_t *in, const uint8_t size, const uint32_t adr)
     }
 }
 
-void sectorErase4kB(uint32_t adress)   //Erases Sektor in which adress is located
+void sectorErase4kB(const uint32_t adress)   //Erases Sektor in whitch adress is lokated
 {
     CE_LOW;
     flashSpi(WREN);
+    CE_HIGH;
+    CE_LOW;
     flashSelectAddress(ERASE_4Kb, adress);
     CE_HIGH;
     _delay_ms(TSE);

@@ -91,7 +91,7 @@ int main(void)
             if (adrTmp % 4096 == 0)                 //Erase Sector if a new Sector is entert
                 sectorErase4kB(adrTmp);
 
-            FlashWrite((uint8_t *) &in, sizeof in, adrTmp);
+            flashWrite((uint8_t *) &in, sizeof in, adrTmp);
         }
         else if(instruct)
         {
