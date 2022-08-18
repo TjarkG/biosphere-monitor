@@ -102,7 +102,7 @@ unsigned int storeReadings(FILE *ofp, bool commenting)
 {
     if(commenting)
         fprintf(stderr, "Startet Saving Readings...\n");
-    fprintf(ofp, "UTC,Light,°C out,°C in,hPa,RH Air,RH Soil,IAQ\n");
+    fprintf(ofp, "UTC,Light,°C out,°C in,hPa,RH Air,RH Soil\n");
     unsigned char buf[64];
     printUART("AR\r");
     getUartLine(buf);
