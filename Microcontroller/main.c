@@ -75,6 +75,8 @@ int main(void)
     sei();
     flashInit();
 
+    getReading();
+
     while (1)
     {
         if(takeMessurment)
@@ -84,7 +86,7 @@ int main(void)
 
             unsigned long adrTmp = getFlashAdr;     //Jump to Adress of the new Reading
             adrTmp += sizeof in;
-            if (adrTmp > ADRMAX - sizeof in)
+            if (adrTmp > (ADRMAX - sizeof in))
                 adrTmp = 0;
             setFlashAdr(adrTmp);
 
@@ -113,7 +115,10 @@ int main(void)
                 uartWriteString("EOF\r\n");
             }
             else if(strncmp(uartBuf,"DEL",3) == 0)
+            {
                 setFlashAdr(ADRMAX);
+                chipErase();
+            }
             else if(strncmp(uartBuf,"OGT",3) == 0)
                 uartWriteIntLine(gettOutOff);
             else if(strncmp(uartBuf,"OST",3) == 0)

@@ -32,6 +32,8 @@ void flashInit(void);
 uint8_t flashSpi(const uint8_t Data);
 void flashSelectAddress(const uint8_t cmd, const uint32_t adress);
 uint8_t flashStatus(void);
+void writeEnable(void);
+void chipErase(void);
 inline uint32_t flashID(void);
 void flashRead(uint8_t *out, const uint8_t n, const uint32_t adress);
 void byteWrite(const uint8_t in, const uint32_t adress);
@@ -49,9 +51,7 @@ void flashInit(void)
     PORTD.OUTSET = (1 << 0) | (1 << 1);
     CE_HIGH;
     _delay_us(TBP);
-    CE_LOW;
-    flashSpi(WREN);
-    CE_HIGH;
+    writeEnable();
     _delay_us(TBP);
     CE_LOW;
     flashSpi(WRSR);
@@ -83,6 +83,21 @@ uint8_t flashStatus(void)    //Read Status Register
     return out;
 }
 
+void writeEnable(void)
+{
+    CE_LOW;
+    flashSpi(WREN);
+    CE_HIGH;
+}
+
+void chipErase(void)
+{
+    writeEnable();
+    CE_LOW;
+    flashSpi(ERASE_CHIP);
+    CE_HIGH;
+}
+
 inline uint32_t flashID(void)    //Read JEDEC-ID 
 {
     CE_LOW;
@@ -109,9 +124,7 @@ void flashRead(uint8_t *out, const uint8_t n, const uint32_t adress)   //Read n 
 
 void byteWrite(uint8_t in, const uint32_t adress)   //Write in to adress
 {
-    CE_LOW;
-    flashSpi(WREN);
-    CE_HIGH;
+    writeEnable();
     CE_LOW;
     flashSelectAddress(PROG_BYTE, adress);
     flashSpi(in);
@@ -129,9 +142,7 @@ void flashWrite(uint8_t *in, const uint8_t size, const uint32_t adr)
 
 void sectorErase4kB(const uint32_t adress)   //Erases Sektor in whitch adress is lokated
 {
-    CE_LOW;
-    flashSpi(WREN);
-    CE_HIGH;
+    writeEnable();
     CE_LOW;
     flashSelectAddress(ERASE_4Kb, adress);
     CE_HIGH;
