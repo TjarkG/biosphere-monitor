@@ -12,3 +12,9 @@ Delete,DEL,non,non,resets Flash to beginning
 Get ID,ID,non,Chip ID,Reads out the Chip ID of connected BME / BMP Sensor
 Reading Number,RN,non,number of stored readings,
 Get Humidity,GH,non,current ADC count at external input,
+Set Light On Time, SLN, seconds after Midnight, non, time light goes on
+Set Light Off Time, SLF, seconds after Midnight, non, time light goes off
+Set Ligth Tresshold, SLT, Treshold in Lux, non, Set Treshold under which Light goes on (0 for allways on)
+Get Light On Time, GLN, non, seconds after Midnight,
+Get Light Off Time, GLF, non, seconds after Midnight,
+Get Ligth Tresshold, GLT, non, Treshold in Lux,
