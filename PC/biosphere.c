@@ -10,9 +10,6 @@
 #include "tty.h"
 #include "biosphere.h"
 
-#define HELP "README.md"          //Name of helpfile
-#define ESC 27
-
 long getCommand(const char *cmd)       //send get command and return response
 {
     unsigned char buf[16];
@@ -37,37 +34,6 @@ int setCommand(const char *cmd)       //send set command
         return -1;
     }
     return 0;
-}
-
-void printHelp(void)
-{
-    FILE *help;
-    if ((help = fopen(HELP, "r")) == NULL) 
-    {
-        fprintf(stderr, "can't open %s\n", HELP);
-        exit(1);
-    }
-
-    char in;
-    bool header = false;
-    while ((in = getc(help)) != EOF)
-    {
-        if(in == '#')
-        {
-            printf("%c[1m",ESC);
-            getc(help);
-            header = true;
-        }
-        else if(in == '\n' && header)
-        {
-            printf("%c[0m",ESC);
-            header = false;
-        }
-        else
-            printf("%c", in);
-    }
-    printf("\n\n");
-    fclose(help);
 }
 
 struct reading getReading(char *buf)
