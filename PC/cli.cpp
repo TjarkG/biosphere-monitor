@@ -50,7 +50,7 @@ void printHelp(void)
 
 void printT(int time)
 {
-    printf("%2d:%2d:%2d\n", time/3600, (time%3600)/60, time%60);
+    printf("%02d:%02d:%02d\n", time/3600, (time%3600)/60, time%60);
 }
 
 //get time in seconds after midnight from hh:mm:ss, hh:mm or hh timeformat at the start of str
@@ -168,9 +168,9 @@ int main(int argc, char *argv[])
             printf("Ligth on time: ");
             printT(getCommand("GLN"));
         }
-        else if(strncmp(argv[i], "-ltn", 2) == 0)
+        else if(strncmp(argv[i], "-ltn", 4) == 0)
         {
-            if(setLightTime(getTime(argv[i]+3), true))
+            if(setLightTime(getTime(argv[i]+4), true))
                 fprintf(stderr, "Light on time sucessfuly set\n");
             else
                 fprintf(stderr, "an Error ocured setting Light on time\n");
@@ -180,9 +180,9 @@ int main(int argc, char *argv[])
             printf("Ligth off time: ");
             printT(getCommand("GLF"));
         }
-        else if(strncmp(argv[i], "-ltf", 2) == 0)
+        else if(strncmp(argv[i], "-ltf", 4) == 0)
         {
-            if(setLightTime(getTime(argv[i]+3), false))
+            if(setLightTime(getTime(argv[i]+4), false))
                 fprintf(stderr, "Light off time sucessfuly set\n");
             else
                 fprintf(stderr, "an Error ocured setting Light off time\n");
@@ -191,11 +191,11 @@ int main(int argc, char *argv[])
         {
             int treshold = getCommand("GLT");
             if(treshold == 0)
-                printf("Light treshold off");
+                printf("Light treshold off\n");
             else
-                printf("Light treshold: %d Lux", treshold);
+                printf("Light treshold: %d Lux\n", treshold);
         }
-        else if(strncmp(argv[i], "-lt", 2) == 0)
+        else if(strncmp(argv[i], "-lt", 3) == 0)
         {
             if(setLightTreshold(atoi(argv[i]+2)))
                 fprintf(stderr, "Light Treshold sucessfuly set\n");
