@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <string.h>
+#include <iostream>
 #include "../reading.h"
 #include "tty.h"
 #include "biosphere.h"
@@ -13,7 +14,7 @@
 #define HELP "README.md"          //Name of helpfile
 #define ESC 27
 
-static char *errCodes[] = {"UART Transmission", "AVCC", "RTC running", "RTC initialized", "Flash Signatur", "Flash erase", "Flash read/write", "UART Tx level",
+static std::string errCodes[] = {"UART Transmission", "AVCC", "RTC running", "RTC initialized", "Flash Signatur", "Flash erase", "Flash read/write", "UART Tx level",
 "UART Rx level", "Outside Temperatur", "Light Sensor", "Intervall set", "Temperatur offset set", "BME connected", "BME Readings in range"};
 
 void printHelp(void)
@@ -86,7 +87,7 @@ int main(int argc, char *argv[])
     char i = 2;
     while (--argc > 0)
     {
-        unsigned char buf[128];
+        char buf[128];
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "-help") == 0)
             printHelp();
         else if(strcmp(argv[i], "-r") == 0)
@@ -139,7 +140,7 @@ int main(int argc, char *argv[])
 
             for (int i = 0; i < (sizeof(errCodes) / sizeof(errCodes[0])); i++)
             {
-                printf("%-24s%s\n", errCodes[i], (error & (1 << i)) ? "Error": "Ok");
+                printf("%-24s%s\n", errCodes[i].c_str(), (error & (1 << i)) ? "Error": "Ok");
             }
             
             if(error == 0)

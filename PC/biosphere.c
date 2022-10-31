@@ -12,7 +12,7 @@
 
 long getCommand(const char *cmd)       //send get command and return response
 {
-    unsigned char buf[16];
+    char buf[16];
     if (setCommand(cmd) == 0)
     {
         getUartLine(buf);
@@ -24,7 +24,7 @@ long getCommand(const char *cmd)       //send get command and return response
 
 int setCommand(const char *cmd)       //send set command
 {
-    unsigned char buf[16];
+    char buf[16];
     printUART(cmd);
     printUART("\r");
     char err = getUartLine(buf);
@@ -69,7 +69,7 @@ unsigned int storeReadings(FILE *ofp, bool commenting)
     if(commenting)
         fprintf(stderr, "Startet Saving Readings...\n");
     fprintf(ofp, "UTC,Light,°C out,°C in,hPa,RH Air,RH Soil\n");
-    unsigned char buf[64];
+    char buf[64];
     printUART("AR\r");
     getUartLine(buf);
     unsigned long lnCnt = 0;
@@ -95,7 +95,7 @@ unsigned int storeReadings(FILE *ofp, bool commenting)
 
 unsigned int bufferReadings(struct reading *buffer) //this assumes buffer is bigger than required
 {
-    unsigned char buf[64];
+    char buf[64];
     printUART("AR\r");
     getUartLine(buf);
     unsigned long lnCnt = 0;
@@ -142,27 +142,28 @@ bool setIntervall(unsigned int iNew)
 {
     if(iNew >= 65536)
         return false;
-    unsigned char buf[16];
+    char buf[16];
     sprintf(buf, "IS%d",iNew);
     setCommand(buf);
-    usleep(50000);
+    //usleep(50000);
+    //TODO: Chrono
     unsigned int iVert = getCommand("IG");
     return (iNew == iVert);
 }
 
 bool synctime(void)
 {
-    unsigned char buf[32];
+    char buf[32];
     time_t rawtime;
     time ( &rawtime );
     sprintf(buf, "TS%ld",rawtime);
     setCommand(buf);
-    return abs(rawtime - getCommand("TG")) > 3;
+    return labs(rawtime - getCommand("TG")) > 3;
 }
 
 bool setOffset(int tIn)
 {
-    unsigned char buf[64];
+    char buf[64];
     setCommand("CR");
     getUartLine(buf);
     struct reading in = getReading(buf);
@@ -177,7 +178,7 @@ bool setOffset(int tIn)
 
 bool setLightTime(const uint16_t time, const bool start)
 {
-    unsigned char buf[16];
+    char buf[16];
     sprintf(buf, "SL%c%d", start ? 'N' : 'F', time);
     setCommand(buf);
 
@@ -188,7 +189,7 @@ bool setLightTime(const uint16_t time, const bool start)
 
 bool setLightTreshold(const uint16_t treshold)
 {
-    unsigned char buf[16];
+    char buf[16];
     sprintf(buf, "SLT%d", treshold);
     setCommand(buf);
     

@@ -1,20 +1,20 @@
 biosphere: cli.o biosphere.o tty.o
-	gcc cli.o biosphere.o tty.o -o biosphere
+	g++ cli.o biosphere.o tty.o -o biosphere
 
 runGui: bioGui
 	./bioGui
 
-bioGui: gui.o biosphere.o Gui/guiArgs.aux tty.o /usr/local/src/bioGui.glade
-	gcc -o bioGui gui.o biosphere.o tty.o @Gui/guiArgs.aux
+bioGui: gui.o PC/biosphere.c Gui/guiArgs.aux PC/tty.c /usr/local/src/bioGui.glade
+	gcc -o bioGui gui.o PC/biosphere.c PC/tty.c @Gui/guiArgs.aux
 
 biosphere.o: PC/biosphere.c PC/tty.h PC/biosphere.h
-	gcc -c PC/biosphere.c PC/tty.c
+	g++ -c PC/biosphere.c
 
-cli.o: PC/cli.c PC/biosphere.h PC/tty.h
-	gcc -c PC/cli.c
+cli.o: PC/cli.cpp PC/biosphere.h PC/tty.h
+	g++ -c PC/cli.cpp
 
 tty.o: PC/tty.c PC/tty.h
-	gcc -c PC/tty.c
+	g++ -c PC/tty.c
 
 gui.o: Gui/gui.c Gui/signals.h Gui/guiArgs.aux
 	gcc -c Gui/gui.c @Gui/guiArgs.aux
