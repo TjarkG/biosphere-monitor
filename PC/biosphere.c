@@ -176,10 +176,10 @@ bool setOffset(int tIn)
     return off == getCommand("OGT");
 }
 
-bool setLightTime(const uint16_t time, const bool start)
+bool setLightTime(const time_t time, const bool start)
 {
     char buf[16];
-    sprintf(buf, "SL%c%d", start ? 'N' : 'F', time);
+    sprintf(buf, "SL%c%ld", start ? 'N' : 'F', time);
     setCommand(buf);
 
 

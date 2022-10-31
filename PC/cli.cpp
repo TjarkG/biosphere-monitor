@@ -48,15 +48,15 @@ void printHelp(void)
     fclose(help);
 }
 
-void printT(int time)
+void printT(time_t time)
 {
-    printf("%02d:%02d:%02d\n", time/3600, (time%3600)/60, time%60);
+    printf("%02ld:%02ld:%02ld\n", time/3600, (time%3600)/60, time%60);
 }
 
 //get time in seconds after midnight from hh:mm:ss, hh:mm or hh timeformat at the start of str
-int getTime(char *str)
+time_t getTime(char *str)
 {
-    int time = 3600 * strtol(str, &str, 10);
+    time_t time = 3600 * strtol(str, &str, 10);
     time += 60 * strtol(str+1, &str, 10);
     time += strtol(str+1, NULL, 10);
 
@@ -163,6 +163,7 @@ int main(int argc, char *argv[])
         {
             printf("%d\n",(unsigned int) getCommand("GH"));
         }
+
         else if(strcmp(argv[i], "-ltn?") == 0)
         {
             printf("Ligth on time: ");
@@ -197,11 +198,12 @@ int main(int argc, char *argv[])
         }
         else if(strncmp(argv[i], "-lt", 3) == 0)
         {
-            if(setLightTreshold(atoi(argv[i]+2)))
+            if(setLightTreshold(atoi(argv[i]+3)))
                 fprintf(stderr, "Light Treshold sucessfuly set\n");
             else
                 fprintf(stderr, "an Error ocured setting Light Treshold\n");
         }
+
         else
             fprintf(stderr, "Unknow Argument: %s\n", argv[i]);
         i++;

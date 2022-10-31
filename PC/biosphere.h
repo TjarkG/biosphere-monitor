@@ -18,7 +18,7 @@ void printCsvReading(FILE *ofp, struct reading in);
 bool setIntervall(unsigned int iNew);
 bool synctime(void);
 bool setOffset(int tIn);
-bool setLightTime(const uint16_t time, const bool start);
+bool setLightTime(const time_t time, const bool start);
 bool setLightTreshold(const uint16_t treshold);
 
 #endif

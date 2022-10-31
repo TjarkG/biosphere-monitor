@@ -41,8 +41,8 @@ uint8_t  EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
 uint32_t EEMEM flashAdr = 0;        //Adress of the start of the last reading in the SPI Flash
 
 uint16_t EEMEM lightOnTime = 0;     //light on Time
-uint16_t EEMEM lightOffTime = 0;    //ligth off Time
-uint16_t EEMEM lightTreshold = 0;   //Treshold under which light goes on (0 is allways on)
+uint32_t EEMEM lightOffTime = 0;    //ligth off Time
+uint32_t EEMEM lightTreshold = 0;   //Treshold under which light goes on (0 is allways on)
 
 #define setIntervall(new)   eeprom_update_word(&intervall, new)
 #define getIntervall        eeprom_read_word(&intervall)
@@ -53,10 +53,10 @@ uint16_t EEMEM lightTreshold = 0;   //Treshold under which light goes on (0 is a
 
 #define setLightOnTime(in)     eeprom_update_word(&lightOnTime, in)
 #define getLightOnTime          eeprom_read_word(&lightOnTime)
-#define setLightOffTime(in)    eeprom_update_word(&lightOffTime, in)
-#define getLightOffTime         eeprom_read_word(&lightOffTime)
-#define setLightTreshold(in)   eeprom_update_word(&lightTreshold, in)
-#define getLightTreshold        eeprom_read_word(&lightTreshold)
+#define setLightOffTime(in)    eeprom_update_dword(&lightOffTime, in)
+#define getLightOffTime         eeprom_read_dword(&lightOffTime)
+#define setLightTreshold(in)   eeprom_update_dword(&lightTreshold, in)
+#define getLightTreshold        eeprom_read_dword(&lightTreshold)
 
 struct reading getReading(void);
 void printReading(struct reading in);
@@ -154,11 +154,11 @@ int main(void)
             else if(strncmp(uartBuf,"GLN",3) == 0)
                 uartWriteIntLine(getLightOnTime);
             else if(strncmp(uartBuf,"SLN",3) == 0)
-                setLightOnTime(atoi(uartBuf+3));
+                setLightOnTime(atol(uartBuf+3));
             else if(strncmp(uartBuf,"GLF",3) == 0)
                 uartWriteIntLine(getLightOffTime);
             else if(strncmp(uartBuf,"SLF",3) == 0)
-                setLightOffTime(atoi(uartBuf+3));
+                setLightOffTime(atol(uartBuf+3));
             else if(strncmp(uartBuf,"GLT",3) == 0)
                 uartWriteIntLine(getLightTreshold);
             else if(strncmp(uartBuf,"SLT",3) == 0)
@@ -167,9 +167,9 @@ int main(void)
         }
 
         //check light conditions
-        if(getLightOnTime < getLightOffTime ? 
+        if((getLightOnTime < getLightOffTime ? 
             (getLightOnTime < timeCounter%86400 && timeCounter%86400 < getLightOffTime) : 
-            (getLightOnTime < timeCounter%86400 || timeCounter%86400 < getLightOffTime) 
+            (getLightOnTime < timeCounter%86400 || timeCounter%86400 < getLightOffTime)) 
             && (getLightTreshold == 0 || getLight() < getLightTreshold))
             PORTD.OUTSET = (1 << 3);
         else
