@@ -174,3 +174,23 @@ bool setOffset(int tIn)
     setCommand(buf);
     return off == getCommand("OGT");
 }
+
+bool setLightTime(const uint16_t time, const bool start)
+{
+    unsigned char buf[16];
+    sprintf(buf, "SL%c%d", start ? 'N' : 'F', time);
+    setCommand(buf);
+
+
+    sprintf(buf, "GL%c", start ? 'N' : 'F');
+    return time == getCommand(buf);
+}
+
+bool setLightTreshold(const uint16_t treshold)
+{
+    unsigned char buf[16];
+    sprintf(buf, "SLT%d", treshold);
+    setCommand(buf);
+    
+    return treshold == getCommand("GLT");
+}

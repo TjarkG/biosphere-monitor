@@ -47,16 +47,34 @@ void printHelp(void)
     fclose(help);
 }
 
+void printT(int time)
+{
+    printf("%2d:%2d:%2d\n", time/3600, (time%3600)/60, time%60);
+}
+
+//get time in seconds after midnight from hh:mm:ss, hh:mm or hh timeformat at the start of str
+int getTime(char *str)
+{
+    int time = 3600 * strtol(str, &str, 10);
+    time += 60 * strtol(str+1, &str, 10);
+    time += strtol(str+1, NULL, 10);
+
+    return time;
+}
+
 int main(int argc, char *argv[])
 {
     char *prog = argv[0];     // program name for errors
 
-    if(strcmp(argv[1], "-h") == 0)
-        printHelp();
-    if (argc == 1 || argv[1][0] == '-') /* no args or arguments cant be a serial Port: throw error */
+    if (argc == 1 || (argv[1][0] == '-' && strcmp(argv[1], "-h")) != 0) /* no args or arguments cant be a serial Port: throw error */
     {
         fprintf(stderr, "%s: first argument must be target COM Port\n", prog);
         return -1;
+    }
+    if(strcmp(argv[1], "-h") == 0)
+    {
+        printHelp();
+        return 0;
     }
     argc--;
     if(startUART(argv[1]) != 0)
@@ -143,6 +161,45 @@ int main(int argc, char *argv[])
         else if(strcmp(argv[i], "-gh") == 0)
         {
             printf("%d\n",(unsigned int) getCommand("GH"));
+        }
+        else if(strcmp(argv[i], "-ltn?") == 0)
+        {
+            printf("Ligth on time: ");
+            printT(getCommand("GLN"));
+        }
+        else if(strncmp(argv[i], "-ltn", 2) == 0)
+        {
+            if(setLightTime(getTime(argv[i]+3), true))
+                fprintf(stderr, "Light on time sucessfuly set\n");
+            else
+                fprintf(stderr, "an Error ocured setting Light on time\n");
+        }
+        else if(strcmp(argv[i], "-ltf?") == 0)
+        {
+            printf("Ligth off time: ");
+            printT(getCommand("GLF"));
+        }
+        else if(strncmp(argv[i], "-ltf", 2) == 0)
+        {
+            if(setLightTime(getTime(argv[i]+3), false))
+                fprintf(stderr, "Light off time sucessfuly set\n");
+            else
+                fprintf(stderr, "an Error ocured setting Light off time\n");
+        }
+        else if(strcmp(argv[i], "-lt?") == 0)
+        {
+            int treshold = getCommand("GLT");
+            if(treshold == 0)
+                printf("Light treshold off");
+            else
+                printf("Light treshold: %d Lux", treshold);
+        }
+        else if(strncmp(argv[i], "-lt", 2) == 0)
+        {
+            if(setLightTreshold(atoi(argv[i]+2)))
+                fprintf(stderr, "Light Treshold sucessfuly set\n");
+            else
+                fprintf(stderr, "an Error ocured setting Light Treshold\n");
         }
         else
             fprintf(stderr, "Unknow Argument: %s\n", argv[i]);

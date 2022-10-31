@@ -12,12 +12,13 @@ long getCommand(const char *cmd);
 int setCommand(const char *cmd);
 struct reading getReading(char *buf);
 void printReading(FILE *ofp, struct reading in);
-void printHelp(void);
 unsigned int storeReadings(FILE *ofp, bool commenting);
 unsigned int bufferReadings(struct reading *buffer);
 void printCsvReading(FILE *ofp, struct reading in);
 bool setIntervall(unsigned int iNew);
 bool synctime(void);
 bool setOffset(int tIn);
+bool setLightTime(const uint16_t time, const bool start);
+bool setLightTreshold(const uint16_t treshold);
 
 #endif

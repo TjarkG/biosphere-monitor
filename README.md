@@ -18,6 +18,9 @@ which can ocure in any order, listed below:
 * -ct   set current ambient Temperature(°C), used for Offset Calibration
 * -delete delete Flash
 * -gh   get current ADC reading of external input
+* -ltn  set light on time, use -ltn? to get current setting
+* -ltf  set light off time, use -ltf? to get current setting
+* -lt   set light treshold, 0 for no treshold, use -lt? to get current setting
 
 Commands to compile the Current Software after cloning:
 
