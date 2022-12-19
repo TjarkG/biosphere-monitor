@@ -10,8 +10,11 @@ bioGui: gui.o PC/biosphere.c Gui/guiArgs.aux PC/tty.c /usr/local/src/bioGui.glad
 biosphere.o: PC/biosphere.c PC/tty.h PC/biosphere.h
 	g++ -c PC/biosphere.c
 
-cli.o: PC/cli.cpp PC/biosphere.h PC/tty.h
+cli.o: PC/cli.cpp PC/biosphere.h PC/tty.h PC/README.md.hpp
 	g++ -c PC/cli.cpp
+
+PC/README.md.hpp: README.md
+	fileString README.md -l c++ -o PC
 
 tty.o: PC/tty.c PC/tty.h
 	g++ -c PC/tty.c

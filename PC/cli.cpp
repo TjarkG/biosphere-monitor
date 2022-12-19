@@ -11,42 +11,13 @@
 #include "tty.h"
 #include "biosphere.h"
 
+#include "README.md.hpp"
+
 #define HELP "README.md"          //Name of helpfile
 #define ESC 27
 
 static std::string errCodes[] = {"UART Transmission", "AVCC", "RTC running", "RTC initialized", "Flash Signatur", "Flash erase", "Flash read/write", "UART Tx level",
 "UART Rx level", "Outside Temperatur", "Light Sensor", "Intervall set", "Temperatur offset set", "BME connected", "BME Readings in range"};
-
-void printHelp(void)
-{
-    FILE *help;
-    if ((help = fopen(HELP, "r")) == NULL) 
-    {
-        fprintf(stderr, "can't open %s\n", HELP);
-        exit(1);
-    }
-
-    char in;
-    bool header = false;
-    while ((in = getc(help)) != EOF)
-    {
-        if(in == '#')
-        {
-            printf("%c[1m",ESC);
-            getc(help);
-            header = true;
-        }
-        else if(in == '\n' && header)
-        {
-            printf("%c[0m",ESC);
-            header = false;
-        }
-        else
-            printf("%c", in);
-    }
-    printf("\n\n");
-    fclose(help);
-}
 
 void printT(time_t time)
 {
@@ -74,7 +45,7 @@ int main(int argc, char *argv[])
     }
     if(strcmp(argv[1], "-h") == 0)
     {
-        printHelp();
+        std::cout << README;
         return 0;
     }
     argc--;
@@ -89,7 +60,7 @@ int main(int argc, char *argv[])
     {
         char buf[128];
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "-help") == 0)
-            printHelp();
+            std::cout << README;
         else if(strcmp(argv[i], "-r") == 0)
         {
             if(setCommand("CR") < 0)
