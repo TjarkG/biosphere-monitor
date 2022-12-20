@@ -4,24 +4,10 @@
 #ifndef tty_H_
 #define tty_H_
 
-#ifdef _WIN32
-
-#include <windows.h>
-
-#endif // WIN32
-
-#ifdef __unix
-
-#include <fcntl.h> 
-#include <termios.h>
-#include <unistd.h>
-
-#endif //unix
-
-char startUART(char *portname);                 //opens UART portname
+char startUART(char *portName);                 //opens UART port name
 void stopUART(void);                            //not needed for unix
 void printUART(const char *in);                 //prints in to UART
-char getUartLine(char *buf);                    //puts on line of UART input in buf
+char getUartLine(char *buf);                    //puts one line of UART input in buf
 
 
 #endif //tty_H_

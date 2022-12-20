@@ -3,7 +3,6 @@
 
 #include <errno.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #ifdef __unix
@@ -60,9 +59,9 @@ int set_interface_attribs(int fd, unsigned int speed)
     return 0;
 }
 
-char startUART(char *portname)      //opens UART portname
+char startUART(char *portName)      //opens UART port name
 {
-    fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
+    fd = open(portName, O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0)
         return 2;
     //baudrate 1000000, 8 bits, no parity, 1 stop bit
@@ -102,7 +101,7 @@ char getUartLine(char *buf)     //puts on line of UART input in buf
     return 0;
 }
 
-#endif //unix
+#endif //__unix
 
 #ifdef _WIN32
 
@@ -110,10 +109,10 @@ char getUartLine(char *buf)     //puts on line of UART input in buf
 
 HANDLE com;
 
-void startUART(char *portname)      //opens UART portname
+void startUART(char *portName)      //opens UART port name
 {
     char nameTmp[16];
-    sprintf(nameTmp,"\\\\.\\%s", portname);
+    sprintf(nameTmp,"\\\\.\\%s", portName);
     com = CreateFileA(nameTmp,                //port name
                       GENERIC_READ | GENERIC_WRITE, //Read/Write
                       0,                            // No Sharing
@@ -124,7 +123,7 @@ void startUART(char *portname)      //opens UART portname
 
     if (com == INVALID_HANDLE_VALUE)
     {
-        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
+        fprintf(stderr,"Error opening %s: %s\n", portName, strerror(errno));
         exit(2);
     }
 
@@ -141,10 +140,10 @@ void startUART(char *portname)      //opens UART portname
         dcbConfig.fInX = TRUE;
     }
     else
-        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
+        fprintf(stderr,"Error opening %s: %s\n", portName, strerror(errno));
 
     if(!SetCommState(com, &dcbConfig))
-        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
+        fprintf(stderr,"Error opening %s: %s\n", portName, strerror(errno));
 
     COMMTIMEOUTS commTimeout;
 
@@ -157,10 +156,10 @@ void startUART(char *portname)      //opens UART portname
         commTimeout.WriteTotalTimeoutMultiplier = 1000 * 10;
     }
     else
-        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
+        fprintf(stderr,"Error opening %s: %s\n", portName, strerror(errno));
 
     if(!SetCommTimeouts(com, &commTimeout))
-        fprintf(stderr,"Error opening %s: %s\n", portname, strerror(errno));
+        fprintf(stderr,"Error opening %s: %s\n", portName, strerror(errno));
 }
 
 void stopUART(void)
@@ -226,4 +225,4 @@ void getUartLine(char *buf)     //puts on line of UART input in buf
         fprintf(stderr,"Error from read: %s\n", strerror(errno));
 }
 
-#endif // WIN32
+#endif // _WIN32

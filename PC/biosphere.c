@@ -30,7 +30,7 @@ int setCommand(const char *cmd)       //send set command
     char err = getUartLine(buf);
     if(strncmp(buf, cmd,strlen(cmd)) || err)
     {
-        fprintf(stderr, "Error tranmitting UART Command \"%s\": recieved \"%s\"\n", cmd, buf);
+        fprintf(stderr, "Error transmitting UART Command \"%s\": received \"%s\"\n", cmd, buf);
         return -1;
     }
     return 0;
@@ -40,7 +40,7 @@ struct reading getReading(char *buf)
 {
     struct reading in = {0};
     int i, count;
-    for (i=0, count=0; buf[i]; i++)     //count number of ocurences of ',' in input String to prevent memory acces errors
+    for (i=0, count=0; buf[i]; i++)     //count number of occurrences of ',' in input String to prevent memory access errors
         count += (buf[i] == ',');
     if(count != 7)
     {
@@ -76,7 +76,7 @@ unsigned int storeReadings(FILE *ofp, bool commenting)
     while(1)
     {
         getUartLine(buf);
-        if(buf[0] == 'E')       //detecting EOF with a string comperasions somehow made the whole program slower than the Microcontroller is transmitting
+        if(buf[0] == 'E')       //detecting EOF with a string conversions somehow made the whole program slower than the Microcontroller is transmitting
             break;
         struct reading in = getReading(buf);
         printCsvReading(ofp, in);
@@ -102,7 +102,7 @@ unsigned int bufferReadings(struct reading *buffer) //this assumes buffer is big
     while(1)
     {
         getUartLine(buf);
-        if(buf[0] == 'E')       //detecting EOF with a string comperasions somehow made the whole program slower than the Microcontroller is transmitting
+        if(buf[0] == 'E')       //detecting EOF with a string conversions somehow made the whole program slower than the Microcontroller is transmitting
             break;
         buffer[lnCnt++] = getReading(buf);
     }
@@ -151,14 +151,14 @@ bool setIntervall(unsigned int iNew)
     return (iNew == iVert);
 }
 
-bool synctime(void)
+bool syncTime(void)
 {
     char buf[32];
-    time_t rawtime;
-    time ( &rawtime );
-    sprintf(buf, "TS%ld",rawtime);
+    time_t rawTime;
+    time ( &rawTime );
+    sprintf(buf, "TS%ld",rawTime);
     setCommand(buf);
-    return labs(rawtime - getCommand("TG")) > 3;
+    return labs(rawTime - getCommand("TG")) > 3;
 }
 
 bool setOffset(int tIn)
@@ -187,11 +187,11 @@ bool setLightTime(const time_t time, const bool start)
     return time == getCommand(buf);
 }
 
-bool setLightTreshold(const uint16_t treshold)
+bool setLightThreshold(const uint16_t threshold)
 {
     char buf[16];
-    sprintf(buf, "SLT%d", treshold);
+    sprintf(buf, "SLT%d", threshold);
     setCommand(buf);
     
-    return treshold == getCommand("GLT");
+    return threshold == getCommand("GLT");
 }

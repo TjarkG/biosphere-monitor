@@ -4,8 +4,8 @@
 BEGIN {
 	FS = "\" \""
 	"date +%Y-%m-%d" | getline date;
-	heading = "Biosphaeren Daten";
-	oldPort = "";
+	Heading = "Biosphaeren Daten";
+	OldPort = "";
 	"locate biosphere-monitor/Shell/gaps.awk -l 1" | getline gappath;
 	"locate biosphere-monitor/biosphere -l 1" | getline biopath;
 }
@@ -28,10 +28,10 @@ $0 !~ /^#/ {
 	cmd = "gawk -f " gappath " gap=600 " filepath
     cmd | getline gaps
 
-	system("echo \"Hallo \"" $2 "\",\n" message "Im Anhang findest du die neusten Messwerte von deiner Biosphaere.\nMfG, AstroBot\n\n(Diese Nachricht wurde automatisch versendet)\" | mutt -s \"" heading "\" " $3 " -a " filepath)
+	system("echo \"Hallo \"" $2 "\",\n" message "Im Anhang findest du die neusten Messwerte von deiner Biosphaere.\nMfG, AstroBot\n\n(Diese Nachricht wurde automatisch versendet)\" | mutt -s \"" Heading "\" " $3 " -a " filepath)
 
-	if(oldPort == $1)
+	if(OldPort == $1)
 		print "Warning: Multiple Entrys for " $1
 
-	oldPort = $1
+	OldPort = $1
 }

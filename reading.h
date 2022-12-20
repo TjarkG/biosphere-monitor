@@ -1,7 +1,7 @@
 /*
  * reading.h
  *
- * Header with struct to store Sensor redings in on PC and MC
+ * Header with struct to store Sensor readings in on PC and MC
  *
  * Created: 30.08.2021 16:37:17
  *  Author: Tjark Gaudich
@@ -23,7 +23,7 @@ struct reading
     uint16_t light;             //outside illuminance       in lux
     uint8_t temperaturOut;      //outside Temperatur        in °C*5
     uint16_t temperaturIn;      //inside Temperatur         in °C*10
-    uint16_t pressure;          //inside Pressur            in hPa*10
+    uint16_t pressure;          //inside Pressure            in hPa*10
     uint8_t humidityAir;        //inside relativ humidity   in %
     uint8_t humiditySoil;       //inside soil humidity      in %, 0 without a Sensor
 }; 

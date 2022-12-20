@@ -57,7 +57,6 @@ dkms.conf
 *.eep
 *.lss
 *.lst
-*.map
 *.sym
 
 #include path because it is extracted from Atmel Studio
@@ -90,7 +89,6 @@ include/*
 *.idx
 *.ilg
 *.ind
-*.out
 *.url
 *.svn
 *.toc
@@ -108,3 +106,6 @@ PC/README.md.hpp
 
 #glade
 *.glade~
+
+#CLion
+.idea

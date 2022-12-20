@@ -16,9 +16,9 @@ unsigned int storeReadings(FILE *ofp, bool commenting);
 unsigned int bufferReadings(struct reading *buffer);
 void printCsvReading(FILE *ofp, struct reading in);
 bool setIntervall(unsigned int iNew);
-bool synctime(void);
+bool syncTime(void);
 bool setOffset(int tIn);
 bool setLightTime(const time_t time, const bool start);
-bool setLightTreshold(const uint16_t treshold);
+bool setLightThreshold(const uint16_t threshold);
 
 #endif
