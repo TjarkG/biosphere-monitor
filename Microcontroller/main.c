@@ -21,11 +21,11 @@
 #include <avr/eeprom.h>
 #include <util/delay.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 #include "../reading.h"
 #include "ATxmegaAux.h"
-#include "itoa.h"
 #include "bme.h"
 #include "Spi_Flash.h"
 
@@ -62,7 +62,7 @@ struct reading getReading(void);
 void printReading(struct reading in);
 long selfDiagnosis(void);
 void quicksort(uint16_t *data, uint16_t n);
-uint16_t getMedian(uint16_t *rd, const uint16_t n);
+uint16_t getMedian(uint16_t *rd, uint16_t n);
 uint8_t getOutsideTemp(void);
 uint16_t getLight(void);
 uint16_t getExtCount(void);
@@ -134,15 +134,15 @@ int main(void)
             else if(strncmp(uartBuf,"OGT",3) == 0)
                 uartWriteIntLine(getTOutOff);
             else if(strncmp(uartBuf,"OST",3) == 0)
-                setTOutOff(atoi(uartBuf + 3));
+                setTOutOff(strtol(uartBuf + 3, NULL, 10));
             else if(strncmp(uartBuf,"IG",2) == 0)
                 uartWriteIntLine(getIntervall);
             else if(strncmp(uartBuf,"IS",2) == 0)
-                setIntervall(atoi(uartBuf+2));
+                setIntervall(strtol(uartBuf + 2, NULL, 10));
             else if(strncmp(uartBuf,"TG",2) == 0)
                 uartWriteIntLine(timeCounter);
             else if(strncmp(uartBuf,"TS",2) == 0)
-                timeCounter = atol(uartBuf+2);
+                timeCounter = strtol(uartBuf + 2, NULL, 10);
             else if(strncmp(uartBuf,"DR",2) == 0)
                 uartWriteIntLine(selfDiagnosis());
             else if(strncmp(uartBuf,"ID",2) == 0)
@@ -154,22 +154,22 @@ int main(void)
             else if(strncmp(uartBuf,"GLN",3) == 0)
                 uartWriteIntLine(getLightOnTime);
             else if(strncmp(uartBuf,"SLN",3) == 0)
-                setLightOnTime(atol(uartBuf+3));
+                setLightOnTime(strtol(uartBuf + 3, NULL, 10));
             else if(strncmp(uartBuf,"GLF",3) == 0)
                 uartWriteIntLine(getLightOffTime);
             else if(strncmp(uartBuf,"SLF",3) == 0)
-                setLightOffTime(atol(uartBuf+3));
+                setLightOffTime(strtol(uartBuf + 3, NULL, 10));
             else if(strncmp(uartBuf,"GLT",3) == 0)
                 uartWriteIntLine(getLightThreshold);
             else if(strncmp(uartBuf,"SLT",3) == 0)
-                setLightThreshold(atoi(uartBuf + 3));
+                setLightThreshold(strtol(uartBuf + 3, NULL, 10));
             instruct = 0;
         }
 
         //check light conditions
-        if((getLightOnTime < getLightOffTime ? 
-            (getLightOnTime < timeCounter%86400 && timeCounter%86400 < getLightOffTime) : 
-            (getLightOnTime < timeCounter%86400 || timeCounter%86400 < getLightOffTime)) 
+        if((getLightOnTime < getLightOffTime ?
+            (getLightOnTime < timeCounter%86400 && timeCounter%86400 < getLightOffTime) :
+            (getLightOnTime < timeCounter%86400 || timeCounter%86400 < getLightOffTime))
             && (getLightThreshold == 0 || getLight() < getLightThreshold))
             PORTD.OUTSET = (1 << 3);
         else
@@ -199,7 +199,7 @@ void printReading(struct reading in)    //prints in to UART
     char str[16];
     for (uint8_t i = 0; i < 8; i++)
     {
-        _itoa(readingIt(&in,i), str);
+        ultoa(readingIt(&in,i), str, 10);
         uartWriteString(str);
         if(i == 7)
             uartWriteString("\r\n");
@@ -275,22 +275,22 @@ long selfDiagnosis(void)     //returns self diagnosis error code
 void quicksort(uint16_t *data, uint16_t n)       //sorts data till n ascending
 {
   if (n < 2) return;
- 
-  int pivot = data[n / 2];
- 
-  int i, j;
-  for (i = 0, j = n - 1; ; i++, j--)
+
+  uint16_t pivot = data[n / 2];
+
+  int16_t i, j;
+  for (i = 0, j = (int16_t) n - 1; ; i++, j--)
   {
     while (data[i] < pivot) i++;
     while (data[j] > pivot) j--;
- 
+
     if (i >= j) break;
- 
-    int temp = data[i];
+
+    uint16_t temp = data[i];
     data[i]     = data[j];
     data[j]     = temp;
   }
- 
+
   quicksort(data, i);
   quicksort(data + i, n - i);
 }
@@ -325,7 +325,7 @@ uint16_t getLight(void)                         //returns illuminate in lux
 
 uint8_t getRH(void)                             //returns relativ humidity from external moisture sensor
 {
-    int16_t rh = 208 - (getExtCount()/7);       //f(x) = -1/7x+208
+    int16_t rh = 208 - (int16_t) (getExtCount()/7);       //f(x) = -1/7x+208
     return (rh > 100 || rh < 0) ? 0 : rh;
 }
 
@@ -346,7 +346,7 @@ uint16_t getExtCount(void)  //returns ADC counts from external Sensor
 
 uint32_t readingIt(struct reading *v, uint8_t i) //makes it possible to iterate through a reading
 {
-    switch(i) 
+    switch(i)
     {
         case 0: return v->timeRead;
         case 1: return v->light;
@@ -355,8 +355,8 @@ uint32_t readingIt(struct reading *v, uint8_t i) //makes it possible to iterate 
         case 4: return v->pressure;
         case 5: return v->humidityAir;
         case 6: return v->humiditySoil;
+        default: return 0;
     }
-    return 0;
 }
 
 ISR(USARTC0_RXC_vect)       //UART ISR

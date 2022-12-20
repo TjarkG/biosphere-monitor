@@ -11,7 +11,7 @@
 #define ATxmegaAux_H_
 
 #include <avr/io.h>
-#include "itoa.h"
+#include <stdlib.h>
 
 inline void clockExtern(void)
 {
@@ -73,7 +73,7 @@ void uartWriteString(const char *in)
 void uartWriteIntLine(unsigned long in)
 {
     char tmp[12];
-    _itoa(in,tmp);
+    ultoa(in, tmp, 10);
     uartWriteString(tmp);
     uartWriteString("\r\n");
 }

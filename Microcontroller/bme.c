@@ -21,9 +21,9 @@ static struct Calibration    //compensation Values
 } dig;
 
 bool waitRx(void);
-bool read(const uint8_t reg, uint8_t *buf, const uint8_t n);
-uint32_t readADC(const uint8_t reg);
-void write(const uint8_t reg, const uint8_t data);
+bool read(uint8_t reg, uint8_t *buf, uint8_t n);
+int32_t readADC(uint8_t reg);
+void write(uint8_t reg, uint8_t data);
 
 bool waitRx(void)
 {
@@ -62,17 +62,17 @@ bool read(const uint8_t reg, uint8_t *buf, const uint8_t n)
         if(n - i != 0)
             TWIC.MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
     }
-    
+
     TWIC.MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
     return true;
 }
 
-uint32_t readADC(const uint8_t reg)
+int32_t readADC(const uint8_t reg)
 {
     uint8_t buf[3];
     read(reg, buf, sizeof buf);
 
-    return (((uint32_t) buf[0] << 12) & 0xFF000) | (((uint32_t) buf[1] << 4) & 0x00FF0) | ((uint32_t) buf[2] >> 4);
+    return (int32_t) ((((uint32_t) buf[0] << 12) & 0xFF000) | (((uint32_t) buf[1] << 4) & 0x00FF0) | ((uint32_t) buf[2] >> 4));
 }
 
 void write(const uint8_t reg, const uint8_t data)
@@ -102,7 +102,7 @@ void bmeInit(void)
 
     if(id == BMP280 || id == BME280)
     {
-        /*see 
+        /*see
          * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf p. 21 and
          * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf p. 24 for reference
          */
@@ -118,13 +118,13 @@ void bmeInit(void)
             uint8_t bufH[7];
             read(0xE1, bufH, sizeof bufH);
 
-            dig.H[0] = ((uint8_t *) buf)[25]; 
+            dig.H[0] = (uint8_t) buf[12] << 8;
             memcpy(dig.H+1, bufH, sizeof bufH);
         }
     }
     else if(id == BME680)
     {
-        /*see 
+        /*see
          * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme680-ds001.pdf p. 18ff for reference
          */
 
@@ -135,11 +135,11 @@ void bmeInit(void)
         read(0x8A, (uint8_t *)  buf8, sizeof buf8);
 
         dig.T[0] = bufE[8] | (bufE[9] << 8);
-        dig.T[1] = buf8[0];
+        dig.T[1] = (short) buf8[0];
         dig.T[2] = ((uint8_t *) buf8)[2];
 
-        memcpy(dig.P, buf8+2, 18); 
-        dig.P[9] = ((uint8_t *) buf8)[22];
+        memcpy(dig.P, buf8+2, 18);
+        dig.P[9] = (uint8_t) buf8[11];
 
         memcpy(dig.H, bufE, 7);
 
@@ -170,9 +170,9 @@ unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
         const int32_t data = readADC(0xFA);
 
         long var1, var2, var3;
-        var1 = ((long)data >> 3) - ((long)dig.T[0] << 1); 
-        var2 = (var1 * (long)dig.T[1]) >> 11; 
-        var3 = ((((var1 >> 1) * (var1 >> 1)) >> 12) * ((long)dig.T[2] << 4)) >> 14; 
+        var1 = ((long)data >> 3) - ((long)dig.T[0] << 1);
+        var2 = (var1 * (long)dig.T[1]) >> 11;
+        var3 = ((((var1 >> 1) * (var1 >> 1)) >> 12) * ((long)dig.T[2] << 4)) >> 14;
         t_fine = var2 + var3 - 3072;
     }
     return (t_fine/512);
@@ -208,11 +208,11 @@ unsigned int getBmePress(void)  //returns BME Pressure in hPa*10
     {
         const int32_t data = readADC(0x1F);
         long var1, var2, var3;
-        var1 = ((long)t_fine >> 1) - 64000;  
-        var2 = ((((var1 >> 2) * (var1 >> 2)) >> 11) * (long)(dig.P[5] && 0xFF)) >> 2;  
-        var2 = var2 + ((var1 * (long)dig.P[4]) << 1);   
-        var2 = (var2 >> 2) + ((long)dig.P[3] << 16);  
-        var1 = (((((var1 >> 2) * (var1 >> 2)) >> 13) *((long)(dig.P[2] && 0xFF) << 5)) >> 3) + (((long)dig.P[1] * var1) >> 1); 
+        var1 = ((long)t_fine >> 1) - 64000;
+        var2 = ((((var1 >> 2) * (var1 >> 2)) >> 11) * (long)(dig.P[5] & 0xFF)) >> 2;
+        var2 = var2 + ((var1 * (long)dig.P[4]) << 1);
+        var2 = (var2 >> 2) + ((long)dig.P[3] << 16);
+        var1 = (((((var1 >> 2) * (var1 >> 2)) >> 13) *((long)(dig.P[2] & 0xFF) << 5)) >> 3) + (((long)dig.P[1] * var1) >> 1);
         var1 = var1 >> 18;  
         var1 = ((32768 + var1) * (unsigned short)dig.P[0]) >> 15;  
         p = 1048576 - data;  
@@ -238,7 +238,7 @@ unsigned char getBmeHumidity(void)
 
         uint8_t buf[2];
         read(0xFD, buf, sizeof buf);
-        const int16_t data = ((uint16_t) buf[0] << 8) | buf[1];
+        const int16_t data = ((int16_t) buf[0] << 8) | buf[1];
 
         double var; 
         var = (((double)t_fine) - 76800.0); 
@@ -250,7 +250,7 @@ unsigned char getBmeHumidity(void)
             var = 100.0; 
         else if (var < 0.0) 
             var = 0.0;
-        return var;
+        return (uint8_t) var;
     }
     else if(id == BME680)
     {
@@ -259,7 +259,7 @@ unsigned char getBmeHumidity(void)
 
         uint8_t buf[2];
         read(0x25, buf, sizeof buf);
-        const int16_t data = ((uint16_t) buf[0] << 8) | buf[1];
+        const int16_t data = ((int16_t) buf[0] << 8) | buf[1];
 
         long var1, var2, var3, var4, var5, var6;
         long temp_scaled = ((t_fine * 5) + 128) >> 8; 
