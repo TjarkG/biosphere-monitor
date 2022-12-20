@@ -7,14 +7,14 @@
  * Fuses:
  * avrdude -c avrispmkII -p atxmega32a4u -U fuse1:w:0x00:m -U fuse2:w:0xdf:m -U fuse4:w:0xfe:m -U fuse5:w:0xff:m
  * 
- * Initialazation of a new Unit:
+ * Initialization of a new Unit:
  * make biosphere && ./PC/biosphere /dev/ttyUSB0 -delete -f -ct23 -i60 -t -r
  */ 
 
 #define F_CPU   16000000UL
 #define BSCALE  0        //Baudrate: 1000000
 #define BSEL    0
-#define ADCN    512       //Number of ADC readings taken per Messurment
+#define ADC_N    512       //Number of ADC readings taken per measurement
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -30,37 +30,37 @@
 #include "Spi_Flash.h"
 
 time_t timeCounter = 0;
-volatile bool takeMessurment = false;
+volatile bool takeMeasurement = false;
 volatile bool instruct = false;
 char uartBuf[16];
 uint16_t lightF = 0;
-uint16_t lightFnom= 0;                   //Frequency Counter Frequenc in Hz
+uint16_t lightFNom= 0;               //Frequency Counter Frequency in Hz
 
 uint16_t EEMEM intervall = 600;     //sampling intervall in Seconds
 uint8_t  EEMEM tOutOff = 0;         //Outside Temperature Offset in C*5 +128
-uint32_t EEMEM flashAdr = 0;        //Adress of the start of the last reading in the SPI Flash
+uint32_t EEMEM flashAdr = 0;        //Address of the start of the last reading in the SPI Flash
 
 uint16_t EEMEM lightOnTime = 0;     //light on Time
-uint32_t EEMEM lightOffTime = 0;    //ligth off Time
-uint32_t EEMEM lightTreshold = 0;   //Treshold under which light goes on (0 is allways on)
+uint32_t EEMEM lightOffTime = 0;    //light off Time
+uint32_t EEMEM lightThreshold = 0;   //Threshold under which light goes on (0 is always on)
 
 #define setIntervall(new)   eeprom_update_word(&intervall, new)
 #define getIntervall        eeprom_read_word(&intervall)
-#define settOutOff(new)     eeprom_update_byte(&tOutOff, new)
-#define gettOutOff          eeprom_read_byte(&tOutOff)
+#define setTOutOff(new)     eeprom_update_byte(&tOutOff, new)
+#define getTOutOff          eeprom_read_byte(&tOutOff)
 #define setFlashAdr(new)    eeprom_update_dword(&flashAdr, new)
 #define getFlashAdr         eeprom_read_dword(&flashAdr)
 
-#define setLightOnTime(in)     eeprom_update_word(&lightOnTime, in)
+#define setLightOnTime(in)      eeprom_update_word(&lightOnTime, in)
 #define getLightOnTime          eeprom_read_word(&lightOnTime)
-#define setLightOffTime(in)    eeprom_update_dword(&lightOffTime, in)
+#define setLightOffTime(in)     eeprom_update_dword(&lightOffTime, in)
 #define getLightOffTime         eeprom_read_dword(&lightOffTime)
-#define setLightTreshold(in)   eeprom_update_dword(&lightTreshold, in)
-#define getLightTreshold        eeprom_read_dword(&lightTreshold)
+#define setLightThreshold(in)   eeprom_update_dword(&lightThreshold, in)
+#define getLightThreshold       eeprom_read_dword(&lightThreshold)
 
 struct reading getReading(void);
 void printReading(struct reading in);
-long selfDiagnosse(void);
+long selfDiagnosis(void);
 void quicksort(uint16_t *data, uint16_t n);
 uint16_t getMedian(uint16_t *rd, const uint16_t n);
 uint8_t getOutsideTemp(void);
@@ -91,14 +91,14 @@ int main(void)
 
     while (1)
     {
-        if(takeMessurment)
+        if(takeMeasurement)
         {
-            takeMessurment = false;
+            takeMeasurement = false;
             struct reading in = getReading();
 
-            unsigned long adrTmp = getFlashAdr;     //Jump to Adress of the new Reading
+            unsigned long adrTmp = getFlashAdr;     //Jump to Address of the new Reading
             adrTmp += sizeof in;
-            if (adrTmp > (ADRMAX - sizeof in))
+            if (adrTmp > (ADR_MAX - sizeof in))
                 adrTmp = 0;
             setFlashAdr(adrTmp);
 
@@ -118,7 +118,7 @@ int main(void)
             {
                 unsigned long adr = getFlashAdr;
                 struct reading in;
-                if(adr < ADRMAX)
+                if(adr < ADR_MAX)
                     for(unsigned long i = 0; i <= adr; i += sizeof in)
                     {
                         flashRead((uint8_t *) &in, sizeof in, i);
@@ -128,13 +128,13 @@ int main(void)
             }
             else if(strncmp(uartBuf,"DEL",3) == 0)
             {
-                setFlashAdr(ADRMAX);
+                setFlashAdr(ADR_MAX);
                 chipErase();
             }
             else if(strncmp(uartBuf,"OGT",3) == 0)
-                uartWriteIntLine(gettOutOff);
+                uartWriteIntLine(getTOutOff);
             else if(strncmp(uartBuf,"OST",3) == 0)
-                settOutOff(atoi(uartBuf+3));
+                setTOutOff(atoi(uartBuf + 3));
             else if(strncmp(uartBuf,"IG",2) == 0)
                 uartWriteIntLine(getIntervall);
             else if(strncmp(uartBuf,"IS",2) == 0)
@@ -144,7 +144,7 @@ int main(void)
             else if(strncmp(uartBuf,"TS",2) == 0)
                 timeCounter = atol(uartBuf+2);
             else if(strncmp(uartBuf,"DR",2) == 0)
-                uartWriteIntLine(selfDiagnosse());
+                uartWriteIntLine(selfDiagnosis());
             else if(strncmp(uartBuf,"ID",2) == 0)
                 uartWriteIntLine(id);
             else if(strncmp(uartBuf,"RN",2) == 0)
@@ -160,9 +160,9 @@ int main(void)
             else if(strncmp(uartBuf,"SLF",3) == 0)
                 setLightOffTime(atol(uartBuf+3));
             else if(strncmp(uartBuf,"GLT",3) == 0)
-                uartWriteIntLine(getLightTreshold);
+                uartWriteIntLine(getLightThreshold);
             else if(strncmp(uartBuf,"SLT",3) == 0)
-                setLightTreshold(atoi(uartBuf+3));
+                setLightThreshold(atoi(uartBuf + 3));
             instruct = 0;
         }
 
@@ -170,7 +170,7 @@ int main(void)
         if((getLightOnTime < getLightOffTime ? 
             (getLightOnTime < timeCounter%86400 && timeCounter%86400 < getLightOffTime) : 
             (getLightOnTime < timeCounter%86400 || timeCounter%86400 < getLightOffTime)) 
-            && (getLightTreshold == 0 || getLight() < getLightTreshold))
+            && (getLightThreshold == 0 || getLight() < getLightThreshold))
             PORTD.OUTSET = (1 << 3);
         else
             PORTD.OUTCLR = (1 << 3);
@@ -208,11 +208,11 @@ void printReading(struct reading in)    //prints in to UART
     }
 }
 
-long selfDiagnosse(void)     //returns self diagnosis errorcode
+long selfDiagnosis(void)     //returns self diagnosis error code
 {
     long errCode = 0;
 
-    ADCA.CTRLA = ADC_ENABLE_bm;                     //Read Voltage at Vref Pin. Should always be 4095 counts
+    ADCA.CTRLA = ADC_ENABLE_bm;                     //Read Voltage at V_ref Pin. Should always be 4095 counts
     ADCA.CH1.CTRL |= ADC_CH_START_bm;
     while(!(ADCA.CH1.INTFLAGS & ADC_CH_CHIF_bm));
     ADCA.CH1.INTFLAGS = ADC_CH_CHIF_bm;
@@ -231,20 +231,20 @@ long selfDiagnosse(void)     //returns self diagnosis errorcode
     if(flashID() != 0xBF258D)                      //Flash Signature as expected?
         errCode |= (1 << 4);
 
-    if(flashAdr < (ADRMAX-4096))                    //Flash read/write check only if last sector isn't allready used
+    if(flashAdr < (ADR_MAX - 4096))                    //Flash read/write check only if last sector isn't already used
     {
-        sectorErase4kB(ADRMAX-4096);
-        byteWrite(0xAA, ADRMAX-4096);
+        sectorErase4kB(ADR_MAX - 4096);
+        byteWrite(0xAA, ADR_MAX - 4096);
         unsigned char test[1];
-        flashRead(test, 1, ADRMAX-4096);
+        flashRead(test, 1, ADR_MAX - 4096);
         if(test[0] == 0xFF)                            //Not Erased properly
             errCode |= (1 << 5);
         if(test[0] != 0xAA)                            //Read or Write went wrong
             errCode |= (1 << 6);
-        sectorErase4kB(ADRMAX-4096);
+        sectorErase4kB(ADR_MAX - 4096);
     }
 
-    if(!(PORTC.IN & (1 << 2)))                      //UART Rx and Tx should be high when nothing is tranmited
+    if(!(PORTC.IN & (1 << 2)))                      //UART Rx and Tx should be high when nothing is transmitted
         errCode |= (1 << 7);
     if(!(PORTC.IN & (1 << 3)))
         errCode |= (1 << 8);
@@ -253,13 +253,13 @@ long selfDiagnosse(void)     //returns self diagnosis errorcode
     if(tTmp == 0 || tTmp > 250)
         errCode |= (1 << 9);
 
-    if(lightFnom < 1100 || lightFnom > 10000)       //Light Frequency Range
+    if(lightFNom < 1100 || lightFNom > 10000)       //Light Frequency Range
         errCode |= (1 << 10);
 
     if(getIntervall == UINT16_MAX)                  //Sampling Intervall not set
         errCode |= (1 << 11);
 
-    if(gettOutOff == UINT8_MAX)                     //Temperatur Offset not set
+    if(getTOutOff == UINT8_MAX)                     //Temperatur Offset not set
         errCode |= (1 << 12);
 
     if(id == 0)                                     //BME Connected?
@@ -304,8 +304,8 @@ uint16_t getMedian(uint16_t *rd, const uint16_t n)   //returns Median of the Val
 uint8_t getOutsideTemp(void)  //returns Outside Temperatur in °C*5
 {
     ADCA.CTRLA = ADC_ENABLE_bm;
-    uint16_t tempArr[ADCN];
-    for(uint16_t i = 0; i<ADCN; i++)
+    uint16_t tempArr[ADC_N];
+    for(uint16_t i = 0; i < ADC_N; i++)
 	{
 		ADCA.CH0.CTRL |= ADC_CH_START_bm;
         while(!(ADCA.CH0.INTFLAGS & ADC_CH_CHIF_bm));
@@ -313,27 +313,27 @@ uint8_t getOutsideTemp(void)  //returns Outside Temperatur in °C*5
         tempArr[i] = ADCA.CH0.RES;
 	}
     ADCA.CTRLA &= ~ADC_ENABLE_bm;
-    return (getMedian(tempArr, ADCN)/8)+gettOutOff-128;
+    return (getMedian(tempArr, ADC_N) / 8) + getTOutOff - 128;
 }
 
-uint16_t getLight(void)                         //returns iluminace in lux
+uint16_t getLight(void)                         //returns illuminate in lux
 {
-    if(lightFnom < 1200)                        //Sensor cutoff Frequency
+    if(lightFNom < 1200)                        //Sensor cutoff Frequency
         return 0;
-    return (unsigned int) ((66.46 * pow(1.732, (lightFnom/1000.0)) ) - 133.5);
+    return (unsigned int) ((66.46 * pow(1.732, (lightFNom / 1000.0)) ) - 133.5);
 }
 
 uint8_t getRH(void)                             //returns relativ humidity from external moisture sensor
 {
-    int16_t rh = 208 - (getExtCount()/7);       //see RH Messurments.ods, f(x) = -1/7x+208
+    int16_t rh = 208 - (getExtCount()/7);       //f(x) = -1/7x+208
     return (rh > 100 || rh < 0) ? 0 : rh;
 }
 
 uint16_t getExtCount(void)  //returns ADC counts from external Sensor
 {
     ADCA.CTRLA = ADC_ENABLE_bm;
-    uint16_t tempArr[ADCN];
-    for(uint16_t i = 0; i<ADCN; i++)
+    uint16_t tempArr[ADC_N];
+    for(uint16_t i = 0; i < ADC_N; i++)
 	{
 		ADCA.CH2.CTRL |= ADC_CH_START_bm;
         while(!(ADCA.CH2.INTFLAGS & ADC_CH_CHIF_bm));
@@ -341,10 +341,10 @@ uint16_t getExtCount(void)  //returns ADC counts from external Sensor
         tempArr[i] = ADCA.CH2.RES;
 	}
     ADCA.CTRLA &= ~ADC_ENABLE_bm;
-    return getMedian(tempArr, ADCN);
+    return getMedian(tempArr, ADC_N);
 }
 
-uint32_t readingIt(struct reading *v, uint8_t i) //makes it possible to itterate throuh a reading
+uint32_t readingIt(struct reading *v, uint8_t i) //makes it possible to iterate through a reading
 {
     switch(i) 
     {
@@ -380,10 +380,10 @@ ISR(USARTC0_RXC_vect)       //UART ISR
 ISR(RTC_OVF_vect)          //RTC ISR
 {
     timeCounter++;
-    lightFnom = lightF;
+    lightFNom = lightF;
     lightF = 0;
     if((timeCounter % getIntervall) == 0)
-        takeMessurment = true;
+        takeMeasurement = true;
 }
 
 //ISR for Frequency Counter

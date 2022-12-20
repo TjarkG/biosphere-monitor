@@ -10,7 +10,7 @@
 
 enum Type id;      //Sensor ID
 
-static long t_fine;     //Fine Temperatur for Pressur Compensation
+static long t_fine;     //Fine Temperatur for Pressure Compensation
 
 static struct Calibration    //compensation Values
 {
@@ -181,7 +181,7 @@ unsigned int getBmeTemp(void)  //returns BME Temperatur in °C*10
 unsigned int getBmePress(void)  //returns BME Pressure in hPa*10
 {
     uint32_t p = 0;
-    //No initialization needed, reading out data from Temperatur Messurment
+    //No initialization needed, reading out data from Temperatur Measurement
     if(id == BMP280 || id == BME280)
     {
         const int32_t data = readADC(0xF7);
