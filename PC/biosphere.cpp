@@ -7,8 +7,8 @@
 #include <time.h>
 #include <string.h>
 #include "../reading.h"
-#include "tty.h"
-#include "biosphere.h"
+#include "tty.hpp"
+#include "biosphere.hpp"
 
 long getCommand(const char *cmd)       //send get command and return response
 {

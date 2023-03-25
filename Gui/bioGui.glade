@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkApplicationWindow" id="appWindow">
@@ -95,7 +95,7 @@
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="label">Zeit übertragen</property>
-                        <signal name="activate" handler="syncTime" swapped="no"/>
+                        <signal name="activate" handler="syncTimeSignal" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -645,7 +645,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <signal name="clicked" handler="delete" swapped="no"/>
+                <signal name="clicked" handler="deleteFlash" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>

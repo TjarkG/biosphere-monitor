@@ -7,8 +7,8 @@
 #include <iostream>
 
 #include "../reading.h"
-#include "tty.h"
-#include "biosphere.h"
+#include "tty.hpp"
+#include "biosphere.hpp"
 
 #include "README.md.hpp"
 

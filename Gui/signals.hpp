@@ -9,16 +9,16 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <pwd.h>
-#include "../PC/biosphere.h"
+#include "../PC/biosphere.hpp"
 
 #define ABOUT "Biosphere Monitor by TjarkG\ngithub.com/tjarkG\nGTK 3.24\n"
 
-GtkBuilder *builder;
-guint timerId;
+extern GtkBuilder *builder;
+extern guint timerId;
 GtkWidget *infoWindow;
 GtkWidget *deleteWindow;
-int intervall;
-bool isConnected;
+extern int intervall;
+extern bool isConnected;
 
 gboolean windowDelete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) GdkEvent  *event, __attribute__((unused)) gpointer   data)
 {
@@ -41,11 +41,11 @@ void closeWindow(__attribute__((unused)) GtkWidget *widget, __attribute__((unuse
     gtk_widget_hide_on_delete(infoWindow);
 }
 
-void syncTime(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+void syncTimeSignal(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
     bool synced;
     if(isConnected)
-        synced = synctime();
+        synced = syncTime();
     else
         synced = true;
 
@@ -64,7 +64,7 @@ void deleteOpen(__attribute__((unused)) GtkWidget *widget, __attribute__((unused
     gtk_widget_show_all(deleteWindow);
 }
 
-void delete(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
+void deleteFlash(__attribute__((unused)) GtkWidget *widget, __attribute__((unused)) gpointer   data)
 {
     if(timerId != 0)
         g_source_remove(timerId);

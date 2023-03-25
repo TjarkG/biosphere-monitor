@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <gtk/gtk.h>
 #include <errno.h>
-#include "../PC/biosphere.h"
-#include "../PC/tty.h"
+#include "../PC/biosphere.hpp"
+#include "../PC/tty.hpp"
 #include "../reading.h"
 
 #define memb(a) (sizeof(a)/sizeof(a[0]))
@@ -23,7 +23,7 @@ char *portname;
 
 void initStats(void);
 
-#include "signals.h"
+#include "signals.hpp"
 
 void getLabels(void)
 {
@@ -108,7 +108,7 @@ void initStats(void)
     gtk_label_set_label(GTK_LABEL(labels[8]), buf);
 
     //download data to a buffer
-    struct reading *buffer = malloc((sizeof(struct reading)*262144UL));
+    struct reading *buffer = static_cast<reading *>(malloc((sizeof(struct reading) * 262144UL)));
     lnCnt = bufferReadings(buffer);
 
     //display first and last timestamp
