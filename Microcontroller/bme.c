@@ -1,7 +1,5 @@
 //Writen by TjarkG and published under the MIT License
 
-#define F_CPU 16000000UL
-
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdbool.h>
@@ -16,7 +14,7 @@ static struct Calibration    //compensation Values
 {
     short T[3];
     short P[10];
-    char H[8];
+    unsigned char H[8];
     char GH[4];
 } dig;
 

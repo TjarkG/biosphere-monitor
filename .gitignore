@@ -109,3 +109,6 @@ PC/README.md.hpp
 
 #CLion
 .idea
+
+#CMake
+*/cmake-build-debug

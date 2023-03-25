@@ -11,10 +11,9 @@
  * make biosphere && ./PC/biosphere /dev/ttyUSB0 -delete -f -ct23 -i60 -t -r
  */ 
 
-#define F_CPU   16000000UL
 #define BSCALE  0        //Baudrate: 1000000
 #define BSEL    0
-#define ADC_N    512       //Number of ADC readings taken per measurement
+#define ADC_N   512      //Number of ADC readings taken per measurement
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -109,59 +108,55 @@ int main(void)
         }
         else if(instruct)
         {
-            if(strncmp(uartBuf,"CR",2) == 0)
-            {
-                struct reading in = getReading();
-                printReading(in);
-            }
-            else if(strncmp(uartBuf,"AR",2) == 0)
+            if (strncmp(uartBuf, "CR", 2) == 0)
+                printReading(getReading());
+
+            else if (strncmp(uartBuf, "AR", 2) == 0)
             {
                 unsigned long adr = getFlashAdr;
-                struct reading in;
-                if(adr < ADR_MAX)
-                    for(unsigned long i = 0; i <= adr; i += sizeof in)
+                if (adr < ADR_MAX)
+                    for (unsigned long i = 0; i <= adr; i += sizeof(struct reading))
                     {
+                        struct reading in;
                         flashRead((uint8_t *) &in, sizeof in, i);
                         printReading(in);
                     }
                 uartWriteString("EOF\r\n");
-            }
-            else if(strncmp(uartBuf,"DEL",3) == 0)
+            } else if (strncmp(uartBuf, "DEL", 3) == 0)
             {
                 setFlashAdr(ADR_MAX);
                 chipErase();
-            }
-            else if(strncmp(uartBuf,"OGT",3) == 0)
+            } else if (strncmp(uartBuf, "OGT", 3) == 0)
                 uartWriteIntLine(getTOutOff);
-            else if(strncmp(uartBuf,"OST",3) == 0)
+            else if (strncmp(uartBuf, "OST", 3) == 0)
                 setTOutOff(strtol(uartBuf + 3, NULL, 10));
-            else if(strncmp(uartBuf,"IG",2) == 0)
+            else if (strncmp(uartBuf, "IG", 2) == 0)
                 uartWriteIntLine(getIntervall);
-            else if(strncmp(uartBuf,"IS",2) == 0)
+            else if (strncmp(uartBuf, "IS", 2) == 0)
                 setIntervall(strtol(uartBuf + 2, NULL, 10));
-            else if(strncmp(uartBuf,"TG",2) == 0)
+            else if (strncmp(uartBuf, "TG", 2) == 0)
                 uartWriteIntLine(timeCounter);
-            else if(strncmp(uartBuf,"TS",2) == 0)
+            else if (strncmp(uartBuf, "TS", 2) == 0)
                 timeCounter = strtol(uartBuf + 2, NULL, 10);
-            else if(strncmp(uartBuf,"DR",2) == 0)
+            else if (strncmp(uartBuf, "DR", 2) == 0)
                 uartWriteIntLine(selfDiagnosis());
-            else if(strncmp(uartBuf,"ID",2) == 0)
+            else if (strncmp(uartBuf, "ID", 2) == 0)
                 uartWriteIntLine(id);
-            else if(strncmp(uartBuf,"RN",2) == 0)
+            else if (strncmp(uartBuf, "RN", 2) == 0)
                 uartWriteIntLine(getFlashAdr);
-            else if(strncmp(uartBuf,"GH",2) == 0)
+            else if (strncmp(uartBuf, "GH", 2) == 0)
                 uartWriteIntLine(getExtCount());
-            else if(strncmp(uartBuf,"GLN",3) == 0)
+            else if (strncmp(uartBuf, "GLN", 3) == 0)
                 uartWriteIntLine(getLightOnTime);
-            else if(strncmp(uartBuf,"SLN",3) == 0)
+            else if (strncmp(uartBuf, "SLN", 3) == 0)
                 setLightOnTime(strtol(uartBuf + 3, NULL, 10));
-            else if(strncmp(uartBuf,"GLF",3) == 0)
+            else if (strncmp(uartBuf, "GLF", 3) == 0)
                 uartWriteIntLine(getLightOffTime);
-            else if(strncmp(uartBuf,"SLF",3) == 0)
+            else if (strncmp(uartBuf, "SLF", 3) == 0)
                 setLightOffTime(strtol(uartBuf + 3, NULL, 10));
-            else if(strncmp(uartBuf,"GLT",3) == 0)
+            else if (strncmp(uartBuf, "GLT", 3) == 0)
                 uartWriteIntLine(getLightThreshold);
-            else if(strncmp(uartBuf,"SLT",3) == 0)
+            else if (strncmp(uartBuf, "SLT", 3) == 0)
                 setLightThreshold(strtol(uartBuf + 3, NULL, 10));
             instruct = 0;
         }
@@ -329,7 +324,7 @@ uint8_t getRH(void)                             //returns relativ humidity from 
     return (rh > 100 || rh < 0) ? 0 : rh;
 }
 
-uint16_t getExtCount(void)  //returns ADC counts from external Sensor
+uint16_t getExtCount(void)  //returns ADC count from external Sensor
 {
     ADCA.CTRLA = ADC_ENABLE_bm;
     uint16_t tempArr[ADC_N];
@@ -361,7 +356,7 @@ uint32_t readingIt(struct reading *v, uint8_t i) //makes it possible to iterate 
 
 ISR(USARTC0_RXC_vect)       //UART ISR
 {
-    uint8_t Data = USARTC0.DATA;
+    char Data = USARTC0.DATA;
     USARTC0.DATA = Data;
     if(Data == '\r')
         USARTC0.DATA = '\n';
