@@ -6,8 +6,6 @@ BEGIN {
 	"date +%Y-%m-%d" | getline date;
 	Heading = "Biosphaeren Daten";
 	OldPort = "";
-	"locate biosphere-monitor/Shell/gaps.awk -l 1" | getline gappath;
-	"locate biosphere-monitor/biosphere -l 1" | getline biopath;
 }
 # skip comments starting with #
 $0 !~ /^#/ {
@@ -20,12 +18,12 @@ $0 !~ /^#/ {
 	expath 	 = sprintf("~/BioData/biosphere-%s-%s.xlsx", nameFile, date)
 
 	#comment next paragraph out when transmitting already saved data
-	if(system(biopath " " $1 " -s >" filepath) != 0)
+	if(system("cmake-build-debug/biosphere" " " $1 " -s >" filepath) != 0)
 	{
 		message = "An Error occured saving Data"
 	}
 
-	cmd = "gawk -f " gappath " gap=600 " filepath
+	cmd = "gawk -f Shell/gaps.awk gap=600 " filepath
     cmd | getline gaps
 
 	system("echo \"Hallo \"" $2 "\",\n" message "Im Anhang findest du die neusten Messwerte von deiner Biosphaere.\nMfG, AstroBot\n\n(Diese Nachricht wurde automatisch versendet)\" | mutt -s \"" Heading "\" " $3 " -a " filepath)
