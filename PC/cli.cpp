@@ -25,7 +25,7 @@ time_t getTime(char *str)
 {
     time_t time = 3600 * strtol(str, &str, 10);
     time += 60 * strtol(str+1, &str, 10);
-    time += strtol(str+1, NULL, 10);
+    time += strtol(str+1, nullptr, 10);
 
     return time;
 }
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 {
     char *prog = argv[0];     // program name for errors
 
-    if (argc == 1 || (argv[1][0] == '-' && strcmp(argv[1], "-h")) != 0) /* no args or arguments cant be a serial Port: throw error */
+    if (argc == 1 || ((argv[1][0] == '-') && (strcmp(argv[1], "-h")) != 0)) /* no args or arguments cant be a serial Port: throw error */
     {
         fprintf(stderr, "%s: first argument must be target COM Port\n", prog);
         return -1;
@@ -103,17 +103,17 @@ int main(int argc, char *argv[])
         }
         else if(strcmp(argv[i], "-t") == 0)
         {
-            int error = getCommand("DR");
+            auto error {getCommand("DR")};
 
-            for (int i = 0; i < (sizeof(errCodes) / sizeof(errCodes[0])); i++)
+            for (int j = 0; j < (sizeof(errCodes) / sizeof(errCodes[0])); j++)
             {
-                printf("%-24s%s\n", errCodes[i].c_str(), (error & (1 << i)) ? "Error": "Ok");
+                printf("%-24s%s\n", errCodes[j].c_str(), (error & (1 << j)) ? "Error": "Ok");
             }
             
             if(error == 0)
                 printf("\nSelf Test passed\n");
             else
-                printf("\nError detected, Code %d\n",error);
+                printf("\nError detected, Code %ld\n",error);
         }
         else if(strcmp(argv[i], "-delete") == 0)
         {
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
         }
         else if(strncmp(argv[i], "-ct", 3) == 0)
         {
-            if(setOffset(atof(argv[i]+3)*5))
+            if(setOffset((int) atof(argv[i]+3)*5))
                 fprintf(stderr, "Temperature Offset set\n");
             else
                 fprintf(stderr, "An Error occurred setting Temperature Offset\n");
@@ -157,11 +157,11 @@ int main(int argc, char *argv[])
         }
         else if(strcmp(argv[i], "-lt?") == 0)
         {
-            int threshold = getCommand("GLT");
+            auto threshold {getCommand("GLT")};
             if(threshold == 0)
                 printf("Light threshold off\n");
             else
-                printf("Light threshold: %d Lux\n", threshold);
+                printf("Light threshold: %ld Lux\n", threshold);
         }
         else if(strncmp(argv[i], "-lt", 3) == 0)
         {

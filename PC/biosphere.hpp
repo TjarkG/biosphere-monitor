@@ -1,11 +1,9 @@
 //Writen by TjarkG and published under the MIT License
 //functions to communicate with the biosphere
 
-#ifndef biosphere_H_
-#define biosphere_H_
+#ifndef biosphere_HPP_
+#define biosphere_HPP_
 
-#include <stdio.h>
-#include <stdbool.h>
 #include "../reading.h"
 
 long getCommand(const char *cmd);
@@ -16,9 +14,9 @@ unsigned int storeReadings(FILE *ofp, bool commenting);
 unsigned int bufferReadings(struct reading *buffer);
 void printCsvReading(FILE *ofp, struct reading in);
 bool setIntervall(unsigned int iNew);
-bool syncTime(void);
+bool syncTime();
 bool setOffset(int tIn);
-bool setLightTime(const time_t time, const bool start);
-bool setLightThreshold(const uint16_t threshold);
+bool setLightTime(time_t time, bool start);
+bool setLightThreshold(uint16_t threshold);
 
-#endif
+#endif //biosphere_HPP_

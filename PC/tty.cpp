@@ -1,9 +1,9 @@
 //Writen by TjarkG and published under the MIT License
 //communicate via UART on Linux and Windows (half-working)
 
-#include <errno.h>
-#include <stdio.h>
-#include <string.h>
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
 
 #ifdef __unix
 
@@ -12,11 +12,10 @@
 #include <unistd.h>
 
 int fd;
-int wlen;
 
-int set_interface_attribs(int fd, unsigned int speed)
+int setInterfaceAttributs(unsigned int speed)
 {
-    struct termios tty;
+    struct termios tty{};
 
     if (tcgetattr(fd, &tty) < 0)
     {
@@ -32,7 +31,7 @@ int set_interface_attribs(int fd, unsigned int speed)
     tty.c_cflag |= CS8;         // 8-bit characters
     tty.c_cflag &= ~PARENB;     // no parity bit
     tty.c_cflag &= ~CSTOPB;     // only need 1 stop bit
-    tty.c_cflag &= ~CRTSCTS;    // no hardware flowcontrol
+    tty.c_cflag &= ~CRTSCTS;    // no hardware flow control
 
     tty.c_lflag |= ISIG;
     tty.c_lflag &= ~(ECHO | ECHOE | ECHONL | IEXTEN);
@@ -40,7 +39,7 @@ int set_interface_attribs(int fd, unsigned int speed)
     tty.c_iflag &= ~IGNCR;  // preserve carriage return 
     tty.c_iflag &= ~INPCK;
     tty.c_iflag &= ~(INLCR | ICRNL | IUCLC | IMAXBEL);
-    tty.c_iflag &= ~(IXON | IXOFF | IXANY);   // no SW flowcontrol
+    tty.c_iflag &= ~(IXON | IXOFF | IXANY);   // no SW flow control
 
     tty.c_oflag &= ~OPOST;
 
@@ -65,30 +64,28 @@ char startUART(char *portName)      //opens UART port name
     if (fd < 0)
         return 2;
     //baudrate 1000000, 8 bits, no parity, 1 stop bit
-    set_interface_attribs(fd, B1000000);
+    setInterfaceAttributs(B1000000);
     return 0;
 }
 
-void stopUART(void){}                 //not needed for unix
+void stopUART(){}                 //not needed for unix
 
 void printUART(const char *in)        //prints in to UART
 {
-    char length = strlen(in);
-    char wlen = write(fd, in, length);
-    if (wlen != length)
-        fprintf(stderr,"Error from write: %d, %d\n", wlen, errno);
+    auto length = strlen(in);
+    auto wLen = write(fd, in, length);
+    if (wLen != length)
+        fprintf(stderr, "Error from write: %ld %d\n", wLen, errno);
     tcdrain(fd);    // delay for output
 }
 
-char getUartLine(char *buf)     //puts on line of UART input in buf
+char getUartLine(char *buf)     //puts one line of UART input in buf
 {
-    int rdlen;
-
-    rdlen = read(fd, buf, 64);
-    if (rdlen > 0)
-        buf[rdlen] = 0;
-    else if (rdlen < 0)
-        fprintf(stderr,"Error from read: %d: %s\n", rdlen, strerror(errno));
+    auto readLen = read(fd, buf, 64);
+    if (readLen > 0)
+        buf[readLen] = 0;
+    else if (readLen < 0)
+        fprintf(stderr, "Error from read: %ld: %s\n", readLen, strerror(errno));
     else  //timeout
     {
         buf[0] = '\0';

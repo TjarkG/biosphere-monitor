@@ -1,11 +1,10 @@
 //Writen by TjarkG and published under the MIT License
 //functions to communicate with the biosphere
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
+#include <cstring>
 #include "../reading.h"
 #include "tty.hpp"
 #include "biosphere.hpp"
@@ -28,7 +27,7 @@ int setCommand(const char *cmd)       //send set command
     printUART(cmd);
     printUART("\r");
     char err = getUartLine(buf);
-    if(strncmp(buf, cmd,strlen(cmd)) || err)
+    if(strncmp(buf, cmd,strlen(cmd)) != 0 || err)
     {
         fprintf(stderr, "Error transmitting UART Command \"%s\": received \"%s\"\n", cmd, buf);
         return -1;
@@ -49,17 +48,17 @@ struct reading getReading(char *buf)
     }
     char *ptr = strtok(buf, ",\n");
     in.timeRead = atol(ptr);
-    ptr = strtok(NULL, ",\n");
+    ptr = strtok(nullptr, ",\n");
     in.light = atoi(ptr);
-    ptr = strtok(NULL, ",\n");
+    ptr = strtok(nullptr, ",\n");
     in.temperaturOut = atoi(ptr);
-    ptr = strtok(NULL, ",\n");
+    ptr = strtok(nullptr, ",\n");
     in.temperaturIn = atoi(ptr);
-    ptr = strtok(NULL, ",\n");
+    ptr = strtok(nullptr, ",\n");
     in.pressure = atoi(ptr);
-    ptr = strtok(NULL, ",\n");
+    ptr = strtok(nullptr, ",\n");
     in.humidityAir = atoi(ptr);
-    ptr = strtok(NULL, ",\n");
+    ptr = strtok(nullptr, ",\n");
     in.humiditySoil = atoi(ptr);
     return in;
 }
@@ -73,7 +72,7 @@ unsigned int storeReadings(FILE *ofp, bool commenting)
     printUART("AR\r");
     getUartLine(buf);
     unsigned long lnCnt = 0;
-    while(1)
+    while(true)
     {
         getUartLine(buf);
         if(buf[0] == 'E')       //detecting EOF with a string conversions somehow made the whole program slower than the Microcontroller is transmitting
@@ -99,7 +98,7 @@ unsigned int bufferReadings(struct reading *buffer) //this assumes buffer is big
     printUART("AR\r");
     getUartLine(buf);
     unsigned long lnCnt = 0;
-    while(1)
+    while(true)
     {
         getUartLine(buf);
         if(buf[0] == 'E')       //detecting EOF with a string conversions somehow made the whole program slower than the Microcontroller is transmitting
@@ -112,7 +111,7 @@ unsigned int bufferReadings(struct reading *buffer) //this assumes buffer is big
 void printReading(FILE *ofp, struct reading in)
 {
     char tmStr[20];
-    struct tm lt;
+    struct tm lt{};
     lt = *gmtime(&in.timeRead);
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
@@ -130,7 +129,7 @@ void printReading(FILE *ofp, struct reading in)
 void printCsvReading(FILE *ofp, struct reading in)
 {
     char tmStr[20];
-    struct tm lt;
+    struct tm lt{};
     lt = *gmtime(&in.timeRead);
     strftime(tmStr, sizeof(tmStr), "%d.%m.%Y %H:%M:%S", &lt);
 
@@ -151,7 +150,7 @@ bool setIntervall(unsigned int iNew)
     return (iNew == iVert);
 }
 
-bool syncTime(void)
+bool syncTime()
 {
     char buf[32];
     time_t rawTime;
@@ -168,10 +167,10 @@ bool setOffset(int tIn)
     getUartLine(buf);
     struct reading in = getReading(buf);
 
-    int offOld = getCommand("OGT");
+    auto offOld = getCommand("OGT");
 
-    int off = tIn - (in.temperaturOut-offOld+128) + 128;
-    sprintf(buf, "OST%d",off);
+    auto off = tIn - (in.temperaturOut-offOld+128) + 128;
+    sprintf(buf, "OST%ld",off);
     setCommand(buf);
     return off == getCommand("OGT");
 }
