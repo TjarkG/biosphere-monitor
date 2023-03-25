@@ -43,7 +43,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 add_executable(Microcontroller.elf
         Microcontroller/main.c Microcontroller/bme.c Microcontroller/bme.h
-        Microcontroller/ATxmegaAux.h Microcontroller/Spi_Flash.h)
+        Microcontroller/ATxmegaAux.h Microcontroller/spiFlash.h Microcontroller/spiFlash.c)
 
 set(CMAKE_CXX_COMPILER ${DEFAULT_CMAKE_CXX_COMPILER})
 set(CMAKE_CXX_FLAGS ${DEFAULT_CMAKE_CXX_FLAGS})

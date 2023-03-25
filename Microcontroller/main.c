@@ -26,7 +26,7 @@
 #include "../reading.h"
 #include "ATxmegaAux.h"
 #include "bme.h"
-#include "Spi_Flash.h"
+#include "spiFlash.h"
 
 time_t timeCounter = 0;
 volatile bool takeMeasurement = false;
@@ -95,16 +95,16 @@ int main(void)
             takeMeasurement = false;
             struct reading in = getReading();
 
-            unsigned long adrTmp = getFlashAdr;     //Jump to Address of the new Reading
-            adrTmp += sizeof in;
-            if (adrTmp > (ADR_MAX - sizeof in))
+            unsigned long adrTmp = getFlashAdr + sizeof(struct reading);     //Address of the new Reading
+            if (adrTmp > (ADR_MAX - sizeof(struct reading)))
                 adrTmp = 0;
+
             setFlashAdr(adrTmp);
 
-            if (adrTmp % 4096 == 0)                 //Erase Sector if a new Sector is entert
-                sectorErase4kB(adrTmp);
+            if (adrTmp % SECTOR_SIZE == 0)                 //Erase Sector if a new Sector is entert
+                flashErase4kB(adrTmp);
 
-            flashWrite((uint8_t *) &in, sizeof in, adrTmp);
+            flashWrite(&in, sizeof(struct reading), adrTmp);
         }
         else if(instruct)
         {
@@ -118,14 +118,14 @@ int main(void)
                     for (unsigned long i = 0; i <= adr; i += sizeof(struct reading))
                     {
                         struct reading in;
-                        flashRead((uint8_t *) &in, sizeof in, i);
+                        flashRead(&in, sizeof(struct reading), i);
                         printReading(in);
                     }
                 uartWriteString("EOF\r\n");
             } else if (strncmp(uartBuf, "DEL", 3) == 0)
             {
                 setFlashAdr(ADR_MAX);
-                chipErase();
+                flashChipErase();
             } else if (strncmp(uartBuf, "OGT", 3) == 0)
                 uartWriteIntLine(getTOutOff);
             else if (strncmp(uartBuf, "OST", 3) == 0)
@@ -143,7 +143,7 @@ int main(void)
             else if (strncmp(uartBuf, "ID", 2) == 0)
                 uartWriteIntLine(id);
             else if (strncmp(uartBuf, "RN", 2) == 0)
-                uartWriteIntLine(getFlashAdr);
+                uartWriteIntLine(getFlashAdr/sizeof(struct reading));
             else if (strncmp(uartBuf, "GH", 2) == 0)
                 uartWriteIntLine(getExtCount());
             else if (strncmp(uartBuf, "GLN", 3) == 0)
@@ -226,17 +226,17 @@ long selfDiagnosis(void)     //returns self diagnosis error code
     if(flashID() != 0xBF258D)                      //Flash Signature as expected?
         errCode |= (1 << 4);
 
-    if(flashAdr < (ADR_MAX - 4096))                    //Flash read/write check only if last sector isn't already used
+    if(flashAdr < (ADR_MAX - SECTOR_SIZE))                    //Flash read/write check only if last sector isn't already used
     {
-        sectorErase4kB(ADR_MAX - 4096);
-        byteWrite(0xAA, ADR_MAX - 4096);
-        unsigned char test[1];
-        flashRead(test, 1, ADR_MAX - 4096);
-        if(test[0] == 0xFF)                            //Not Erased properly
+        flashErase4kB(ADR_MAX - SECTOR_SIZE);
+        uint8_t test = 0xAA;
+        flashWrite(&test, 1, ADR_MAX - SECTOR_SIZE);
+        flashRead(&test, 1, ADR_MAX - SECTOR_SIZE);
+        if(test == 0xFF)                            //Not Erased properly
             errCode |= (1 << 5);
-        if(test[0] != 0xAA)                            //Read or Write went wrong
+        if(test != 0xAA)                            //Read or Write went wrong
             errCode |= (1 << 6);
-        sectorErase4kB(ADR_MAX - 4096);
+        flashErase4kB(ADR_MAX - SECTOR_SIZE);
     }
 
     if(!(PORTC.IN & (1 << 2)))                      //UART Rx and Tx should be high when nothing is transmitted
